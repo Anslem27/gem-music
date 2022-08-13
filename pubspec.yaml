@@ -1,0 +1,73 @@
+name: gem
+description: Flutter Music Player App.
+
+# Prevent accidental publishing to pub.dev.
+publish_to: "none"
+
+version: 1.15.1+32
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  app_links: 2.2.2
+  audio_service: ^0.18.7
+  audiotagger: ^2.2.1
+  cached_network_image: ^3.2.1
+  carousel_slider: ^4.0.0
+  cupertino_icons: ^1.0.5
+  dart_des: ^1.0.2
+  device_info_plus: ^4.0.0
+  file_picker: ^4.6.1
+  flip_card: ^0.6.0
+  flutter:
+    sdk: flutter
+  flutter_archive: ^4.2.2
+  flutter_displaymode: ^0.4.0
+  flutter_localizations:
+    sdk: flutter
+  get_it: ^7.2.0
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  html_unescape: ^2.0.0
+  just_audio: ^0.9.28
+  marquee: ^2.2.3
+  material_design_icons_flutter: 5.0.5955-rc.1
+  on_audio_query: ^2.6.1
+  package_info_plus: ^1.4.0
+  palette_generator: ^0.3.3+1
+  iconsax: ^0.0.8
+  google_fonts: ^3.0.1
+  path_provider: ^2.0.11
+  permission_handler: ^9.2.0
+  receive_sharing_intent: ^1.4.5
+  share_plus: ^4.0.10
+  sliding_up_panel: ^2.0.0+1
+  supabase: ^0.2.15
+  url_launcher: ^6.1.5
+  uuid: ^3.0.6
+  youtube_explode_dart: 1.10.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lint: ^1.8.2
+  msix: ^3.6.2
+
+flutter:
+  uses-material-design: true
+
+  # Enable generation of localized Strings from arb files.
+  generate: true
+
+  assets:
+    # Add assets to the application.
+    - assets/
+
+msix_config:
+  display_name: Gem
+  publisher_display_name: Anslem
+  identity_name: com.app.gem
+  icons_background_color: transparent
+  logo_path: assets/ic_launcher.png
+  file_extension: .mp3, .m4a
