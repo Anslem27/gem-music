@@ -1,5 +1,7 @@
 
 
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +17,7 @@ class SearchBar extends StatefulWidget {
   final Function(String)? onQueryChanged;
   final Function(String) onSubmitted;
   const SearchBar({
-    Key? key,
+    super.key,
     this.leading,
     this.hintText,
     this.showClose = true,
@@ -26,7 +28,7 @@ class SearchBar extends StatefulWidget {
     required this.controller,
     required this.liveSearch,
     required this.onSubmitted,
-  }) : super(key: key);
+  });
 
   @override
   State<SearchBar> createState() => _SearchBarState();

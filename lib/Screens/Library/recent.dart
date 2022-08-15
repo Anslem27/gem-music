@@ -1,12 +1,14 @@
 
 
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+// ignore_for_file: use_colored_box
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/CustomWidgets/empty_screen.dart';
+import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/CustomWidgets/miniplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:hive/hive.dart';
 
 class RecentlyPlayed extends StatefulWidget {

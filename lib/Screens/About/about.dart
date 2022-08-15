@@ -1,9 +1,7 @@
+// ignore_for_file: avoid_redundant_argument_values
 
-
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -41,6 +39,7 @@ class _AboutScreenState extends State<AboutScreen> {
               child: const Image(
                 fit: BoxFit.fill,
                 image: AssetImage(
+                  //transparent back image
                   'assets/icon-white-trans.png',
                 ),
               ),
@@ -56,9 +55,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ? Colors.transparent
                   : Theme.of(context).colorScheme.secondary,
               elevation: 0,
-              title: Text(
-                AppLocalizations.of(context)!.about,
-                style: const TextStyle(
+              title: const Text(
+                "About",
+                style: TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -66,13 +65,14 @@ class _AboutScreenState extends State<AboutScreen> {
             ),
             backgroundColor: Colors.transparent,
             body: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     Card(
                       elevation: 15,
                       shape: RoundedRectangleBorder(
@@ -86,9 +86,9 @@ class _AboutScreenState extends State<AboutScreen> {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    Text(
-                      AppLocalizations.of(context)!.appTitle,
-                      style: const TextStyle(
+                    const Text(
+                      "Gem",
+                      style: TextStyle(
                         fontSize: 35,
                         fontWeight: FontWeight.bold,
                       ),
@@ -99,17 +99,19 @@ class _AboutScreenState extends State<AboutScreen> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(20.0, 20.0, 20.0, 0.0),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text(
-                        AppLocalizations.of(context)!.aboutLine1,
+                      const Text(
+                        "Contact me",
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16),
+                        style: TextStyle(fontSize: 16),
                       ),
                       TextButton(
                         onPressed: () {
                           launchUrl(
                             Uri.parse(
-                              'https://github.com/Sangwan5688/BlackHole',
+                              'https://github.com/Anslem27',
                             ),
                             mode: LaunchMode.externalApplication,
                           );
@@ -126,92 +128,47 @@ class _AboutScreenState extends State<AboutScreen> {
                           ),
                         ),
                       ),
-                      Text(
-                        AppLocalizations.of(context)!.aboutLine2,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 16),
-                      ),
                     ],
                   ),
                 ),
                 Column(
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        primary: Colors.transparent,
-                      ),
-                      onPressed: () {
-                        launchUrl(
-                          Uri.parse(
-                            'https://www.buymeacoffee.com/ankitsangwan',
-                          ),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: const Image(
-                          image: AssetImage('assets/black-button.png'),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.or,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        primary: Colors.transparent,
-                      ),
-                      onPressed: () {
-                        const String upiUrl =
-                            'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole&mc=5732&aid=uGICAgIDn98OpSw&tr=BCR2DN6T37O6DB3Q';
-                        launchUrl(
-                          Uri.parse(upiUrl),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      onLongPress: () {
-                        copyToClipboard(
-                          context: context,
-                          text: 'ankit.sangwan.5688@oksbi',
-                          displayText: AppLocalizations.of(
-                            context,
-                          )!
-                              .upiCopied,
-                        );
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Image(
-                          image: AssetImage(
-                            Theme.of(context).brightness == Brightness.dark
-                                ? 'assets/gpay-white.png'
-                                : 'assets/gpay-white.png',
-                          ),
-                        ),
-                      ),
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.sponsor,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(fontSize: 12),
-                    ),
+                  children: const [
+                    // TextButton(
+                    //   style: TextButton.styleFrom(
+                    //     padding: EdgeInsets.zero,
+                    //     backgroundColor: Colors.transparent,
+                    //     primary: Colors.transparent,
+                    //   ),
+                    //   onPressed: () {
+                    //     const String upiUrl =
+                    //         'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole&mc=5732&aid=uGICAgIDn98OpSw&tr=BCR2DN6T37O6DB3Q';
+                    //     launchUrl(
+                    //       Uri.parse(upiUrl),
+                    //       mode: LaunchMode.externalApplication,
+                    //     );
+                    //   },
+                    //   onLongPress: () {
+                    //     copyToClipboard(
+                    //       context: context,
+                    //       text: 'ankit.sangwan.5688@oksbi',
+                    //       displayText: AppLocalizations.of(
+                    //         context,
+                    //       )!
+                    //           .upiCopied,
+                    //     );
+                    //   },
+                    //   child: SizedBox(
+                    //     width: MediaQuery.of(context).size.width / 2,
+                    //     child: Image(
+                    //       image: AssetImage(
+                    //         Theme.of(context).brightness == Brightness.dark
+                    //             ? 'assets/gpay-white.png'
+                    //             : 'assets/gpay-white.png',
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(context)!.madeBy,
-                      style: const TextStyle(fontSize: 12),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
                 ),
               ],
             ),

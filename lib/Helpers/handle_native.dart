@@ -1,7 +1,7 @@
 
 
-import 'package:gem/Helpers/route_handler.dart';
 import 'package:flutter/material.dart';
+import 'package:gem/Helpers/route_handler.dart';
 
 void handleSharedText(
   String sharedText,

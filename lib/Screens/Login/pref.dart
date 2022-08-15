@@ -5,7 +5,7 @@ import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:hive/hive.dart';
 
 class PrefScreen extends StatefulWidget {
-  const PrefScreen({Key? key}) : super(key: key);
+  const PrefScreen({super.key});
 
   @override
   _PrefScreenState createState() => _PrefScreenState();

@@ -1,9 +1,11 @@
+// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers, require_trailing_commas, avoid_redundant_argument_values
 
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/like_button.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -11,12 +13,10 @@ import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/Screens/Search/artists.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 
 class SearchPage extends StatefulWidget {
@@ -97,21 +97,30 @@ class _SearchPageState extends State<SearchPage> {
     if (!alertShown) {
       ShowSnackBar().showSnackBar(
         context,
-        AppLocalizations.of(context)!.useVpn,
+        'Try using a vpn',
         duration: const Duration(seconds: 5),
       );
       alertShown = true;
     }
-    return emptyScreen(
-      context,
-      0,
-      ':( ',
-      100,
-      AppLocalizations.of(context)!.sorry,
-      60,
-      AppLocalizations.of(context)!.resultsNotFound,
-      20,
-    );
+    return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/lamp_error.png", height: 100, width: 100),
+                Text(
+                  "Sorry noo results\nTry youtube search",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                    fontSize: 20,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
+          );
   }
 
   @override
@@ -134,8 +143,9 @@ class _SearchPageState extends State<SearchPage> {
                   controller: controller,
                   liveSearch: liveSearch,
                   autofocus: widget.autofocus,
-                  hintText: AppLocalizations.of(context)!.searchText,
+                  hintText: 'Search',
                   leading: IconButton(
+                    splashRadius: 24,
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => Navigator.pop(context),
                   ),
@@ -162,8 +172,7 @@ class _SearchPageState extends State<SearchPage> {
                                     child: Row(
                                       children: [
                                         Text(
-                                          AppLocalizations.of(context)!
-                                              .trendingSearch,
+                                          'Trending',
                                           style: TextStyle(
                                             color: Theme.of(context)
                                                 .colorScheme
@@ -181,11 +190,7 @@ class _SearchPageState extends State<SearchPage> {
                                         const NeverScrollableScrollPhysics(),
                                     shrinkWrap: true,
                                     padding: const EdgeInsets.fromLTRB(
-                                      15,
-                                      10,
-                                      10,
-                                      0,
-                                    ),
+                                        15, 10, 10, 0),
                                     itemBuilder: (context, index) {
                                       return ListTile(
                                         horizontalTitleGap: 0.0,
@@ -210,12 +215,7 @@ class _SearchPageState extends State<SearchPage> {
                                               status = false;
                                               fromHome = false;
                                               searchedData = {};
-                                              // search.insert(0, value[index],);
-                                              // if (search.length > 5) {
-                                              //   search = search.sublist(0, 5);
-                                              // }
-                                              // Hive.box('settings')
-                                              //     .put('search', search);
+                                              
                                             },
                                           );
                                         },

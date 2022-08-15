@@ -1,10 +1,10 @@
 
 
 import 'package:audio_service/audio_service.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
 
 void addToNowPlaying({

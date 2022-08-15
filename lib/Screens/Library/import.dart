@@ -1,6 +1,9 @@
-
+// ignore_for_file: use_super_parameters
 
 import 'package:app_links/app_links.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/APIs/spotify_api.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -10,9 +13,7 @@ import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/import_export_playlist.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:gem/Helpers/search_add_playlist.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -35,7 +36,8 @@ class ImportPlaylist extends StatelessWidget {
               backgroundColor: Colors.transparent,
               appBar: AppBar(
                 title: Text(
-                  AppLocalizations.of(context)!.importPlaylist,
+                  "Import Playlist",
+                  style: GoogleFonts.roboto(fontSize:20),
                 ),
                 centerTitle: true,
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -46,7 +48,7 @@ class ImportPlaylist extends StatelessWidget {
               body: ListView.builder(
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
-                itemCount: 5,
+                itemCount: 4,
                 itemBuilder: (cntxt, index) {
                   return ListTile(
                     title: Text(
@@ -56,15 +58,10 @@ class ImportPlaylist extends StatelessWidget {
                               ? AppLocalizations.of(context)!.importSpotify
                               : index == 2
                                   ? AppLocalizations.of(context)!.importYt
-                                  : index == 3
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!
-                                          .importJioSaavn
-                                      : AppLocalizations.of(
-                                          context,
-                                        )!
-                                          .importResso,
+                                  : AppLocalizations.of(
+                                      context,
+                                    )!
+                                      .importResso,
                     ),
                     leading: SizedBox.square(
                       dimension: 50,
@@ -100,17 +97,11 @@ class ImportPlaylist extends StatelessWidget {
                                       playlistNames,
                                       settingsBox,
                                     )
-                                  : index == 3
-                                      ? importJioSaavn(
-                                          cntxt,
-                                          playlistNames,
-                                          settingsBox,
-                                        )
-                                      : importResso(
-                                          cntxt,
-                                          playlistNames,
-                                          settingsBox,
-                                        );
+                                  : importResso(
+                                      cntxt,
+                                      playlistNames,
+                                      settingsBox,
+                                    );
                     },
                   );
                 },
@@ -252,37 +243,6 @@ Future<void> importResso(
   );
 }
 
-Future<void> importJioSaavn(
-  BuildContext context,
-  List playlistNames,
-  Box settingsBox,
-) async {
-  await showTextInputDialog(
-    context: context,
-    title: AppLocalizations.of(context)!.enterPlaylistLink,
-    initialText: '',
-    keyboardType: TextInputType.url,
-    onSubmitted: (value) async {
-      final String link = value.trim();
-      Navigator.pop(context);
-      final Map data = await SearchAddPlaylist.addJioSaavnPlaylist(
-        link,
-      );
-
-      if (data.isNotEmpty) {
-        final String playName = data['title'].toString();
-        addPlaylist(playName, data['tracks'] as List);
-        playlistNames.add(playName);
-      } else {
-        ShowSnackBar().showSnackBar(
-          context,
-          AppLocalizations.of(context)!.failedImport,
-        );
-      }
-    },
-  );
-}
-
 Future<void> fetchPlaylists(
   String code,
   BuildContext context,
@@ -336,12 +296,12 @@ Future<void> fetchPlaylists(
 
                         final Map data = await SpotifyApi()
                             .getTracksOfPlaylist(accessToken, value, 0);
-                        final int _total = data['total'] as int;
+                        final int total = data['total'] as int;
 
                         Stream<Map> songsAdder() async* {
-                          int _done = 0;
+                          int done = 0;
                           final List tracks = [];
-                          for (int i = 0; i * 100 <= _total; i++) {
+                          for (int i = 0; i * 100 <= total; i++) {
                             final Map data =
                                 await SpotifyApi().getTracksOfPlaylist(
                               accessToken,
@@ -368,9 +328,9 @@ Future<void> fetchPlaylists(
                               trackArtist = track['track']['artists'][0]['name']
                                   .toString();
                               trackName = track['track']['name'].toString();
-                              yield {'done': ++_done, 'name': trackName};
+                              yield {'done': ++done, 'name': trackName};
                             } catch (e) {
-                              yield {'done': ++_done, 'name': ''};
+                              yield {'done': ++done, 'name': ''};
                             }
                             try {
                               final List result =
@@ -388,7 +348,7 @@ Future<void> fetchPlaylists(
                         }
 
                         await SearchAddPlaylist.showProgress(
-                          _total,
+                          total,
                           context,
                           songsAdder(),
                         );
@@ -448,12 +408,12 @@ Future<void> fetchPlaylists(
     if (index != null) {
       String playName =
           spotifyPlaylists[index]['name'].toString().replaceAll('/', ' ');
-      final int _total = spotifyPlaylists[index]['tracks']['total'] as int;
+      final int total = spotifyPlaylists[index]['tracks']['total'] as int;
 
       Stream<Map> songsAdder() async* {
-        int _done = 0;
+        int done = 0;
         final List tracks = [];
-        for (int i = 0; i * 100 <= _total; i++) {
+        for (int i = 0; i * 100 <= total; i++) {
           final Map data = await SpotifyApi().getTracksOfPlaylist(
             accessToken,
             spotifyPlaylists[index]['id'].toString(),
@@ -477,9 +437,9 @@ Future<void> fetchPlaylists(
           try {
             trackArtist = track['track']['artists'][0]['name'].toString();
             trackName = track['track']['name'].toString();
-            yield {'done': ++_done, 'name': trackName};
+            yield {'done': ++done, 'name': trackName};
           } catch (e) {
-            yield {'done': ++_done, 'name': ''};
+            yield {'done': ++done, 'name': ''};
           }
           try {
             final List result = await SaavnAPI()
@@ -491,7 +451,7 @@ Future<void> fetchPlaylists(
         }
       }
 
-      await SearchAddPlaylist.showProgress(_total, context, songsAdder());
+      await SearchAddPlaylist.showProgress(total, context, songsAdder());
     }
   } else {
     // print('Failed');

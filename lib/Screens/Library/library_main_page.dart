@@ -1,13 +1,14 @@
 import 'dart:io';
 
-import 'package:gem/Screens/Library/liked.dart';
-import 'package:gem/Screens/LocalMusic/downloaded_songs.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Library/favorites_section.dart';
+import 'package:gem/Screens/LocalMusic/local_music.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class LibraryPage extends StatefulWidget {
-  const LibraryPage({Key? key}) : super(key: key);
+  const LibraryPage({super.key});
 
   @override
   _LibraryPageState createState() => _LibraryPageState();
@@ -16,42 +17,52 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool rotated = MediaQuery.of(context).size.height < screenWidth;
+    // final double screenWidth = MediaQuery.of(context).size.width;
+    // final bool rotated = MediaQuery.of(context).size.height < screenWidth;
     return ListView(
       physics: const BouncingScrollPhysics(),
       children: [
-        AppBar(
-          title: Text(
-            AppLocalizations.of(context)!.library,
-            style: TextStyle(
-              color: Theme.of(context).iconTheme.color,
-            ),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          automaticallyImplyLeading: false,
-          leading: (rotated && screenWidth < 1050)
-              ? null
-              : Builder(
-                  builder: (BuildContext context) {
-                    return Transform.rotate(
-                      angle: 22 / 7 * 2,
-                      child: IconButton(
-                        color: Theme.of(context).iconTheme.color,
-                        icon: const Icon(
-                          Icons.horizontal_split_rounded,
-                        ),
-                        onPressed: () {
-                          Scaffold.of(context).openDrawer();
-                        },
-                        tooltip: MaterialLocalizations.of(context)
-                            .openAppDrawerTooltip,
-                      ),
-                    );
-                  },
+        Padding(
+          padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
+          child: AppBar(
+            title: Row(
+              children: [
+                Image.asset("assets/library.png", height: 40, width: 40),
+                const SizedBox(width: 10),
+                Text(
+                  "Your Library",
+                  style: GoogleFonts.roboto(
+                    color: Theme.of(context).iconTheme.color,
+                    fontSize: 28,
+                  ),
                 ),
+              ],
+            ),
+            centerTitle: false,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: false,
+            // leading: (rotated && screenWidth < 1050)
+            //     ? null
+            //     : Builder(
+            //         builder: (BuildContext context) {
+            //           return Transform.rotate(
+            //             angle: 22 / 7 * 2,
+            //             child: IconButton(
+            //               color: Theme.of(context).iconTheme.color,
+            //               icon: const Icon(
+            //                 Icons.horizontal_split_rounded,
+            //               ),
+            //               onPressed: () {
+            //                 Scaffold.of(context).openDrawer();
+            //               },
+            //               tooltip: MaterialLocalizations.of(context)
+            //                   .openAppDrawerTooltip,
+            //             ),
+            //           );
+            //         },
+            //       ),
+          ),
         ),
         LibraryTile(
           title: AppLocalizations.of(context)!.nowPlaying,
@@ -118,11 +129,11 @@ class _LibraryPageState extends State<LibraryPage> {
 
 class LibraryTile extends StatelessWidget {
   const LibraryTile({
-    Key? key,
+    super.key,
     required this.icon,
     required this.title,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   final String title;
   final IconData icon;
@@ -130,18 +141,23 @@ class LibraryTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        title,
-        style: TextStyle(
-          color: Theme.of(context).iconTheme.color,
+    return Padding(
+      padding: const EdgeInsets.only(left: 6.0),
+      child: ListTile(
+        title: Text(
+          title,
+          style: GoogleFonts.roboto(
+            color: Theme.of(context).iconTheme.color,
+          ),
         ),
+        leading: Icon(
+          icon,
+          color: Theme.of(
+            context,
+          ).colorScheme.secondary,
+        ),
+        onTap: onTap,
       ),
-      leading: Icon(
-        icon,
-        color: Theme.of(context).iconTheme.color,
-      ),
-      onTap: onTap,
     );
   }
 }

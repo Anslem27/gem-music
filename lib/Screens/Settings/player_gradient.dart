@@ -1,8 +1,10 @@
 
 
-import 'package:gem/Helpers/config.dart';
+// ignore_for_file: use_super_parameters, use_decorated_box
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Helpers/config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 

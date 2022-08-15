@@ -16,10 +16,10 @@ import 'package:gem/Helpers/extensions.dart';
 import 'package:gem/Helpers/supabase.dart';
 import 'package:gem/Screens/Home/saavn.dart';
 import 'package:gem/Screens/Library/library_main_page.dart';
-import 'package:gem/Screens/LocalMusic/downloaded_songs.dart';
+import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:gem/Screens/Search/search.dart';
 import 'package:gem/Screens/Settings/setting.dart';
-import 'package:gem/Screens/Top Charts/top.dart';
+import 'package:gem/Screens/Top%20Charts/top_charts_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -295,7 +295,10 @@ class _HomePageState extends State<HomePage> {
                     builder:
                         (BuildContext context, int indexValue, Widget? child) {
                       return landscapeSideNavBar(
-                          context, indexValue, screenWidth);
+                        context,
+                        indexValue,
+                        screenWidth,
+                      );
                     },
                   ),
                 Expanded(
@@ -334,7 +337,7 @@ class _HomePageState extends State<HomePage> {
                                             BoxConstraints constraints,
                                           ) {
                                             return FlexibleSpaceBar(
-                                              // collapseMode: CollapseMode.parallax,
+                                              // update name in app
                                               background: GestureDetector(
                                                 onTap: () async {
                                                   await showTextInputDialog(
@@ -362,9 +365,7 @@ class _HomePageState extends State<HomePage> {
                                                   mainAxisSize:
                                                       MainAxisSize.min,
                                                   children: <Widget>[
-                                                    const SizedBox(
-                                                      height: 60,
-                                                    ),
+                                                    const SizedBox(height: 60),
                                                     Row(
                                                       children: [
                                                         Padding(
@@ -374,10 +375,7 @@ class _HomePageState extends State<HomePage> {
                                                             left: 15.0,
                                                           ),
                                                           child: Text(
-                                                            AppLocalizations.of(
-                                                              context,
-                                                            )!
-                                                                .homeGreet,
+                                                            "How you doin'",
                                                             style: TextStyle(
                                                               letterSpacing: 2,
                                                               color: Theme.of(
@@ -527,10 +525,7 @@ class _HomePageState extends State<HomePage> {
                                                         width: 10.0,
                                                       ),
                                                       Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .searchText,
+                                                        'Songs,albums or artists',
                                                         style: TextStyle(
                                                           fontSize: 16.0,
                                                           color:
@@ -612,7 +607,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   NavigationRail landscapeSideNavBar(
-      BuildContext context, int indexValue, double screenWidth) {
+    BuildContext context,
+    int indexValue,
+    double screenWidth,
+  ) {
     return NavigationRail(
       minWidth: 70.0,
       groupAlignment: 0.0,
@@ -765,7 +763,7 @@ class _HomePageState extends State<HomePage> {
               flexibleSpace: FlexibleSpaceBar(
                 title: RichText(
                   text: TextSpan(
-                    text: AppLocalizations.of(context)!.appTitle,
+                    text: "Gem",
                     style: const TextStyle(
                       fontSize: 30.0,
                       fontWeight: FontWeight.w500,
@@ -801,6 +799,7 @@ class _HomePageState extends State<HomePage> {
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                     image: AssetImage(
+                      //top background drawer image
                       Theme.of(context).brightness == Brightness.dark
                           ? 'assets/header-dark.jpg'
                           : 'assets/header.jpg',
@@ -814,7 +813,7 @@ class _HomePageState extends State<HomePage> {
                 [
                   ListTile(
                     title: Text(
-                      AppLocalizations.of(context)!.home,
+                      "Home",
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -822,7 +821,7 @@ class _HomePageState extends State<HomePage> {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
-                      Icons.home_rounded,
+                      Iconsax.home,
                       color: Theme.of(context).colorScheme.secondary,
                     ),
                     selected: true,
@@ -832,11 +831,11 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (Platform.isAndroid)
                     ListTile(
-                      title: Text(AppLocalizations.of(context)!.myMusic),
+                      title: const Text("My Music"),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20.0),
                       leading: Icon(
-                        MdiIcons.folderMusic,
+                        Iconsax.music,
                         color: Theme.of(context).iconTheme.color,
                       ),
                       onTap: () {
@@ -856,7 +855,7 @@ class _HomePageState extends State<HomePage> {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
-                      Icons.download_done_rounded,
+                      Iconsax.document_download,
                       color: Theme.of(context).iconTheme.color,
                     ),
                     onTap: () {
@@ -882,7 +881,7 @@ class _HomePageState extends State<HomePage> {
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
-                      Icons.settings_rounded, // miscellaneous_services_rounded,
+                      Iconsax.setting,
                       color: Theme.of(context).iconTheme.color,
                     ),
                     onTap: () {
@@ -895,19 +894,6 @@ class _HomePageState extends State<HomePage> {
                       );
                     },
                   ),
-                  ListTile(
-                    title: Text(AppLocalizations.of(context)!.about),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20.0),
-                    leading: Icon(
-                      Icons.info_outline_rounded,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/about');
-                    },
-                  ),
                 ],
               ),
             ),
@@ -918,12 +904,18 @@ class _HomePageState extends State<HomePage> {
                   const Spacer(),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
-                    child: Center(
-                      child: Text(
-                        AppLocalizations.of(context)!.madeBy,
-                        textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 12),
+                    child: ListTile(
+                      title: const Text("About"),
+                      contentPadding:
+                          const EdgeInsets.symmetric(horizontal: 20.0),
+                      leading: Icon(
+                        Iconsax.info_circle,
+                        color: Theme.of(context).iconTheme.color,
                       ),
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, '/about');
+                      },
                     ),
                   ),
                 ],

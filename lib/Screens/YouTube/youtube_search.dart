@@ -1,15 +1,17 @@
 
+// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 

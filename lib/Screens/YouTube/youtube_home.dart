@@ -1,3 +1,7 @@
+// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers
+
+import 'dart:ui';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
@@ -107,8 +111,32 @@ class _YouTubeState extends State<YouTube>
           _controller.text = '';
         },
         body: (searchedList.isEmpty)
-            ? const Center(
-                child: CircularProgressIndicator(),
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          CupertinoIcons.search,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: 40,
+                        ),
+                        Text(
+                          'Click the search field\nto search',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondary,
+                            fontSize: 20,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               )
             : SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),

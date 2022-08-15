@@ -3,7 +3,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/audio_query.dart';
-import 'package:gem/Screens/LocalMusic/downloaded_songs.dart';
+import 'package:gem/Screens/LocalMusic/local_music.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class LocalPlaylists extends StatefulWidget {
@@ -31,7 +32,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
         children: [
           const SizedBox(height: 5),
           ListTile(
-            title: Text(AppLocalizations.of(context)!.createPlaylist),
+            title: const Text("Create Playlist"),
             leading: Card(
               elevation: 0,
               color: Colors.transparent,
@@ -40,7 +41,9 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                 child: Center(
                   child: Icon(
                     Icons.add_rounded,
-                    color: Theme.of(context).iconTheme.color,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
                   ),
                 ),
               ),
@@ -106,6 +109,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                     '${playlistDetails[index].numOfSongs} ${AppLocalizations.of(context)!.songs}',
                   ),
                   trailing: PopupMenuButton(
+                    splashRadius: 24,
                     icon: const Icon(Icons.more_vert_rounded),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(
@@ -136,7 +140,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                         value: 0,
                         child: Row(
                           children: const [
-                            Icon(Icons.delete_rounded),
+                            Icon(Iconsax.trash),
                             SizedBox(width: 10.0),
                             Text(
                               'Delete',

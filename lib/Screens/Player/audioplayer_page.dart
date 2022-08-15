@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters, use_colored_box
+
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
@@ -332,23 +334,23 @@ class _PlayScreenState extends State<PlayScreen> {
                   actions: [
                     IconButton(
                       icon: const Icon(Icons.lyrics_rounded),
-                      //     Image.asset(
-                      //   'assets/lyrics.png',
-                      // ),
-                      tooltip: AppLocalizations.of(context)!.lyrics,
+                      tooltip: "Lyrics",
                       onPressed: () => cardKey.currentState!.toggleCard(),
                     ),
                     if (!offline)
                       IconButton(
+                        splashRadius: 24,
                         icon: const Icon(Icons.share_rounded),
-                        tooltip: AppLocalizations.of(context)!.share,
+                        tooltip: "Share",
                         onPressed: () {
                           Share.share(
                             mediaItem.extras!['perma_url'].toString(),
                           );
                         },
                       ),
+                    //now playing song options
                     PopupMenuButton(
+                      splashRadius: 24,
                       icon: const Icon(
                         Icons.more_vert_rounded,
                       ),
@@ -608,9 +610,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!
-                                          .addToPlaylist,
+                                    const Text(
+                                      "Add to Playlist",
                                     ),
                                   ],
                                 ),
@@ -624,8 +625,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!.sleepTimer,
+                                    const Text(
+                                      "Sleep Timer",
                                     ),
                                   ],
                                 ),
@@ -644,8 +645,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                             Theme.of(context).iconTheme.color,
                                       ),
                                       const SizedBox(width: 10.0),
-                                      Text(
-                                        AppLocalizations.of(context)!.equalizer,
+                                      const Text(
+                                        "Equalizer",
                                       ),
                                     ],
                                   ),
@@ -991,7 +992,7 @@ class ControlButtons extends StatelessWidget {
                 return IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),
                   iconSize: miniplayer ? 24.0 : 45.0,
-                  tooltip: AppLocalizations.of(context)!.skipPrevious,
+                  tooltip: "Skip previous",
                   color: dominantColor ?? Theme.of(context).iconTheme.color,
                   onPressed: queueState?.hasPrevious ?? true
                       ? audioHandler.skipToPrevious
@@ -1019,7 +1020,9 @@ class ControlButtons extends StatelessWidget {
                             width: miniplayer ? 40.0 : 65.0,
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
-                                Theme.of(context).iconTheme.color!,
+                                Theme.of(
+                                  context,
+                                ).colorScheme.secondary,
                               ),
                             ),
                           ),
@@ -1033,7 +1036,9 @@ class ControlButtons extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.pause_rounded,
                                   ),
-                                  color: Theme.of(context).iconTheme.color,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
                                 )
                               : IconButton(
                                   tooltip: AppLocalizations.of(context)!.play,
@@ -1041,10 +1046,13 @@ class ControlButtons extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.play_arrow_rounded,
                                   ),
-                                  color: Theme.of(context).iconTheme.color,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
                                 ),
                         )
                       else
+                        //Play Page Pause and Play buttons
                         Center(
                           child: SizedBox(
                             height: 59,
@@ -1053,9 +1061,10 @@ class ControlButtons extends StatelessWidget {
                               child: playing
                                   ? FloatingActionButton(
                                       elevation: 10,
-                                      tooltip:
-                                          AppLocalizations.of(context)!.pause,
-                                      backgroundColor: Colors.white,
+                                      tooltip: "Pause",
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.secondary,
                                       onPressed: audioHandler.pause,
                                       child: const Icon(
                                         Icons.pause_rounded,
@@ -1065,9 +1074,10 @@ class ControlButtons extends StatelessWidget {
                                     )
                                   : FloatingActionButton(
                                       elevation: 10,
-                                      tooltip:
-                                          AppLocalizations.of(context)!.play,
-                                      backgroundColor: Colors.white,
+                                      tooltip: "Play",
+                                      backgroundColor: Theme.of(
+                                        context,
+                                      ).colorScheme.secondary,
                                       onPressed: audioHandler.play,
                                       child: const Icon(
                                         Icons.play_arrow_rounded,
@@ -1509,7 +1519,12 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                           text: lyrics['lyrics'].toString(),
                         );
                       },
-                      icon: const Icon(Icons.copy_rounded),
+                      icon:  Icon(
+                        Icons.copy_rounded,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                      ),
                       color:
                           Theme.of(context).iconTheme.color!.withOpacity(0.6),
                     ),
@@ -2071,14 +2086,6 @@ class NameNControls extends StatelessWidget {
             color: useFullScreenGradient
                 ? const Color.fromRGBO(0, 0, 0, 0.05)
                 : const Color.fromRGBO(0, 0, 0, 0.5),
-            // gradientColor![1]!.withOpacity(0.5),
-            // useBlurForNowPlaying
-            // ? Theme.of(context).brightness == Brightness.dark
-            // Colors.black.withOpacity(0.2),
-            // : Colors.white.withOpacity(0.7)
-            // : Theme.of(context).brightness == Brightness.dark
-            // ? Colors.black
-            // : Colors.white,
             controller: panelController,
             panelBuilder: (ScrollController scrollController) {
               return ClipRRect(
@@ -2154,17 +2161,19 @@ class NameNControls extends StatelessWidget {
                         width: 30,
                         height: 5,
                         decoration: BoxDecoration(
-                          color: Colors.grey[300],
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.secondary,
                           borderRadius: BorderRadius.circular(15),
                         ),
                       ),
                     ),
-                    Expanded(
+                    const Expanded(
                       child: Center(
                         child: Text(
-                          AppLocalizations.of(context)!.upNext,
+                          "Coming Up",
                           textAlign: TextAlign.center,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 18,
                           ),

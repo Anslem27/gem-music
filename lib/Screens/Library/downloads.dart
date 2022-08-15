@@ -1,9 +1,14 @@
-
+// ignore_for_file: use_super_parameters, use_decorated_box
 
 import 'dart:io';
 
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
@@ -12,15 +17,12 @@ import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
-import 'package:gem/Screens/Library/liked.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Library/favorites_section.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class Downloads extends StatefulWidget {
   const Downloads({Key? key}) : super(key: key);
@@ -315,24 +317,33 @@ class _DownloadsState extends State<Downloads>
                   elevation: 0,
                   bottom: TabBar(
                     controller: _tcontroller,
-                    indicatorSize: TabBarIndicatorSize.label,
-                    tabs: [
+                    indicator: RectangularIndicator(
+                      bottomLeftRadius: 12,
+                      bottomRightRadius: 12,
+                      topLeftRadius: 12,
+                      topRightRadius: 12,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary,
+                    ),
+                    tabs: const [
                       Tab(
-                        text: AppLocalizations.of(context)!.songs,
+                        text: "Songs",
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.albums,
+                        text: "Albums",
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.artists,
+                        text: "Artists",
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.genres,
+                        text: "Genres",
                       ),
                     ],
                   ),
                   actions: [
                     IconButton(
+                      splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
                       tooltip: AppLocalizations.of(context)!.search,
                       onPressed: () {
@@ -347,7 +358,8 @@ class _DownloadsState extends State<Downloads>
                     ),
                     if (_songs.isNotEmpty)
                       PopupMenuButton(
-                        icon: const Icon(Icons.sort_rounded),
+                        splashRadius: 24,
+                        icon: const Icon(Iconsax.sort),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         ),
@@ -397,6 +409,7 @@ class _DownloadsState extends State<Downloads>
                                       children: [
                                         if (sortValue == sortTypes.indexOf(e))
                                           Icon(
+                                            size:20,
                                             Icons.check_rounded,
                                             color:
                                                 Theme.of(context).brightness ==
@@ -432,6 +445,7 @@ class _DownloadsState extends State<Downloads>
                                         if (orderValue == orderTypes.indexOf(e))
                                           Icon(
                                             Icons.check_rounded,
+                                            size:20,
                                             color:
                                                 Theme.of(context).brightness ==
                                                         Brightness.dark
@@ -524,7 +538,7 @@ class _DownloadsState extends State<Downloads>
                           valueListenable: _showShuffle,
                           builder: (
                             BuildContext context,
-                            bool _showFullShuffle,
+                            bool showFullShuffle,
                             Widget? child,
                           ) {
                             return Row(
@@ -539,9 +553,8 @@ class _DownloadsState extends State<Downloads>
                                       : Colors.black,
                                   size: 24.0,
                                 ),
-                                if (_showFullShuffle)
-                                  const SizedBox(width: 5.0),
-                                if (_showFullShuffle)
+                                if (showFullShuffle) const SizedBox(width: 5.0),
+                                if (showFullShuffle)
                                   Text(
                                     AppLocalizations.of(context)!.shuffle,
                                     style: TextStyle(
@@ -554,8 +567,7 @@ class _DownloadsState extends State<Downloads>
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                if (_showFullShuffle)
-                                  const SizedBox(width: 2.5),
+                                if (showFullShuffle) const SizedBox(width: 2.5),
                               ],
                             );
                           },
@@ -582,19 +594,19 @@ Future<Map> editTags(Map song, BuildContext context) async {
 
       FileImage songImage = FileImage(File(song['image'].toString()));
 
-      final _titlecontroller =
+      final titlecontroller =
           TextEditingController(text: song['title'].toString());
-      final _albumcontroller =
+      final albumcontroller =
           TextEditingController(text: song['album'].toString());
-      final _artistcontroller =
+      final artistcontroller =
           TextEditingController(text: song['artist'].toString());
-      final _albumArtistController =
+      final albumArtistController =
           TextEditingController(text: song['albumArtist'].toString());
-      final _genrecontroller =
+      final genrecontroller =
           TextEditingController(text: song['genre'].toString());
-      final _yearcontroller =
+      final yearcontroller =
           TextEditingController(text: song['year'].toString());
-      final _pathcontroller =
+      final pathcontroller =
           TextEditingController(text: song['path'].toString());
 
       return AlertDialog(
@@ -617,13 +629,13 @@ Future<Map> editTags(Map song, BuildContext context) async {
                       message: 'Pick Image',
                     );
                     if (filePath != '') {
-                      final _imagePath = filePath;
-                      File(_imagePath).copy(song['image'].toString());
+                      final imagePath = filePath;
+                      File(imagePath).copy(song['image'].toString());
 
-                      songImage = FileImage(File(_imagePath));
+                      songImage = FileImage(File(imagePath));
 
                       final Tag tag = Tag(
-                        artwork: _imagePath,
+                        artwork: imagePath,
                       );
                       try {
                         await [
@@ -670,7 +682,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _titlecontroller,
+                  controller: titlecontroller,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -688,7 +700,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _artistcontroller,
+                  controller: artistcontroller,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -706,7 +718,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _albumArtistController,
+                  controller: albumArtistController,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -724,7 +736,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _albumcontroller,
+                  controller: albumcontroller,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -742,7 +754,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _genrecontroller,
+                  controller: genrecontroller,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -760,7 +772,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _yearcontroller,
+                  controller: yearcontroller,
                   onSubmitted: (value) {},
                 ),
                 const SizedBox(
@@ -778,7 +790,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 ),
                 TextField(
                   autofocus: true,
-                  controller: _pathcontroller,
+                  controller: pathcontroller,
                   onSubmitted: (value) {},
                 ),
               ],
@@ -804,20 +816,20 @@ Future<Map> editTags(Map song, BuildContext context) async {
             ),
             onPressed: () async {
               Navigator.pop(context);
-              song['title'] = _titlecontroller.text;
-              song['album'] = _albumcontroller.text;
-              song['artist'] = _artistcontroller.text;
-              song['albumArtist'] = _albumArtistController.text;
-              song['genre'] = _genrecontroller.text;
-              song['year'] = _yearcontroller.text;
-              song['path'] = _pathcontroller.text;
+              song['title'] = titlecontroller.text;
+              song['album'] = albumcontroller.text;
+              song['artist'] = artistcontroller.text;
+              song['albumArtist'] = albumArtistController.text;
+              song['genre'] = genrecontroller.text;
+              song['year'] = yearcontroller.text;
+              song['path'] = pathcontroller.text;
               final tag = Tag(
-                title: _titlecontroller.text,
-                artist: _artistcontroller.text,
-                album: _albumcontroller.text,
-                genre: _genrecontroller.text,
-                year: _yearcontroller.text,
-                albumArtist: _albumArtistController.text,
+                title: titlecontroller.text,
+                artist: artistcontroller.text,
+                album: albumcontroller.text,
+                genre: genrecontroller.text,
+                year: yearcontroller.text,
+                albumArtist: albumArtistController.text,
               );
               try {
                 try {

@@ -2,10 +2,10 @@
 
 import 'dart:math';
 
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 
 class SeekBar extends StatefulWidget {
   final AudioPlayerHandler audioHandler;

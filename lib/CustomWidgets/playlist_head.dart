@@ -1,8 +1,8 @@
+// ignore_for_file: use_super_parameters
 
-
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 
 class PlaylistHead extends StatelessWidget {
   final List songsList;
@@ -58,6 +58,10 @@ class PlaylistHead extends StatelessWidget {
             ),
           ),
           IconButton(
+            splashRadius: 24,
+            color: Theme.of(
+              context,
+            ).colorScheme.secondary,
             onPressed: () {
               Navigator.of(context).push(
                 PageRouteBuilder(

@@ -47,6 +47,7 @@ dependencies:
   url_launcher: ^6.1.5
   uuid: ^3.0.6
   youtube_explode_dart: 1.10.6
+  tab_indicator_styler: ^2.0.0
 
 dev_dependencies:
   flutter_test:

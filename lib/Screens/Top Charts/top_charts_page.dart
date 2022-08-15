@@ -1,14 +1,17 @@
+// ignore_for_file: use_super_parameters, require_trailing_commas
+
 import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/Screens/Search/search.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 List topSongs = [];
 List viralSongs = [];
@@ -33,19 +36,28 @@ class _TopChartsState extends State<TopCharts>
   @override
   Widget build(BuildContext cntxt) {
     super.build(context);
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool rotated = MediaQuery.of(context).size.height < screenWidth;
+    // final double screenWidth = MediaQuery.of(context).size.width;
+    // final bool rotated = MediaQuery.of(context).size.height < screenWidth;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
           bottom: TabBar(
-            indicatorSize: TabBarIndicatorSize.label,
+            indicator: RectangularIndicator(
+              bottomLeftRadius: 12,
+              bottomRightRadius: 12,
+              topLeftRadius: 12,
+              horizontalPadding: 10,
+              topRightRadius: 12,
+              color: Theme.of(
+                context,
+              ).colorScheme.secondary,
+            ),
             tabs: [
               Tab(
                 child: Text(
-                  'Top Songs',
+                  'Top Tracks',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.bodyText1!.color,
                   ),
@@ -61,37 +73,50 @@ class _TopChartsState extends State<TopCharts>
               ),
             ],
           ),
-          title: Text(
-            AppLocalizations.of(context)!.spotifyCharts,
-            style: TextStyle(
-              fontSize: 20,
-              color: Theme.of(context).textTheme.bodyText1!.color,
-            ),
+          title: Column(
+            children: [
+              Text(
+                'Spotify Charts',
+                style: GoogleFonts.roboto(
+                  fontSize: 30,
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.secondary,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Text(
+                  'Check out trending music on Spotify charts',
+                  style: GoogleFonts.roboto(fontSize: 15, color: Colors.grey),
+                ),
+              ),
+            ],
           ),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          leading: (rotated && screenWidth < 1050)
-              ? null
-              : Builder(
-                  builder: (BuildContext context) {
-                    return Transform.rotate(
-                      angle: 22 / 7 * 2,
-                      child: IconButton(
-                        color: Theme.of(context).iconTheme.color,
-                        icon: const Icon(
-                          Icons.horizontal_split_rounded,
-                        ),
-                        onPressed: () {
-                          Scaffold.of(cntxt).openDrawer();
-                        },
-                        tooltip: MaterialLocalizations.of(cntxt)
-                            .openAppDrawerTooltip,
-                      ),
-                    );
-                  },
-                ),
+          // leading: (rotated && screenWidth < 1050)
+          //     ? null
+          //     : Builder(
+          //         builder: (BuildContext context) {
+          //           return Transform.rotate(
+          //             angle: 22 / 7 * 2,
+          //             child: IconButton(
+          //               color: Theme.of(context).iconTheme.color,
+          //               icon: const Icon(
+          //                 Icons.horizontal_split_rounded,
+          //               ),
+          //               onPressed: () {
+          //                 Scaffold.of(cntxt).openDrawer();
+          //               },
+          //               tooltip: MaterialLocalizations.of(cntxt)
+          //                   .openAppDrawerTooltip,
+          //             ),
+          //           );
+          //         },
+          //       ),
         ),
         body: NotificationListener(
           onNotification: (overscroll) {

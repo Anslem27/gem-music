@@ -1,16 +1,15 @@
-
-
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/import_export_playlist.dart';
+import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Library/import.dart';
-import 'package:gem/Screens/Library/liked.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class PlaylistScreen extends StatefulWidget {
@@ -55,13 +54,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                   children: [
                     const SizedBox(height: 5),
                     ListTile(
-                      title: Text(AppLocalizations.of(context)!.createPlaylist),
+                      title: const Text("Create Playlist"),
                       leading: SizedBox.square(
                         dimension: 50,
                         child: Center(
                           child: Icon(
                             Icons.add_rounded,
-                            color: Theme.of(context).iconTheme.color,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondary,
                           ),
                         ),
                       ),
@@ -91,13 +92,15 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       },
                     ),
                     ListTile(
-                      title: Text(AppLocalizations.of(context)!.importPlaylist),
+                      title: const Text("Import Playlist"),
                       leading: SizedBox.square(
                         dimension: 50,
                         child: Center(
                           child: Icon(
                             MdiIcons.import,
-                            color: Theme.of(context).iconTheme.color,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondary,
                           ),
                         ),
                       ),
@@ -119,7 +122,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                           child: Center(
                             child: Icon(
                               Icons.merge_type_rounded,
-                              color: Theme.of(context).iconTheme.color,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondary,
                             ),
                           ),
                         ),
@@ -308,9 +313,9 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                       await Hive.openBox(
                                                     playlistName,
                                                   );
-                                                  final Map _songsMap =
+                                                  final Map songsMap =
                                                       playlistBox.toMap();
-                                                  finalMap.addAll(_songsMap);
+                                                  finalMap.addAll(songsMap);
                                                   await playlistDetails
                                                       .remove(playlistName);
                                                   playlistNames
@@ -439,7 +444,13 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                       '${playlistDetails[name]['count']} ${AppLocalizations.of(context)!.songs}',
                                     ),
                               trailing: PopupMenuButton(
-                                icon: const Icon(Icons.more_vert_rounded),
+                                splashRadius: 24,
+                                icon: Icon(
+                                  Icons.more_vert_rounded,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
+                                ),
                                 shape: const RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
                                     Radius.circular(15.0),
@@ -490,7 +501,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     showDialog(
                                       context: context,
                                       builder: (BuildContext context) {
-                                        final _controller =
+                                        final controller =
                                             TextEditingController(
                                           text: showName,
                                         );
@@ -505,10 +516,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                               Row(
                                                 children: [
                                                   Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!
-                                                        .rename,
+                                                    'Rename Playlist',
                                                     style: TextStyle(
                                                       color: Theme.of(context)
                                                           .colorScheme
@@ -521,7 +529,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                 autofocus: true,
                                                 textAlignVertical:
                                                     TextAlignVertical.bottom,
-                                                controller: _controller,
+                                                controller: controller,
                                                 onSubmitted: (value) async {
                                                   Navigator.pop(context);
                                                   playlistDetails[name] == null
@@ -553,11 +561,8 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                               onPressed: () {
                                                 Navigator.pop(context);
                                               },
-                                              child: Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!
-                                                    .cancel,
+                                              child: const Text(
+                                                'Cancel',
                                               ),
                                             ),
                                             TextButton(
@@ -573,14 +578,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                 playlistDetails[name] == null
                                                     ? playlistDetails.addAll({
                                                         name: {
-                                                          'name': _controller
+                                                          'name': controller
                                                               .text
                                                               .trim()
                                                         }
                                                       })
                                                     : playlistDetails[name]
                                                         .addAll({
-                                                        'name': _controller.text
+                                                        'name': controller.text
                                                             .trim()
                                                       });
 
@@ -590,10 +595,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                                 );
                                               },
                                               child: Text(
-                                                AppLocalizations.of(
-                                                  context,
-                                                )!
-                                                    .ok,
+                                                'Ok',
                                                 style: TextStyle(
                                                   color: Theme.of(context)
                                                               .colorScheme
@@ -618,12 +620,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     PopupMenuItem(
                                       value: 3,
                                       child: Row(
-                                        children: [
-                                          const Icon(Icons.edit_rounded),
-                                          const SizedBox(width: 10.0),
+                                        children: const [
+                                          Icon(Icons.edit_rounded),
+                                          SizedBox(width: 10.0),
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .rename,
+                                            'Rename',
                                           ),
                                         ],
                                       ),
@@ -632,12 +633,11 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                                     PopupMenuItem(
                                       value: 0,
                                       child: Row(
-                                        children: [
-                                          const Icon(Icons.delete_rounded),
-                                          const SizedBox(width: 10.0),
+                                        children: const [
+                                          Icon(Iconsax.trash),
+                                          SizedBox(width: 10.0),
                                           Text(
-                                            AppLocalizations.of(context)!
-                                                .delete,
+                                            'Delete',
                                           ),
                                         ],
                                       ),

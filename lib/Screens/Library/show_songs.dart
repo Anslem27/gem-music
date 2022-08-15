@@ -1,13 +1,15 @@
 
 
+// ignore_for_file: use_super_parameters
+
 import 'dart:io';
 
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/CustomWidgets/miniplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:hive/hive.dart';
 
 class SongsList extends StatefulWidget {
@@ -119,6 +121,7 @@ class _SongsListState extends State<SongsList> {
                     Text(widget.title ?? AppLocalizations.of(context)!.songs),
                 actions: [
                   PopupMenuButton(
+                    splashRadius: 24,
                     icon: const Icon(Icons.sort_rounded),
                     shape: const RoundedRectangleBorder(
                       borderRadius: BorderRadius.all(Radius.circular(15.0)),

@@ -11,10 +11,13 @@ import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/audio_query.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -22,12 +25,12 @@ class DownloadedSongs extends StatefulWidget {
   final int? playlistId;
   final bool showPlaylists;
   const DownloadedSongs({
-    Key? key,
+    super.key,
     this.cachedSongs,
     this.title,
     this.playlistId,
     this.showPlaylists = false,
-  }) : super(key: key);
+  });
   @override
   _DownloadedSongsState createState() => _DownloadedSongsState();
 }
@@ -91,9 +94,9 @@ class _DownloadedSongsState extends State<DownloadedSongs>
     _tcontroller!.dispose();
   }
 
-  bool checkIncludedOrExcluded(SongModel _song) {
+  bool checkIncludedOrExcluded(SongModel song) {
     for (final path in includedExcludedPaths) {
-      if (_song.data.contains(path.toString())) return true;
+      if (song.data.contains(path.toString())) return true;
     }
     return false;
   }
@@ -207,36 +210,44 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
                   title: Text(
-                    widget.title ?? AppLocalizations.of(context)!.myMusic,
+                    widget.title ?? "My Music",
+                    style: GoogleFonts.roboto(),
                   ),
                   bottom: TabBar(
                     isScrollable: widget.showPlaylists,
                     controller: _tcontroller,
-                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: RectangularIndicator(
+                      bottomLeftRadius: 12,
+                      bottomRightRadius: 12,
+                      topLeftRadius: 12,
+                      topRightRadius: 12,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary,
+                    ),
+                    // indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
-                      Tab(
-                        text: AppLocalizations.of(context)!.songs,
+                      const Tab(
+                        text: "Songs",
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.albums,
+                      const Tab(
+                        text: "Albums",
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.artists,
+                      const Tab(
+                        text: "Artists",
                       ),
-                      Tab(
-                        text: AppLocalizations.of(context)!.genres,
+                      const Tab(
+                        text: "Genres",
                       ),
                       if (widget.showPlaylists)
-                        Tab(
-                          text: AppLocalizations.of(context)!.playlists,
+                        const Tab(
+                          text: "Playlists",
                         ),
-                      //     Tab(
-                      //       text: AppLocalizations.of(context)!.videos,
-                      //     )
                     ],
                   ),
                   actions: [
                     IconButton(
+                      splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
                       tooltip: AppLocalizations.of(context)!.search,
                       onPressed: () {
@@ -250,7 +261,13 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                       },
                     ),
                     PopupMenuButton(
-                      icon: const Icon(Icons.sort_rounded),
+                      splashRadius: 24,
+                      icon: Icon(
+                        Iconsax.menu,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary,
+                      ),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
@@ -289,6 +306,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       if (sortValue == sortTypes.indexOf(e))
                                         Icon(
                                           Icons.check_rounded,
+                                          size: 20,
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? Colors.white
@@ -322,6 +340,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       if (orderValue == orderTypes.indexOf(e))
                                         Icon(
                                           Icons.check_rounded,
+                                          size: 20,
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? Colors.white
@@ -403,12 +422,12 @@ class SongsTab extends StatefulWidget {
   final String? playlistName;
   final String tempPath;
   const SongsTab({
-    Key? key,
+    super.key,
     required this.songs,
     required this.tempPath,
     this.playlistId,
     this.playlistName,
-  }) : super(key: key);
+  });
 
   @override
   State<SongsTab> createState() => _SongsTabState();
@@ -506,7 +525,7 @@ class _SongsTabState extends State<SongsTab>
                               value: 1,
                               child: Row(
                                 children: [
-                                  const Icon(Icons.delete_rounded),
+                                  const Icon(Iconsax.trash),
                                   const SizedBox(width: 10.0),
                                   Text(AppLocalizations.of(context)!.remove),
                                 ],
@@ -543,11 +562,11 @@ class AlbumsTab extends StatefulWidget {
   final List<String> albumsList;
   final String tempPath;
   const AlbumsTab({
-    Key? key,
+    super.key,
     required this.albums,
     required this.albumsList,
     required this.tempPath,
-  }) : super(key: key);
+  });
 
   @override
   State<AlbumsTab> createState() => _AlbumsTabState();

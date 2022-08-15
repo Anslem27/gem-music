@@ -1,3 +1,4 @@
+// ignore_for_file: use_decorated_box
 
 import 'dart:io';
 
@@ -15,8 +16,8 @@ import 'package:gem/Helpers/extensions.dart';
 import 'package:gem/Helpers/format.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Library/liked.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Library/favorites_section.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Screens/Search/artists.dart';
 import 'package:hive/hive.dart';
 
@@ -137,7 +138,7 @@ class _SaavnHomePageState extends State<SaavnHomePage>
                                 padding:
                                     const EdgeInsets.fromLTRB(15, 10, 0, 5),
                                 child: Text(
-                                  AppLocalizations.of(context)!.lastSession,
+                                  "Last Session",
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
@@ -183,7 +184,7 @@ class _SaavnHomePageState extends State<SaavnHomePage>
                                 padding:
                                     const EdgeInsets.fromLTRB(15, 10, 0, 5),
                                 child: Text(
-                                  AppLocalizations.of(context)!.yourPlaylists,
+                                  "Your Playlists",
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.secondary,

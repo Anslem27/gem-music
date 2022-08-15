@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:dart_des/dart_des.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/Helpers/extensions.dart';
-import 'package:dart_des/dart_des.dart';
 import 'package:hive/hive.dart';
 
 // ignore: avoid_classes_with_only_static_members

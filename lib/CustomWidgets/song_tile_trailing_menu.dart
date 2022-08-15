@@ -1,4 +1,9 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/Helpers/add_mediaitem_to_queue.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
@@ -6,10 +11,8 @@ import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/Screens/Search/search.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
@@ -47,18 +50,15 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
           PopupMenuItem(
             value: 6,
             child: Row(
-              children: [
-                const Icon(
-                  Icons.delete_rounded,
+              children: const [
+                Icon(
+                  Iconsax.trash,
                 ),
-                const SizedBox(
+                SizedBox(
                   width: 10.0,
                 ),
                 Text(
-                  AppLocalizations.of(
-                    context,
-                  )!
-                      .remove,
+                  "Remove",
                 ),
               ],
             ),

@@ -1,10 +1,12 @@
 
+// ignore_for_file: use_super_parameters, use_decorated_box
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/like_button.dart';
 import 'package:gem/CustomWidgets/on_hover.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
 
 class HorizontalAlbumsList extends StatelessWidget {
   final List songsList;

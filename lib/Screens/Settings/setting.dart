@@ -1,7 +1,11 @@
-
+// ignore_for_file: use_super_parameters
 
 import 'dart:io';
 
+import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/popup.dart';
@@ -15,10 +19,6 @@ import 'package:gem/Screens/Home/saavn.dart' as home_screen;
 import 'package:gem/Screens/Settings/player_gradient.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:gem/main.dart';
-import 'package:device_info_plus/device_info_plus.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -191,23 +191,13 @@ class _SettingPageState extends State<SettingPage> {
             delegate: SliverChildListDelegate(
               [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    10.0,
-                    10.0,
-                    10.0,
-                    10.0,
-                  ),
+                  padding: const EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 10.0),
                   child: GradientCard(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            15,
-                            15,
-                            15,
-                            0,
-                          ),
+                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                           child: Text(
                             AppLocalizations.of(
                               context,
@@ -320,12 +310,8 @@ class _SettingPageState extends State<SettingPage> {
                                   child: ListView.builder(
                                     shrinkWrap: true,
                                     physics: const BouncingScrollPhysics(),
-                                    padding: const EdgeInsets.fromLTRB(
-                                      0,
-                                      10,
-                                      0,
-                                      10,
-                                    ),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 10, 0, 10),
                                     itemCount: colors.length,
                                     itemBuilder: (context, index) {
                                       return Padding(
@@ -525,6 +511,7 @@ class _SettingPageState extends State<SettingPage> {
                                                         gradients[index])
                                                     ? const Icon(
                                                         Icons.done_rounded,
+                                                        size: 20,
                                                       )
                                                     : const SizedBox(),
                                               ),
@@ -579,10 +566,7 @@ class _SettingPageState extends State<SettingPage> {
                                         BoxShadow(
                                           color: Colors.white24,
                                           blurRadius: 5.0,
-                                          offset: Offset(
-                                            0.0,
-                                            3.0,
-                                          ),
+                                          offset: Offset(0.0, 3.0),
                                         )
                                       ],
                                     ),
@@ -1492,7 +1476,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           dense: true,
                           onTap: () {
-                            final GlobalKey<AnimatedListState> _listKey =
+                            final GlobalKey<AnimatedListState> listKey =
                                 GlobalKey<AnimatedListState>();
                             showModalBottomSheet(
                               isDismissible: true,
@@ -1512,7 +1496,7 @@ class _SettingPageState extends State<SettingPage> {
                                       0,
                                       10,
                                     ),
-                                    key: _listKey,
+                                    key: listKey,
                                     initialItemCount:
                                         blacklistedHomeSections.length + 1,
                                     itemBuilder: (cntxt, idx, animation) {
@@ -1545,7 +1529,7 @@ class _SettingPageState extends State<SettingPage> {
                                                       'blacklistedHomeSections',
                                                       blacklistedHomeSections,
                                                     );
-                                                    _listKey.currentState!
+                                                    listKey.currentState!
                                                         .insertItem(
                                                       blacklistedHomeSections
                                                           .length,
@@ -1578,7 +1562,7 @@ class _SettingPageState extends State<SettingPage> {
                                                       'blacklistedHomeSections',
                                                       blacklistedHomeSections,
                                                     );
-                                                    _listKey.currentState!
+                                                    listKey.currentState!
                                                         .removeItem(
                                                       idx,
                                                       (
@@ -2525,7 +2509,7 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                           dense: true,
                           onTap: () {
-                            final GlobalKey<AnimatedListState> _listKey =
+                            final GlobalKey<AnimatedListState> listKey =
                                 GlobalKey<AnimatedListState>();
                             showModalBottomSheet(
                               isDismissible: true,
@@ -2545,7 +2529,7 @@ class _SettingPageState extends State<SettingPage> {
                                       0,
                                       10,
                                     ),
-                                    key: _listKey,
+                                    key: listKey,
                                     initialItemCount:
                                         includedExcludedPaths.length + 2,
                                     itemBuilder: (cntxt, idx, animation) {
@@ -2687,7 +2671,7 @@ class _SettingPageState extends State<SettingPage> {
                                                 'includedExcludedPaths',
                                                 includedExcludedPaths,
                                               );
-                                              _listKey.currentState!.insertItem(
+                                              listKey.currentState!.insertItem(
                                                 includedExcludedPaths.length,
                                               );
                                             } else {
@@ -2728,7 +2712,7 @@ class _SettingPageState extends State<SettingPage> {
                                                 'includedExcludedPaths',
                                                 includedExcludedPaths,
                                               );
-                                              _listKey.currentState!.removeItem(
+                                              listKey.currentState!.removeItem(
                                                 idx,
                                                 (context, animation) =>
                                                     Container(),
@@ -2938,10 +2922,10 @@ class _SettingPageState extends State<SettingPage> {
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  final _controller = TextEditingController(
+                                  final controller = TextEditingController(
                                     text: settingsBox.get('proxyIp').toString(),
                                   );
-                                  final _controller2 = TextEditingController(
+                                  final controller2 = TextEditingController(
                                     text:
                                         settingsBox.get('proxyPort').toString(),
                                   );
@@ -2971,7 +2955,7 @@ class _SettingPageState extends State<SettingPage> {
                                         ),
                                         TextField(
                                           autofocus: true,
-                                          controller: _controller,
+                                          controller: controller,
                                         ),
                                         const SizedBox(
                                           height: 30,
@@ -2993,7 +2977,7 @@ class _SettingPageState extends State<SettingPage> {
                                         ),
                                         TextField(
                                           autofocus: true,
-                                          controller: _controller2,
+                                          controller: controller2,
                                         ),
                                       ],
                                     ),
@@ -3031,12 +3015,12 @@ class _SettingPageState extends State<SettingPage> {
                                         onPressed: () {
                                           settingsBox.put(
                                             'proxyIp',
-                                            _controller.text.trim(),
+                                            controller.text.trim(),
                                           );
                                           settingsBox.put(
                                             'proxyPort',
                                             int.parse(
-                                              _controller2.text.trim(),
+                                              controller2.text.trim(),
                                             ),
                                           );
                                           Navigator.pop(context);

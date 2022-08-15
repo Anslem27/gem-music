@@ -2,12 +2,12 @@
 
 import 'dart:io';
 
-import 'package:gem/Helpers/audio_query.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Helpers/audio_query.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 class DataSearch extends SearchDelegate {

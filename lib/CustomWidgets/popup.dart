@@ -42,6 +42,7 @@ class PopupDialog {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: IconButton(
+                    splashRadius: 24,
                     onPressed: () => Navigator.pop(context),
                     icon: const Icon(Icons.close_rounded),
                   ),

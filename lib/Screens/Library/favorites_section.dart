@@ -1,23 +1,25 @@
+// ignore_for_file: avoid_redundant_argument_values, use_super_parameters, use_decorated_box
 
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/songs_count.dart' as songs_count;
 import 'package:gem/Screens/Library/show_songs.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 // import 'package:path_provider/path_provider.dart';
 
 class LikedSongs extends StatefulWidget {
@@ -314,7 +316,15 @@ class _LikedSongsState extends State<LikedSongs>
                   elevation: 0,
                   bottom: TabBar(
                     controller: _tcontroller,
-                    indicatorSize: TabBarIndicatorSize.label,
+                    indicator: RectangularIndicator(
+                      bottomLeftRadius: 12,
+                      bottomRightRadius: 12,
+                      topLeftRadius: 12,
+                      topRightRadius: 12,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary,
+                    ),
                     tabs: [
                       Tab(
                         text: AppLocalizations.of(context)!.songs,
@@ -341,6 +351,7 @@ class _LikedSongsState extends State<LikedSongs>
                                 widget.showName!.substring(1),
                       ),
                     IconButton(
+                      splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
                       tooltip: AppLocalizations.of(context)!.search,
                       onPressed: () {
@@ -351,7 +362,8 @@ class _LikedSongsState extends State<LikedSongs>
                       },
                     ),
                     PopupMenuButton(
-                      icon: const Icon(Icons.sort_rounded),
+                      splashRadius: 24,
+                      icon: const Icon(Iconsax.sort),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
@@ -400,6 +412,7 @@ class _LikedSongsState extends State<LikedSongs>
                                       if (sortValue == sortTypes.indexOf(e))
                                         Icon(
                                           Icons.check_rounded,
+                                          size: 20,
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? Colors.white
@@ -433,6 +446,7 @@ class _LikedSongsState extends State<LikedSongs>
                                       if (orderValue == orderTypes.indexOf(e))
                                         Icon(
                                           Icons.check_rounded,
+                                          size: 20,
                                           color: Theme.of(context).brightness ==
                                                   Brightness.dark
                                               ? Colors.white
@@ -441,9 +455,7 @@ class _LikedSongsState extends State<LikedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -494,7 +506,7 @@ class _LikedSongsState extends State<LikedSongs>
                 floatingActionButton: Container(
                   decoration: BoxDecoration(
                     color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(100.0),
+                    borderRadius: BorderRadius.circular(80.0),
                   ),
                   child: GestureDetector(
                     onTap: () {
@@ -524,7 +536,7 @@ class _LikedSongsState extends State<LikedSongs>
                           valueListenable: _showShuffle,
                           builder: (
                             BuildContext context,
-                            bool _showFullShuffle,
+                            bool showFullShuffle,
                             Widget? child,
                           ) {
                             return Row(
@@ -532,19 +544,18 @@ class _LikedSongsState extends State<LikedSongs>
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 Icon(
-                                  Icons.shuffle_rounded,
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
+                                  Iconsax.shuffle,
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary,
                                   size: 24.0,
                                 ),
-                                if (_showFullShuffle)
+                                if (showFullShuffle)
                                   const SizedBox(width: 5.0),
-                                if (_showFullShuffle)
+                                if (showFullShuffle)
                                   Text(
-                                    AppLocalizations.of(context)!.shuffle,
-                                    style: TextStyle(
+                                    "Shuffle",
+                                    style: GoogleFonts.roboto(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0,
                                       color: Theme.of(context).brightness ==
@@ -554,7 +565,7 @@ class _LikedSongsState extends State<LikedSongs>
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                if (_showFullShuffle)
+                                if (showFullShuffle)
                                   const SizedBox(width: 2.5),
                               ],
                             );
@@ -600,15 +611,23 @@ class _SongsTabState extends State<SongsTab>
   Widget build(BuildContext context) {
     super.build(context);
     return (widget.songs.isEmpty)
-        ? emptyScreen(
-            context,
-            3,
-            AppLocalizations.of(context)!.nothingTo,
-            15.0,
-            AppLocalizations.of(context)!.showHere,
-            50,
-            AppLocalizations.of(context)!.addSomething,
-            23.0,
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                Text(
+                  "No songs here",
+                  style: GoogleFonts.roboto(
+                    fontSize: 20,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
           )
         : Column(
             children: [
@@ -729,15 +748,23 @@ class _AlbumsTabState extends State<AlbumsTab>
   Widget build(BuildContext context) {
     super.build(context);
     return widget.sortedAlbumKeysList.isEmpty
-        ? emptyScreen(
-            context,
-            3,
-            AppLocalizations.of(context)!.nothingTo,
-            15.0,
-            AppLocalizations.of(context)!.showHere,
-            50,
-            AppLocalizations.of(context)!.addSomething,
-            23.0,
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                Text(
+                  "Nothing to show here",
+                  style: GoogleFonts.roboto(
+                    fontSize: 20,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
           )
         : ListView.builder(
             physics: const BouncingScrollPhysics(),

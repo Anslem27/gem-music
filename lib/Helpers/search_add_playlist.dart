@@ -1,30 +1,12 @@
-/*
- *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).
- * 
- * BlackHole is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * BlackHole is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with BlackHole.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Copyright (c) 2021-2022, Ankit Sangwan
- */
 
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:http/http.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -119,14 +101,14 @@ class SearchAddPlaylist {
   }
 
   static Stream<Map> ytSongsAdder(String playName, List tracks) async* {
-    int _done = 0;
+    int done = 0;
     for (final track in tracks) {
       String? trackName;
       try {
         trackName = (track as Video).title;
-        yield {'done': ++_done, 'name': trackName};
+        yield {'done': ++done, 'name': trackName};
       } catch (e) {
-        yield {'done': ++_done, 'name': ''};
+        yield {'done': ++done, 'name': ''};
       }
       try {
         final List result =
@@ -139,7 +121,7 @@ class SearchAddPlaylist {
   }
 
   static Stream<Map> ressoSongsAdder(String playName, List tracks) async* {
-    int _done = 0;
+    int done = 0;
     for (final track in tracks) {
       String? trackName;
       String? artistName;
@@ -150,9 +132,9 @@ class SearchAddPlaylist {
             .toList()
             .join(', ');
 
-        yield {'done': ++_done, 'name': '$trackName - $artistName'};
+        yield {'done': ++done, 'name': '$trackName - $artistName'};
       } catch (e) {
-        yield {'done': ++_done, 'name': ''};
+        yield {'done': ++done, 'name': ''};
       }
       try {
         final List result =
@@ -165,11 +147,11 @@ class SearchAddPlaylist {
   }
 
   static Future<void> showProgress(
-    int _total,
+    int total,
     BuildContext cxt,
     Stream songAdd,
   ) async {
-    if (_total != 0) {
+    if (total != 0) {
       await showModalBottomSheet(
         isDismissible: false,
         backgroundColor: Colors.transparent,
@@ -185,10 +167,10 @@ class SearchAddPlaylist {
                     stream: songAdd as Stream<Object>?,
                     builder: (ctxt, AsyncSnapshot snapshot) {
                       final Map? data = snapshot.data as Map?;
-                      final int _done = (data ?? const {})['done'] as int? ?? 0;
+                      final int done = (data ?? const {})['done'] as int? ?? 0;
                       final String name =
                           (data ?? const {})['name'] as String? ?? '';
-                      if (_done == _total) Navigator.pop(ctxt);
+                      if (done == total) Navigator.pop(ctxt);
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -205,7 +187,7 @@ class SearchAddPlaylist {
                             child: Stack(
                               children: [
                                 Center(
-                                  child: Text('$_done / $_total'),
+                                  child: Text('$done / $total'),
                                 ),
                                 Center(
                                   child: SizedBox(
@@ -215,7 +197,7 @@ class SearchAddPlaylist {
                                       valueColor: AlwaysStoppedAnimation<Color>(
                                         Theme.of(ctxt).colorScheme.secondary,
                                       ),
-                                      value: _done / _total,
+                                      value: done / total,
                                     ),
                                   ),
                                 ),

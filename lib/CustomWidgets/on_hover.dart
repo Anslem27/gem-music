@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 /*
  *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).
  * 
