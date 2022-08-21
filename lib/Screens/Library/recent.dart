@@ -1,15 +1,14 @@
-
-
-// ignore_for_file: use_colored_box
+// ignore_for_file: use_colored_box, avoid_redundant_argument_values
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 
 class RecentlyPlayed extends StatefulWidget {
   @override
@@ -59,15 +58,24 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                 ],
               ),
               body: _songs.isEmpty
-                  ? emptyScreen(
-                      context,
-                      3,
-                      AppLocalizations.of(context)!.nothingTo,
-                      15,
-                      AppLocalizations.of(context)!.showHere,
-                      50.0,
-                      AppLocalizations.of(context)!.playSomething,
-                      23.0,
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset("assets/Puzzle.png",
+                              height: 100, width: 100),
+                          Text(
+                            "Nothing to show here",
+                            style: GoogleFonts.roboto(
+                              fontSize: 20,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondary,
+                            ),
+                          ),
+                        ],
+                      ),
                     )
                   : ListView.builder(
                       physics: const BouncingScrollPhysics(),
@@ -90,7 +98,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: const [
-                                        Icon(Icons.delete_outline_rounded),
+                                        Icon(Iconsax.trash),
                                       ],
                                     ),
                                   ),

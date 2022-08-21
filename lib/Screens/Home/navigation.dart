@@ -14,12 +14,12 @@ import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/downloads_checker.dart';
 import 'package:gem/Helpers/extensions.dart';
 import 'package:gem/Helpers/supabase.dart';
-import 'package:gem/Screens/Home/saavn.dart';
+import 'package:gem/Screens/Home/home_view.dart';
 import 'package:gem/Screens/Library/library_main_page.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:gem/Screens/Search/search.dart';
 import 'package:gem/Screens/Settings/setting.dart';
-import 'package:gem/Screens/Top%20Charts/top_charts_page.dart';
+// import 'package:gem/Screens/YouTube/top_charts_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -271,9 +271,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    //icon list
     final List<IconData> icondata = [
       Iconsax.home,
-      Icons.trending_up_rounded,
       MdiIcons.youtube,
       Iconsax.music_playlist,
     ];
@@ -585,9 +585,6 @@ class _HomePageState extends State<HomePage> {
                                   ),
                               ],
                             ),
-                            TopCharts(
-                              pageController: _pageController,
-                            ),
                             const YouTube(),
                             const LibraryPage(),
                           ],
@@ -661,12 +658,6 @@ class _HomePageState extends State<HomePage> {
           label: Text(AppLocalizations.of(context)!.home),
         ),
         NavigationRailDestination(
-          icon: const Icon(Icons.trending_up_rounded),
-          label: Text(
-            AppLocalizations.of(context)!.topCharts,
-          ),
-        ),
-        NavigationRailDestination(
           icon: const Icon(MdiIcons.youtube),
           label: Text(AppLocalizations.of(context)!.youTube),
         ),
@@ -685,7 +676,7 @@ class _HomePageState extends State<HomePage> {
         builder: (BuildContext context, int indexValue, Widget? child) {
           return AnimatedContainer(
             duration: const Duration(milliseconds: 100),
-            height: 60,
+            height: 65,
             child: Padding(
               padding: const EdgeInsets.all(10),
               child: Material(
@@ -696,7 +687,7 @@ class _HomePageState extends State<HomePage> {
                   width: double.infinity,
                   child: ListView.builder(
                     itemCount: icondata.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 50),
+                    padding: const EdgeInsets.symmetric(horizontal: 80),
                     itemBuilder: (ctx, i) => Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 15),
                       child: GestureDetector(
@@ -728,7 +719,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: Icon(
                             icondata[i],
-                            size: 30,
+                            size: 40,
                             color: i == indexValue
                                 ? Colors.white
                                 : Colors.grey.shade800,

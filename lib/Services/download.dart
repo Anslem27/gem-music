@@ -23,7 +23,6 @@ class Download with ChangeNotifier {
   String preferredYtDownloadQuality = Hive.box('settings')
       .get('ytDownloadQuality', defaultValue: 'High') as String;
   String downloadFormat = 'm4a';
-  // Hive.box('settings').get('downloadFormat', defaultValue: 'm4a');
   bool createDownloadFolder = Hive.box('settings')
       .get('createDownloadFolder', defaultValue: false) as bool;
   bool createYoutubeFolder = Hive.box('settings')

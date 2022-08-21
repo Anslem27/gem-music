@@ -1,12 +1,7 @@
 // ignore_for_file: use_super_parameters
 
-/*
- *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).
- */
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/playlist.dart';
 
@@ -82,9 +77,7 @@ class _LikeButtonState extends State<LikeButton>
           color: liked ? Colors.redAccent : Theme.of(context).iconTheme.color,
         ),
         iconSize: widget.size ?? 24.0,
-        tooltip: liked
-            ? AppLocalizations.of(context)!.unlike
-            : AppLocalizations.of(context)!.like,
+        tooltip: liked ? 'Unlike' : 'Like',
         onPressed: () async {
           liked
               ? removeLiked(
@@ -107,12 +100,10 @@ class _LikeButtonState extends State<LikeButton>
           if (widget.showSnack) {
             ShowSnackBar().showSnackBar(
               context,
-              liked
-                  ? AppLocalizations.of(context)!.addedToFav
-                  : AppLocalizations.of(context)!.removedFromFav,
+              liked ? 'Added to favorites' : 'Remove from favorites',
               action: SnackBarAction(
                 textColor: Theme.of(context).colorScheme.secondary,
-                label: AppLocalizations.of(context)!.undo,
+                label: 'Undo',
                 onPressed: () {
                   liked
                       ? removeLiked(

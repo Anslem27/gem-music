@@ -1,10 +1,11 @@
+// ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
@@ -18,6 +19,7 @@ import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -442,15 +444,23 @@ class _SongsTabState extends State<SongsTab>
   Widget build(BuildContext context) {
     super.build(context);
     return widget.songs.isEmpty
-        ? emptyScreen(
-            context,
-            3,
-            AppLocalizations.of(context)!.nothingTo,
-            15.0,
-            AppLocalizations.of(context)!.showHere,
-            45,
-            AppLocalizations.of(context)!.downloadSomething,
-            23.0,
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                Text(
+                  "Nothing to show here",
+                  style: GoogleFonts.roboto(
+                    fontSize: 20,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
           )
         : Column(
             children: [
@@ -481,7 +491,7 @@ class _SongsTabState extends State<SongsTab>
                         overflow: TextOverflow.ellipsis,
                       ),
                       subtitle: Text(
-                        '${widget.songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? AppLocalizations.of(context)!.unknown} - ${widget.songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? AppLocalizations.of(context)!.unknown}',
+                        '${widget.songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'} - ${widget.songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
                         overflow: TextOverflow.ellipsis,
                       ),
                       trailing: PopupMenuButton(
@@ -503,7 +513,7 @@ class _SongsTabState extends State<SongsTab>
                             );
                             ShowSnackBar().showSnackBar(
                               context,
-                              '${AppLocalizations.of(context)!.removedFrom} ${widget.playlistName}',
+                              '${'Removed from'} ${widget.playlistName}',
                             );
                           }
                         },
@@ -511,11 +521,11 @@ class _SongsTabState extends State<SongsTab>
                           PopupMenuItem(
                             value: 0,
                             child: Row(
-                              children: [
-                                const Icon(Icons.playlist_add_rounded),
-                                const SizedBox(width: 10.0),
+                              children: const [
+                                Icon(Icons.playlist_add_rounded),
+                                SizedBox(width: 10.0),
                                 Text(
-                                  AppLocalizations.of(context)!.addToPlaylist,
+                                  'Add to Playlist',
                                 ),
                               ],
                             ),
@@ -524,10 +534,10 @@ class _SongsTabState extends State<SongsTab>
                             PopupMenuItem(
                               value: 1,
                               child: Row(
-                                children: [
-                                  const Icon(Iconsax.trash),
-                                  const SizedBox(width: 10.0),
-                                  Text(AppLocalizations.of(context)!.remove),
+                                children: const [
+                                  Icon(Iconsax.trash),
+                                  SizedBox(width: 10.0),
+                                  Text('Remove'),
                                 ],
                               ),
                             ),
@@ -600,7 +610,7 @@ class _AlbumsTabState extends State<AlbumsTab>
             overflow: TextOverflow.ellipsis,
           ),
           subtitle: Text(
-            '${widget.albums[widget.albumsList[index]]!.length} ${AppLocalizations.of(context)!.songs}',
+            '${widget.albums[widget.albumsList[index]]!.length} Songs',
           ),
           onTap: () {
             Navigator.push(

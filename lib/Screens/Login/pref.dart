@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:hive/hive.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class PrefScreen extends StatefulWidget {
   const PrefScreen({super.key});
@@ -12,29 +10,27 @@ class PrefScreen extends StatefulWidget {
 }
 
 class _PrefScreenState extends State<PrefScreen> {
-  List<String> languages = [
-    'Hindi',
-    'English',
-    'Punjabi',
-    'Tamil',
-    'Telugu',
-    'Marathi',
-    'Gujarati',
-    'Bengali',
-    'Kannada',
-    'Bhojpuri',
-    'Malayalam',
-    'Urdu',
-    'Haryanvi',
-    'Rajasthani',
-    'Odia',
-    'Assamese'
-  ];
-  List<bool> isSelected = [true, false];
-  List preferredLanguage = Hive.box('settings')
-      .get('preferredLanguage', defaultValue: ['Hindi'])?.toList() as List;
-  String region =
-      Hive.box('settings').get('region', defaultValue: 'India') as String;
+  // List<String> languages = [
+  //   'Hindi',
+  //   'English',
+  //   'Punjabi',
+  //   'Tamil',
+  //   'Telugu',
+  //   'Marathi',
+  //   'Gujarati',
+  //   'Bengali',
+  //   'Kannada',
+  //   'Bhojpuri',
+  //   'Malayalam',
+  //   'Urdu',
+  //   'Haryanvi',
+  //   'Rajasthani',
+  //   'Odia',
+  //   'Assamese'
+  // ];
+  // List<bool> isSelected = [true, false];
+  // List preferredLanguage = Hive.box('settings')
+  //     .get('preferredLanguage', defaultValue: ['English'])?.toList() as List;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +64,9 @@ class _PrefScreenState extends State<PrefScreen> {
                         onPressed: () {
                           Navigator.popAndPushNamed(context, '/');
                         },
-                        child: Text(
-                          AppLocalizations.of(context)!.skip,
-                          style: const TextStyle(
+                        child: const Text(
+                          'Skip',
+                          style: TextStyle(
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -89,8 +85,7 @@ class _PrefScreenState extends State<PrefScreen> {
                                 children: [
                                   RichText(
                                     text: TextSpan(
-                                      text:
-                                          '${AppLocalizations.of(context)!.welcome}\n',
+                                      text: 'Gem Music\n',
                                       style: TextStyle(
                                         fontSize: 65,
                                         height: 1.0,
@@ -99,33 +94,12 @@ class _PrefScreenState extends State<PrefScreen> {
                                             .colorScheme
                                             .secondary,
                                       ),
-                                      children: <TextSpan>[
+                                      children: const <TextSpan>[
                                         TextSpan(
-                                          text: AppLocalizations.of(context)!
-                                              .aboard,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 75,
-                                            color: Colors.white,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: '!\n',
+                                          text: 'All your music\nin one app\n',
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
-                                            fontSize: 70,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ),
-                                        ),
-                                        TextSpan(
-                                          text: AppLocalizations.of(context)!
-                                              .prefReq,
-                                          style: const TextStyle(
-                                            height: 1.5,
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20,
+                                            fontSize: 50,
                                             color: Colors.white,
                                           ),
                                         ),
@@ -140,187 +114,188 @@ class _PrefScreenState extends State<PrefScreen> {
                               children: [
                                 ListTile(
                                   title: Text(
-                                    AppLocalizations.of(context)!.langQue,
-                                    style: const TextStyle(
+                                    "Sure you'll love the experience...",
+                                    style: GoogleFonts.roboto(
                                       fontWeight: FontWeight.bold,
+                                      fontSize: 20.0,
                                     ),
                                   ),
-                                  trailing: Container(
-                                    padding: const EdgeInsets.only(
-                                      top: 5,
-                                      bottom: 5,
-                                      left: 10,
-                                      right: 10,
-                                    ),
-                                    height: 57.0,
-                                    width: 150,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(10.0),
-                                      color: Colors.grey[900],
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.black26,
-                                          blurRadius: 5.0,
-                                          offset: Offset(0.0, 3.0),
-                                        )
-                                      ],
-                                    ),
-                                    child: Center(
-                                      child: Text(
-                                        preferredLanguage.isEmpty
-                                            ? 'None'
-                                            : preferredLanguage.join(', '),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.end,
-                                      ),
-                                    ),
-                                  ),
+                                  // trailing: Container(
+                                  //   padding: const EdgeInsets.only(
+                                  //     top: 5,
+                                  //     bottom: 5,
+                                  //     left: 10,
+                                  //     right: 10,
+                                  //   ),
+                                  //   height: 57.0,
+                                  //   width: 150,
+                                  //   decoration: BoxDecoration(
+                                  //     borderRadius: BorderRadius.circular(10.0),
+                                  //     color: Colors.grey[900],
+                                  //     boxShadow: const [
+                                  //       BoxShadow(
+                                  //         color: Colors.black26,
+                                  //         blurRadius: 5.0,
+                                  //         offset: Offset(0.0, 3.0),
+                                  //       )
+                                  //     ],
+                                  //   ),
+                                  //   child: Center(
+                                  //     child: Text(
+                                  //       preferredLanguage.isEmpty
+                                  //           ? 'None'
+                                  //           : preferredLanguage.join(', '),
+                                  //       maxLines: 2,
+                                  //       overflow: TextOverflow.ellipsis,
+                                  //       textAlign: TextAlign.end,
+                                  //     ),
+                                  //   ),
+                                  // ),
                                   dense: true,
                                   onTap: () {
-                                    showModalBottomSheet(
-                                      isDismissible: true,
-                                      backgroundColor: Colors.transparent,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        final List checked =
-                                            List.from(preferredLanguage);
-                                        return StatefulBuilder(
-                                          builder: (
-                                            BuildContext context,
-                                            StateSetter setStt,
-                                          ) {
-                                            return BottomGradientContainer(
-                                              borderRadius:
-                                                  BorderRadius.circular(20.0),
-                                              child: Column(
-                                                children: [
-                                                  Expanded(
-                                                    child: ListView.builder(
-                                                      physics:
-                                                          const BouncingScrollPhysics(),
-                                                      shrinkWrap: true,
-                                                      padding: const EdgeInsets
-                                                          .fromLTRB(
-                                                        0,
-                                                        10,
-                                                        0,
-                                                        10,
-                                                      ),
-                                                      itemCount:
-                                                          languages.length,
-                                                      itemBuilder:
-                                                          (context, idx) {
-                                                        return CheckboxListTile(
-                                                          activeColor: Theme.of(
-                                                            context,
-                                                          )
-                                                              .colorScheme
-                                                              .secondary,
-                                                          value:
-                                                              checked.contains(
-                                                            languages[idx],
-                                                          ),
-                                                          title: Text(
-                                                            languages[idx],
-                                                          ),
-                                                          onChanged:
-                                                              (bool? value) {
-                                                            value!
-                                                                ? checked.add(
-                                                                    languages[
-                                                                        idx],
-                                                                  )
-                                                                : checked
-                                                                    .remove(
-                                                                    languages[
-                                                                        idx],
-                                                                  );
-                                                            setStt(() {});
-                                                          },
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      TextButton(
-                                                        style: TextButton
-                                                            .styleFrom(
-                                                          primary:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .secondary,
-                                                        ),
-                                                        onPressed: () {
-                                                          Navigator.pop(
-                                                            context,
-                                                          );
-                                                        },
-                                                        child: Text(
-                                                          AppLocalizations.of(
-                                                            context,
-                                                          )!
-                                                              .cancel,
-                                                        ),
-                                                      ),
-                                                      TextButton(
-                                                        style: TextButton
-                                                            .styleFrom(
-                                                          primary:
-                                                              Theme.of(context)
-                                                                  .colorScheme
-                                                                  .secondary,
-                                                        ),
-                                                        onPressed: () {
-                                                          setState(() {
-                                                            preferredLanguage =
-                                                                checked;
-                                                            Navigator.pop(
-                                                              context,
-                                                            );
-                                                            Hive.box('settings')
-                                                                .put(
-                                                              'preferredLanguage',
-                                                              checked,
-                                                            );
-                                                          });
-                                                          if (preferredLanguage
-                                                              .isEmpty) {
-                                                            ShowSnackBar()
-                                                                .showSnackBar(
-                                                              context,
-                                                              AppLocalizations
-                                                                      .of(
-                                                                context,
-                                                              )!
-                                                                  .noLangSelected,
-                                                            );
-                                                          }
-                                                        },
-                                                        child: Text(
-                                                          AppLocalizations.of(
-                                                            context,
-                                                          )!
-                                                              .ok,
-                                                          style:
-                                                              const TextStyle(
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                        );
-                                      },
-                                    );
+                                    // showModalBottomSheet(
+                                    //   isDismissible: true,
+                                    //   backgroundColor: Colors.transparent,
+                                    //   context: context,
+                                    //   builder: (BuildContext context) {
+                                    //     final List checked =
+                                    //         List.from(preferredLanguage);
+                                    //     return StatefulBuilder(
+                                    //       builder: (
+                                    //         BuildContext context,
+                                    //         StateSetter setStt,
+                                    //       ) {
+                                    //         return BottomGradientContainer(
+                                    //           borderRadius:
+                                    //               BorderRadius.circular(20.0),
+                                    //           child: Column(
+                                    //             children: [
+                                    //               Expanded(
+                                    //                 child: ListView.builder(
+                                    //                   physics:
+                                    //                       const BouncingScrollPhysics(),
+                                    //                   shrinkWrap: true,
+                                    //                   padding: const EdgeInsets
+                                    //                       .fromLTRB(
+                                    //                     0,
+                                    //                     10,
+                                    //                     0,
+                                    //                     10,
+                                    //                   ),
+                                    //                   itemCount:
+                                    //                       languages.length,
+                                    //                   itemBuilder:
+                                    //                       (context, idx) {
+                                    //                     return CheckboxListTile(
+                                    //                       activeColor: Theme.of(
+                                    //                         context,
+                                    //                       )
+                                    //                           .colorScheme
+                                    //                           .secondary,
+                                    //                       value:
+                                    //                           checked.contains(
+                                    //                         languages[idx],
+                                    //                       ),
+                                    //                       title: Text(
+                                    //                         languages[idx],
+                                    //                       ),
+                                    //                       onChanged:
+                                    //                           (bool? value) {
+                                    //                         value!
+                                    //                             ? checked.add(
+                                    //                                 languages[
+                                    //                                     idx],
+                                    //                               )
+                                    //                             : checked
+                                    //                                 .remove(
+                                    //                                 languages[
+                                    //                                     idx],
+                                    //                               );
+                                    //                         setStt(() {});
+                                    //                       },
+                                    //                     );
+                                    //                   },
+                                    //                 ),
+                                    //               ),
+                                    //               Row(
+                                    //                 mainAxisAlignment:
+                                    //                     MainAxisAlignment.end,
+                                    //                 children: [
+                                    //                   TextButton(
+                                    //                     style: TextButton
+                                    //                         .styleFrom(
+                                    //                       primary:
+                                    //                           Theme.of(context)
+                                    //                               .colorScheme
+                                    //                               .secondary,
+                                    //                     ),
+                                    //                     onPressed: () {
+                                    //                       Navigator.pop(
+                                    //                         context,
+                                    //                       );
+                                    //                     },
+                                    //                     child: Text(
+                                    //                       AppLocalizations.of(
+                                    //                         context,
+                                    //                       )!
+                                    //                           .cancel,
+                                    //                     ),
+                                    //                   ),
+                                    //                   TextButton(
+                                    //                     style: TextButton
+                                    //                         .styleFrom(
+                                    //                       primary:
+                                    //                           Theme.of(context)
+                                    //                               .colorScheme
+                                    //                               .secondary,
+                                    //                     ),
+                                    //                     onPressed: () {
+                                    //                       setState(() {
+                                    //                         preferredLanguage =
+                                    //                             checked;
+                                    //                         Navigator.pop(
+                                    //                           context,
+                                    //                         );
+                                    //                         Hive.box('settings')
+                                    //                             .put(
+                                    //                           'preferredLanguage',
+                                    //                           checked,
+                                    //                         );
+                                    //                       });
+                                    //                       if (preferredLanguage
+                                    //                           .isEmpty) {
+                                    //                         ShowSnackBar()
+                                    //                             .showSnackBar(
+                                    //                           context,
+                                    //                           AppLocalizations
+                                    //                                   .of(
+                                    //                             context,
+                                    //                           )!
+                                    //                               .noLangSelected,
+                                    //                         );
+                                    //                       }
+                                    //                     },
+                                    //                     child: Text(
+                                    //                       AppLocalizations.of(
+                                    //                         context,
+                                    //                       )!
+                                    //                           .ok,
+                                    //                       style:
+                                    //                           const TextStyle(
+                                    //                         fontWeight:
+                                    //                             FontWeight.w600,
+                                    //                       ),
+                                    //                     ),
+                                    //                   ),
+                                    //                 ],
+                                    //               ),
+                                    //             ],
+                                    //           ),
+                                    //         );
+                                    //       },
+                                    //     );
+                                    //   },
+                                    // );
                                   },
                                 ),
                                 const SizedBox(
@@ -347,10 +322,10 @@ class _PrefScreenState extends State<PrefScreen> {
                                         )
                                       ],
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
-                                        AppLocalizations.of(context)!.finish,
-                                        style: const TextStyle(
+                                        'Get Started',
+                                        style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20.0,

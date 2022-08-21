@@ -273,11 +273,7 @@ class SaavnAPI {
       final List artistResponseList = getMain['artists']['data'] as List;
       position[getMain['artists']['position'] as int] = 'Artists';
 
-      // final List showResponseList = getMain['shows']['data'] as List;
-      // position[getMain['shows']['position'] as int] = 'Podcasts';
-
-      // final List episodeResponseList = getMain['episodes']['data'] as List;
-      // position[getMain['episodes']['position'] as int] = 'Episodes';
+   
 
       final List topQuery = getMain['topquery']['data'] as List;
 

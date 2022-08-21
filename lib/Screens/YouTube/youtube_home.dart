@@ -1,22 +1,26 @@
-// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers
-
-import 'dart:ui';
+// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers, avoid_redundant_argument_values, always_use_package_imports, avoid_field_initializers_in_const_classes, require_trailing_commas
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/on_hover.dart';
 import 'package:gem/CustomWidgets/search_bar.dart';
+import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Screens/YouTube/youtube_playlist.dart';
 import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:gem/Services/youtube_services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'fetch_spotify_suggestions.dart';
 
 bool status = false;
 List searchedList = Hive.box('cache').get('ytHome', defaultValue: []) as List;
 List headList = Hive.box('cache').get('ytHomeHead', defaultValue: []) as List;
+List topSongs = [];
+bool fetched = false;
+bool emptyTop = false;
 
 class YouTube extends StatefulWidget {
   const YouTube({Key? key}) : super(key: key);
@@ -75,26 +79,11 @@ class _YouTubeState extends State<YouTube>
         isYt: true,
         controller: _controller,
         liveSearch: true,
-        hintText: AppLocalizations.of(context)!.searchYt,
-        leading: (rotated && screenWidth < 1050)
-            ? Icon(
-                CupertinoIcons.search,
-                color: Theme.of(context).colorScheme.secondary,
-              )
-            : Transform.rotate(
-                angle: 22 / 7 * 2,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.horizontal_split_rounded,
-                  ),
-                  // color: Theme.of(context).iconTheme.color,
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  tooltip:
-                      MaterialLocalizations.of(context).openAppDrawerTooltip,
-                ),
-              ),
+        hintText: "Search Youtube",
+        leading: Icon(
+          CupertinoIcons.search,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
         onQueryChanged: (_query) {
           return YouTubeServices().getSearchSuggestions(query: _query);
         },
@@ -118,6 +107,35 @@ class _YouTubeState extends State<YouTube>
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
+                        ListTile(
+                          title: Text(
+                            'Trending on Streaming Platforms',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondary,
+                              fontSize: 20,
+                            ),
+                          ),
+                          subtitle: const Text(
+                            'Try searching for these',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 18,
+                            ),
+                          ),
+                          trailing: IconButton(
+                            splashRadius: 24,
+                            onPressed: () {
+                              ShowSnackBar().showSnackBar(
+                                  context, 'Tap the suggestion to look it up');
+                            },
+                            icon: const Icon(Icons.trending_up_rounded),
+                          ),
+                        ),
+                        const SpotifySection(),
                         Icon(
                           CupertinoIcons.search,
                           color: Theme.of(context).colorScheme.secondary,
@@ -288,11 +306,9 @@ class _YouTubeState extends State<YouTube>
                                                     image: item['type'] !=
                                                             'playlist'
                                                         ? const AssetImage(
-                                                            'assets/ytCover.png',
-                                                          )
+                                                            'assets/ytCover.png')
                                                         : const AssetImage(
-                                                            'assets/cover.jpg',
-                                                          ),
+                                                            'assets/cover.jpg'),
                                                   ),
                                                   imageUrl:
                                                       item['image'].toString(),
@@ -384,6 +400,185 @@ class _YouTubeState extends State<YouTube>
                 ),
               ),
       ),
+    );
+  }
+}
+
+//spotify section of youtube page
+class SpotifySection extends StatefulWidget {
+  final String type = 'top';
+  const SpotifySection({Key? key}) : super(key: key);
+  @override
+  _SpotifySectionState createState() => _SpotifySectionState();
+}
+
+class _SpotifySectionState extends State<SpotifySection>
+    with AutomaticKeepAliveClientMixin<SpotifySection> {
+  Future<void> getData(String type) async {
+    fetched = true;
+    final List temp = await compute(scrapData, type);
+    setState(() {
+      if (type == 'top') {
+        topSongs = temp;
+        if (topSongs.isNotEmpty) {
+          cachedTopSongs = topSongs;
+          Hive.box('cache').put(type, topSongs);
+        }
+        emptyTop = topSongs.isEmpty && cachedTopSongs.isEmpty;
+      } else {
+        viralSongs = temp;
+        if (viralSongs.isNotEmpty) {
+          cachedViralSongs = viralSongs;
+          Hive.box('cache').put(type, viralSongs);
+        }
+        emptyViral = viralSongs.isEmpty && cachedViralSongs.isEmpty;
+      }
+    });
+  }
+
+  Future<void> getCachedData(String type) async {
+    fetched = true;
+    if (type == 'top') {
+      cachedTopSongs =
+          await Hive.box('cache').get(type, defaultValue: []) as List;
+    } else {
+      cachedViralSongs =
+          await Hive.box('cache').get(type, defaultValue: []) as List;
+    }
+    setState(() {});
+  }
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.type == 'top' && topSongs.isEmpty) {
+      getCachedData(widget.type);
+      getData(widget.type);
+    } else {
+      if (viralSongs.isEmpty) {
+        getCachedData(widget.type);
+        getData(widget.type);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    super.build(context);
+    final bool isTop = widget.type == 'top';
+    if (!fetched) {
+      getCachedData(widget.type);
+      getData(widget.type);
+    }
+    final List showList = isTop ? cachedTopSongs : cachedViralSongs;
+    final bool isListEmpty = isTop ? emptyTop : emptyViral;
+    return Column(
+      children: [
+        if (showList.length <= 10)
+          isListEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "🤐Well somethin's\nmeant to be here",
+                        style: GoogleFonts.roboto(
+                          fontSize: 20,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.secondary,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    CircularProgressIndicator(),
+                  ],
+                )
+        else
+          SizedBox(
+            height: 100,
+            child: ListView.builder(
+              physics: const BouncingScrollPhysics(),
+              itemCount: showList.length,
+              scrollDirection: Axis.horizontal,
+              itemExtent: 70.0,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width / 2.2,
+                      child: Column(
+                        children: [
+                          if (showList[index]['image_url_small'] != '')
+                            CachedNetworkImage(
+                              width: MediaQuery.of(context).size.width / 2.5,
+                              fit: BoxFit.cover,
+                              imageUrl:
+                                  showList[index]['image_url_small'].toString(),
+                              errorWidget: (context, _, __) => const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                              placeholder: (context, url) => const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                            ),
+                          Text(
+                            //Song name
+                            '${index + 1}. ${showList[index]["name"]}',
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            //artist name
+                            (showList[index]['artists'] as List)
+                                .map((e) => e['name'])
+                                .toList()
+                                .join(', '),
+                            overflow: TextOverflow.ellipsis,
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Theme.of(context).textTheme.caption!.color,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                  onTap: () async {
+                    Navigator.push(
+                      context,
+                      PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) => YouTubeSearchPage(
+                          query: showList[index]['name'].toString(),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+      ],
     );
   }
 }

@@ -144,8 +144,9 @@ class _SongsListPageState extends State<SongsListPage> {
                               widget.listItem['title']?.toString() ?? 'Songs',
                         ),
                         IconButton(
+                          splashRadius: 24,
                           icon: const Icon(Icons.share_rounded),
-                          tooltip: AppLocalizations.of(context)!.share,
+                          tooltip: 'Share',
                           onPressed: () {
                             Share.share(
                               widget.listItem['perma_url'].toString(),

@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, use_decorated_box
+// ignore_for_file: use_super_parameters, use_decorated_box, avoid_redundant_argument_values
 
 import 'dart:io';
 
@@ -11,7 +11,6 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
@@ -19,6 +18,7 @@ import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -409,7 +409,7 @@ class _DownloadsState extends State<Downloads>
                                       children: [
                                         if (sortValue == sortTypes.indexOf(e))
                                           Icon(
-                                            size:20,
+                                            size: 20,
                                             Icons.check_rounded,
                                             color:
                                                 Theme.of(context).brightness ==
@@ -445,7 +445,7 @@ class _DownloadsState extends State<Downloads>
                                         if (orderValue == orderTypes.indexOf(e))
                                           Icon(
                                             Icons.check_rounded,
-                                            size:20,
+                                            size: 20,
                                             color:
                                                 Theme.of(context).brightness ==
                                                         Brightness.dark
@@ -807,7 +807,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text(AppLocalizations.of(context)!.cancel),
+            child: const Text('Cancel'),
           ),
           TextButton(
             style: TextButton.styleFrom(
@@ -922,15 +922,23 @@ class _DownSongsTabState extends State<DownSongsTab>
   Widget build(BuildContext context) {
     super.build(context);
     return (widget.songs.isEmpty)
-        ? emptyScreen(
-            context,
-            3,
-            AppLocalizations.of(context)!.nothingTo,
-            15.0,
-            AppLocalizations.of(context)!.showHere,
-            50,
-            AppLocalizations.of(context)!.addSomething,
-            23.0,
+        ? Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                Text(
+                  "Nothing to show here",
+                  style: GoogleFonts.roboto(
+                    fontSize: 20,
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary,
+                  ),
+                ),
+              ],
+            ),
           )
         : Column(
             children: [
@@ -1038,18 +1046,15 @@ class _DownSongsTabState extends State<DownSongsTab>
                               PopupMenuItem(
                                 value: 1,
                                 child: Row(
-                                  children: [
-                                    const Icon(
-                                      Icons.delete_rounded,
+                                  children: const [
+                                    Icon(
+                                      Iconsax.trash,
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 10.0,
                                     ),
                                     Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .delete,
+                                     'Delete',
                                     ),
                                   ],
                                 ),

@@ -1,6 +1,5 @@
 // ignore_for_file: use_super_parameters
 
-import 'package:app_links/app_links.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -16,7 +15,6 @@ import 'package:gem/Helpers/search_add_playlist.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ImportPlaylist extends StatelessWidget {
   ImportPlaylist({Key? key}) : super(key: key);
@@ -37,7 +35,7 @@ class ImportPlaylist extends StatelessWidget {
               appBar: AppBar(
                 title: Text(
                   "Import Playlist",
-                  style: GoogleFonts.roboto(fontSize:20),
+                  style: GoogleFonts.roboto(fontSize: 20),
                 ),
                 centerTitle: true,
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
@@ -48,32 +46,19 @@ class ImportPlaylist extends StatelessWidget {
               body: ListView.builder(
                 shrinkWrap: true,
                 physics: const BouncingScrollPhysics(),
-                itemCount: 4,
+                itemCount: 2,
                 itemBuilder: (cntxt, index) {
                   return ListTile(
                     title: Text(
                       index == 0
                           ? AppLocalizations.of(context)!.importFile
-                          : index == 1
-                              ? AppLocalizations.of(context)!.importSpotify
-                              : index == 2
-                                  ? AppLocalizations.of(context)!.importYt
-                                  : AppLocalizations.of(
-                                      context,
-                                    )!
-                                      .importResso,
+                          : AppLocalizations.of(context)!.importYt,
                     ),
                     leading: SizedBox.square(
                       dimension: 50,
                       child: Center(
                         child: Icon(
-                          index == 0
-                              ? MdiIcons.import
-                              : index == 1
-                                  ? MdiIcons.spotify
-                                  : index == 2
-                                      ? MdiIcons.youtube
-                                      : Icons.music_note_rounded,
+                          index == 0 ? MdiIcons.import : MdiIcons.youtube,
                           color: Theme.of(context).iconTheme.color,
                         ),
                       ),
@@ -85,23 +70,11 @@ class ImportPlaylist extends StatelessWidget {
                               playlistNames,
                               settingsBox,
                             )
-                          : index == 1
-                              ? importSpotify(
-                                  cntxt,
-                                  playlistNames,
-                                  settingsBox,
-                                )
-                              : index == 2
-                                  ? importYt(
-                                      cntxt,
-                                      playlistNames,
-                                      settingsBox,
-                                    )
-                                  : importResso(
-                                      cntxt,
-                                      playlistNames,
-                                      settingsBox,
-                                    );
+                          : importYt(
+                              cntxt,
+                              playlistNames,
+                              settingsBox,
+                            );
                     },
                   );
                 },
@@ -124,30 +97,30 @@ Future<void> importFile(
   settingsBox.put('playlistNames', newPlaylistNames);
 }
 
-void importSpotify(BuildContext context, List playlistNames, Box settingsBox) {
-  String code;
-  launchUrl(
-    Uri.parse(
-      SpotifyApi().requestAuthorization(),
-    ),
-    mode: LaunchMode.externalApplication,
-  );
+// void importSpotify(BuildContext context, List playlistNames, Box settingsBox) {
+//   String code;
+//   launchUrl(
+//     Uri.parse(
+//       SpotifyApi().requestAuthorization(),
+//     ),
+//     mode: LaunchMode.externalApplication,
+//   );
 
-  AppLinks(
-    onAppLink: (Uri uri, String link) async {
-      closeInAppWebView();
-      if (link.contains('code=')) {
-        code = link.split('code=')[1];
-        await fetchPlaylists(
-          code,
-          context,
-          playlistNames,
-          settingsBox,
-        );
-      }
-    },
-  );
-}
+//   AppLinks(
+//     onAppLink: (Uri uri, String link) async {
+//       closeInAppWebView();
+//       if (link.contains('code=')) {
+//         code = link.split('code=')[1];
+//         await fetchPlaylists(
+//           code,
+//           context,
+//           playlistNames,
+//           settingsBox,
+//         );
+//       }
+//     },
+//   );
+// }
 
 Future<void> importYt(
   BuildContext context,
@@ -188,51 +161,6 @@ Future<void> importYt(
             ),
           );
         }
-      } else {
-        ShowSnackBar().showSnackBar(
-          context,
-          AppLocalizations.of(context)!.failedImport,
-        );
-      }
-    },
-  );
-}
-
-Future<void> importResso(
-  BuildContext context,
-  List playlistNames,
-  Box settingsBox,
-) async {
-  await showTextInputDialog(
-    context: context,
-    title: AppLocalizations.of(context)!.enterPlaylistLink,
-    initialText: '',
-    keyboardType: TextInputType.url,
-    onSubmitted: (value) async {
-      final String link = value.trim();
-      Navigator.pop(context);
-      final Map data = await SearchAddPlaylist.addRessoPlaylist(link);
-      if (data.isNotEmpty) {
-        String playName = data['title'].toString();
-        while (
-            playlistNames.contains(playName) || await Hive.boxExists(value)) {
-          // ignore: use_string_buffers
-          playName = '$playName (1)';
-        }
-        playlistNames.add(playName);
-        settingsBox.put(
-          'playlistNames',
-          playlistNames,
-        );
-
-        await SearchAddPlaylist.showProgress(
-          data['count'] as int,
-          context,
-          SearchAddPlaylist.ressoSongsAdder(
-            playName,
-            data['tracks'] as List,
-          ),
-        );
       } else {
         ShowSnackBar().showSnackBar(
           context,

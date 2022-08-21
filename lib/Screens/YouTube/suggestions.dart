@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/Screens/Search/search.dart';
+import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
@@ -36,8 +36,6 @@ class _TopChartsState extends State<TopCharts>
   @override
   Widget build(BuildContext cntxt) {
     super.build(context);
-    // final double screenWidth = MediaQuery.of(context).size.width;
-    // final bool rotated = MediaQuery.of(context).size.height < screenWidth;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -97,26 +95,6 @@ class _TopChartsState extends State<TopCharts>
           backgroundColor: Colors.transparent,
           elevation: 0,
           automaticallyImplyLeading: false,
-          // leading: (rotated && screenWidth < 1050)
-          //     ? null
-          //     : Builder(
-          //         builder: (BuildContext context) {
-          //           return Transform.rotate(
-          //             angle: 22 / 7 * 2,
-          //             child: IconButton(
-          //               color: Theme.of(context).iconTheme.color,
-          //               icon: const Icon(
-          //                 Icons.horizontal_split_rounded,
-          //               ),
-          //               onPressed: () {
-          //                 Scaffold.of(cntxt).openDrawer();
-          //               },
-          //               tooltip: MaterialLocalizations.of(cntxt)
-          //                   .openAppDrawerTooltip,
-          //             ),
-          //           );
-          //         },
-          //       ),
         ),
         body: NotificationListener(
           onNotification: (overscroll) {
@@ -305,7 +283,7 @@ class _TopPageState extends State<TopPage>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                        builder: (context) => SearchPage(
+                        builder: (context) => YouTubeSearchPage(
                           query: showList[index]['name'].toString(),
                         ),
                       ),

@@ -7,6 +7,7 @@ import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
+
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
 
@@ -42,6 +43,12 @@ class _LibraryPageState extends State<LibraryPage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             automaticallyImplyLeading: false,
+            // leading: IconButton(
+            //     onPressed: () {
+            //       Navigator.push(
+            //           context, MaterialPageRoute(builder: (_) => PrefScreen()));
+            //     },
+            //     icon: Icon(Icons.add)),
             // leading: (rotated && screenWidth < 1050)
             //     ? null
             //     : Builder(
@@ -95,7 +102,7 @@ class _LibraryPageState extends State<LibraryPage> {
         ),
         if (!Platform.isIOS)
           LibraryTile(
-            title: AppLocalizations.of(context)!.myMusic,
+            title: "My Music",
             icon: MdiIcons.folderMusic,
             onTap: () {
               Navigator.push(

@@ -30,7 +30,9 @@ import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
@@ -1481,18 +1483,17 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                                       0,
                                       ':( ',
                                       100.0,
-                                      AppLocalizations.of(context)!.lyrics,
+                                      "Lyrics",
                                       60.0,
-                                      AppLocalizations.of(context)!
-                                          .notAvailable,
+                                      "Not availbale",
                                       20.0,
                                       useWhite: true,
                                     )
                                   : SelectableText(
                                       lyrics['lyrics'].toString(),
                                       textAlign: TextAlign.center,
-                                      style: const TextStyle(
-                                        fontSize: 16.0,
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 18.0,
                                       ),
                                     )
                               : child!;
@@ -1501,6 +1502,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                     ),
                   ),
                 ),
+                /* Copy card */
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Card(
@@ -1519,8 +1521,8 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                           text: lyrics['lyrics'].toString(),
                         );
                       },
-                      icon:  Icon(
-                        Icons.copy_rounded,
+                      icon: Icon(
+                        Iconsax.copy,
                         color: Theme.of(
                           context,
                         ).colorScheme.secondary,
@@ -1612,33 +1614,31 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                         borderRadius: BorderRadius.circular(15.0),
                       ),
                       clipBehavior: Clip.antiAlias,
-                      child:
-                          widget.mediaItem.artUri.toString().startsWith('file')
-                              ? Image(
-                                  fit: BoxFit.contain,
-                                  width: widget.width * 0.85,
-                                  gaplessPlayback: true,
-                                  image: FileImage(
-                                    File(
-                                      widget.mediaItem.artUri!.toFilePath(),
-                                    ),
-                                  ),
-                                )
-                              : CachedNetworkImage(
-                                  fit: BoxFit.contain,
-                                  errorWidget: (BuildContext context, _, __) =>
-                                      const Image(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage('assets/cover.jpg'),
-                                  ),
-                                  placeholder: (BuildContext context, _) =>
-                                      const Image(
-                                    fit: BoxFit.cover,
-                                    image: AssetImage('assets/cover.jpg'),
-                                  ),
-                                  imageUrl: widget.mediaItem.artUri.toString(),
-                                  width: widget.width * 0.85,
-                                ),
+                      child: widget.mediaItem.artUri
+                              .toString()
+                              .startsWith('file')
+                          //TODO: fix issue with local music image image thats low quality
+                          ? Image.file(
+                              File(widget.mediaItem.artUri!.toFilePath()),
+                              fit: BoxFit.contain,
+                              //width: widget.width * 0.85,
+                              gaplessPlayback: true,
+                            )
+                          : CachedNetworkImage(
+                              fit: BoxFit.contain,
+                              errorWidget: (BuildContext context, _, __) =>
+                                  const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                              placeholder: (BuildContext context, _) =>
+                                  const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/cover.jpg'),
+                              ),
+                              imageUrl: widget.mediaItem.artUri.toString(),
+                              width: widget.width * 0.85,
+                            ),
                     ),
                     ValueListenableBuilder(
                       valueListenable: dragging,
@@ -1837,13 +1837,13 @@ class NameNControls extends StatelessWidget {
                       PopupMenuItem<int>(
                         value: 0,
                         child: Row(
-                          children: [
-                            const Icon(
+                          children: const [
+                            Icon(
                               Icons.album_rounded,
                             ),
-                            const SizedBox(width: 10.0),
+                            SizedBox(width: 10.0),
                             Text(
-                              AppLocalizations.of(context)!.viewAlbum,
+                              'View Album',
                             ),
                           ],
                         ),
@@ -1852,13 +1852,13 @@ class NameNControls extends StatelessWidget {
                       PopupMenuItem<int>(
                         value: 5,
                         child: Row(
-                          children: [
-                            const Icon(
+                          children: const [
+                            Icon(
                               Icons.person_rounded,
                             ),
-                            const SizedBox(width: 10.0),
+                            SizedBox(width: 10.0),
                             Text(
-                              AppLocalizations.of(context)!.viewArtist,
+                             'View Artist',
                             ),
                           ],
                         ),

@@ -10,7 +10,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gem/Helpers/config.dart';
 import 'package:gem/Helpers/handle_native.dart';
 import 'package:gem/Helpers/route_handler.dart';
-import 'package:gem/Screens/About/about.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
@@ -31,11 +30,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Paint.enableDithering = true;
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await Hive.initFlutter('BlackHole');
-  } else {
-    await Hive.initFlutter();
-  }
+  await Hive.initFlutter();
+
   await openHiveBox('settings');
   await openHiveBox('downloads');
   await openHiveBox('Favorite Songs');
@@ -250,7 +246,6 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => initialFuntion(),
         '/pref': (context) => const PrefScreen(),
         '/setting': (context) => const SettingPage(),
-        '/about': (context) => AboutScreen(),
         '/playlists': (context) => PlaylistScreen(),
         '/nowplaying': (context) => NowPlaying(),
         '/recent': (context) => RecentlyPlayed(),

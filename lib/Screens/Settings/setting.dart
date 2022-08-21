@@ -2,11 +2,9 @@
 
 import 'dart:io';
 
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/popup.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -14,17 +12,13 @@ import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/config.dart';
 import 'package:gem/Helpers/picker.dart';
-import 'package:gem/Helpers/supabase.dart';
-import 'package:gem/Screens/Home/saavn.dart' as home_screen;
+import 'package:gem/Screens/Home/home_view.dart' as home_screen;
 import 'package:gem/Screens/Settings/player_gradient.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:gem/main.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:share_plus/share_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   final Function? callback;
@@ -68,8 +62,7 @@ class _SettingPageState extends State<SettingPage> {
       Hive.box('settings').get('theme', defaultValue: 'Default') as String;
   Map userThemes =
       Hive.box('settings').get('userThemes', defaultValue: {}) as Map;
-  String region =
-      Hive.box('settings').get('region', defaultValue: 'India') as String;
+
   bool useProxy =
       Hive.box('settings').get('useProxy', defaultValue: false) as bool;
   String themeColor =
@@ -171,14 +164,11 @@ class _SettingPageState extends State<SettingPage> {
                   ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
                 },
                 blendMode: BlendMode.dstIn,
-                child: Center(
+                child: const Center(
                   child: Text(
-                    AppLocalizations.of(
-                      context,
-                    )!
-                        .settings,
+                    'Settings',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
+                    style: TextStyle(
                       fontSize: 80,
                       color: Colors.white,
                     ),
@@ -199,10 +189,7 @@ class _SettingPageState extends State<SettingPage> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
                           child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .theme,
+                            'Theme',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -211,11 +198,8 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ),
                         BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .darkMode,
+                          title: const Text(
+                            'Dark Mode',
                           ),
                           keyName: 'darkMode',
                           defaultValue: true,
@@ -232,11 +216,8 @@ class _SettingPageState extends State<SettingPage> {
                           },
                         ),
                         BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useSystemTheme,
+                          title: const Text(
+                            'Use System Theme',
                           ),
                           keyName: 'useSystemTheme',
                           defaultValue: true,
@@ -246,11 +227,8 @@ class _SettingPageState extends State<SettingPage> {
                           },
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .accent,
+                          title: const Text(
+                            'Accent Colors',
                           ),
                           subtitle: Text('$themeColor, $colorHue'),
                           trailing: Padding(
@@ -342,6 +320,7 @@ class _SettingPageState extends State<SettingPage> {
                                                   switchToCustomTheme();
                                                   Navigator.pop(context);
                                                 },
+                                                //TODO: Add color name somewhere
                                                 child: Container(
                                                   width: MediaQuery.of(context)
                                                           .size
@@ -354,7 +333,7 @@ class _SettingPageState extends State<SettingPage> {
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                      100.0,
+                                                      50.0,
                                                     ),
                                                     color: MyTheme().getColor(
                                                       colors[index],
@@ -392,815 +371,16 @@ class _SettingPageState extends State<SettingPage> {
                           },
                           dense: true,
                         ),
-                        Visibility(
-                          visible:
-                              Theme.of(context).brightness == Brightness.dark,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                title: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .bgGrad,
-                                ),
-                                subtitle: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .bgGradSub,
-                                ),
-                                trailing: Padding(
-                                  padding: const EdgeInsets.all(
-                                    10.0,
-                                  ),
-                                  child: Container(
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                        100.0,
-                                      ),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? currentTheme.getBackGradient()
-                                            : [
-                                                Colors.white,
-                                                Theme.of(context).canvasColor,
-                                              ],
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.white24,
-                                          blurRadius: 5.0,
-                                          offset: Offset(
-                                            0.0,
-                                            3.0,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                onTap: () {
-                                  final List<List<Color>> gradients =
-                                      currentTheme.backOpt;
-                                  PopupDialog().showPopup(
-                                    context: context,
-                                    child: SizedBox(
-                                      width: 500,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const BouncingScrollPhysics(),
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          30,
-                                          0,
-                                          10,
-                                        ),
-                                        itemCount: gradients.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 20.0,
-                                              right: 20.0,
-                                              bottom: 15.0,
-                                            ),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                settingsBox.put(
-                                                  'backGrad',
-                                                  index,
-                                                );
-                                                currentTheme.backGrad = index;
-                                                widget.callback!();
-                                                switchToCustomTheme();
-                                                Navigator.pop(context);
-                                                setState(
-                                                  () {},
-                                                );
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    15.0,
-                                                  ),
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: gradients[index],
-                                                  ),
-                                                ),
-                                                child: (currentTheme
-                                                            .getBackGradient() ==
-                                                        gradients[index])
-                                                    ? const Icon(
-                                                        Icons.done_rounded,
-                                                        size: 20,
-                                                      )
-                                                    : const SizedBox(),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                                dense: true,
-                              ),
-                              ListTile(
-                                title: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cardGrad,
-                                ),
-                                subtitle: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cardGradSub,
-                                ),
-                                trailing: Padding(
-                                  padding: const EdgeInsets.all(
-                                    10.0,
-                                  ),
-                                  child: Container(
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                        100.0,
-                                      ),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? currentTheme.getCardGradient()
-                                            : [
-                                                Colors.white,
-                                                Theme.of(context).canvasColor,
-                                              ],
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.white24,
-                                          blurRadius: 5.0,
-                                          offset: Offset(0.0, 3.0),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                onTap: () {
-                                  final List<List<Color>> gradients =
-                                      currentTheme.cardOpt;
-                                  PopupDialog().showPopup(
-                                    context: context,
-                                    child: SizedBox(
-                                      width: 500,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const BouncingScrollPhysics(),
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          30,
-                                          0,
-                                          10,
-                                        ),
-                                        itemCount: gradients.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 20.0,
-                                              right: 20.0,
-                                              bottom: 15.0,
-                                            ),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                settingsBox.put(
-                                                  'cardGrad',
-                                                  index,
-                                                );
-                                                currentTheme.cardGrad = index;
-                                                widget.callback!();
-                                                switchToCustomTheme();
-                                                Navigator.pop(context);
-                                                setState(
-                                                  () {},
-                                                );
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    15.0,
-                                                  ),
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: gradients[index],
-                                                  ),
-                                                ),
-                                                child: (currentTheme
-                                                            .getCardGradient() ==
-                                                        gradients[index])
-                                                    ? const Icon(
-                                                        Icons.done_rounded,
-                                                      )
-                                                    : const SizedBox(),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                                dense: true,
-                              ),
-                              ListTile(
-                                title: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .bottomGrad,
-                                ),
-                                subtitle: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .bottomGradSub,
-                                ),
-                                trailing: Padding(
-                                  padding: const EdgeInsets.all(
-                                    10.0,
-                                  ),
-                                  child: Container(
-                                    height: 25,
-                                    width: 25,
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(
-                                        100.0,
-                                      ),
-                                      color: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? currentTheme.getBottomGradient()
-                                            : [
-                                                Colors.white,
-                                                Theme.of(context).canvasColor,
-                                              ],
-                                      ),
-                                      boxShadow: const [
-                                        BoxShadow(
-                                          color: Colors.white24,
-                                          blurRadius: 5.0,
-                                          offset: Offset(
-                                            0.0,
-                                            3.0,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                onTap: () {
-                                  final List<List<Color>> gradients =
-                                      currentTheme.backOpt;
-                                  PopupDialog().showPopup(
-                                    context: context,
-                                    child: SizedBox(
-                                      width: 500,
-                                      child: ListView.builder(
-                                        shrinkWrap: true,
-                                        physics: const BouncingScrollPhysics(),
-                                        padding: const EdgeInsets.fromLTRB(
-                                          0,
-                                          30,
-                                          0,
-                                          10,
-                                        ),
-                                        itemCount: gradients.length,
-                                        itemBuilder: (context, index) {
-                                          return Padding(
-                                            padding: const EdgeInsets.only(
-                                              left: 20.0,
-                                              right: 20.0,
-                                              bottom: 15.0,
-                                            ),
-                                            child: GestureDetector(
-                                              onTap: () {
-                                                settingsBox.put(
-                                                  'bottomGrad',
-                                                  index,
-                                                );
-                                                currentTheme.bottomGrad = index;
-                                                switchToCustomTheme();
-                                                Navigator.pop(context);
-                                                setState(
-                                                  () {},
-                                                );
-                                              },
-                                              child: Container(
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                height: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.125,
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    15.0,
-                                                  ),
-                                                  gradient: LinearGradient(
-                                                    begin: Alignment.topLeft,
-                                                    end: Alignment.bottomRight,
-                                                    colors: gradients[index],
-                                                  ),
-                                                ),
-                                                child: (currentTheme
-                                                            .getBottomGradient() ==
-                                                        gradients[index])
-                                                    ? const Icon(
-                                                        Icons.done_rounded,
-                                                      )
-                                                    : const SizedBox(),
-                                              ),
-                                            ),
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                  );
-                                },
-                                dense: true,
-                              ),
-                              ListTile(
-                                title: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .canvasColor,
-                                ),
-                                subtitle: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .canvasColorSub,
-                                ),
-                                onTap: () {},
-                                trailing: DropdownButton(
-                                  value: canvasColor,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .color,
-                                  ),
-                                  underline: const SizedBox(),
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      switchToCustomTheme();
-                                      setState(
-                                        () {
-                                          currentTheme
-                                              .switchCanvasColor(newValue);
-                                          canvasColor = newValue;
-                                        },
-                                      );
-                                    }
-                                  },
-                                  items: <String>['Grey', 'Black']
-                                      .map<DropdownMenuItem<String>>(
-                                          (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                                dense: true,
-                              ),
-                              ListTile(
-                                title: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cardColor,
-                                ),
-                                subtitle: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cardColorSub,
-                                ),
-                                onTap: () {},
-                                trailing: DropdownButton(
-                                  value: cardColor,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Theme.of(context)
-                                        .textTheme
-                                        .bodyText1!
-                                        .color,
-                                  ),
-                                  underline: const SizedBox(),
-                                  onChanged: (String? newValue) {
-                                    if (newValue != null) {
-                                      switchToCustomTheme();
-                                      setState(
-                                        () {
-                                          currentTheme
-                                              .switchCardColor(newValue);
-                                          cardColor = newValue;
-                                        },
-                                      );
-                                    }
-                                  },
-                                  items: <String>[
-                                    'Grey800',
-                                    'Grey850',
-                                    'Grey900',
-                                    'Black'
-                                  ].map<DropdownMenuItem<String>>(
-                                      (String value) {
-                                    return DropdownMenuItem<String>(
-                                      value: value,
-                                      child: Text(value),
-                                    );
-                                  }).toList(),
-                                ),
-                                dense: true,
-                              ),
-                            ],
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useAmoled,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            currentTheme.switchTheme(
-                              useSystemTheme: false,
-                              isDark: true,
-                            );
-                            Hive.box('settings').put('darkMode', true);
-
-                            settingsBox.put('backGrad', 4);
-                            currentTheme.backGrad = 4;
-                            settingsBox.put('cardGrad', 6);
-                            currentTheme.cardGrad = 6;
-                            settingsBox.put('bottomGrad', 4);
-                            currentTheme.bottomGrad = 4;
-
-                            currentTheme.switchCanvasColor('Black');
-                            canvasColor = 'Black';
-
-                            currentTheme.switchCardColor('Grey900');
-                            cardColor = 'Grey900';
-
-                            themeColor = 'White';
-                            colorHue = 400;
-                            currentTheme.switchColor(
-                              'White',
-                              colorHue,
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .currentTheme,
-                          ),
-                          trailing: DropdownButton(
-                            value: theme,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
-                            ),
-                            underline: const SizedBox(),
-                            onChanged: (String? themeChoice) {
-                              if (themeChoice != null) {
-                                const deflt = 'Default';
-
-                                currentTheme.setInitialTheme(themeChoice);
-
-                                setState(
-                                  () {
-                                    theme = themeChoice;
-                                    if (themeChoice == 'Custom') return;
-                                    final selectedTheme =
-                                        userThemes[themeChoice];
-
-                                    settingsBox.put(
-                                      'backGrad',
-                                      themeChoice == deflt
-                                          ? 2
-                                          : selectedTheme['backGrad'],
-                                    );
-                                    currentTheme.backGrad = themeChoice == deflt
-                                        ? 2
-                                        : selectedTheme['backGrad'] as int;
-
-                                    settingsBox.put(
-                                      'cardGrad',
-                                      themeChoice == deflt
-                                          ? 4
-                                          : selectedTheme['cardGrad'],
-                                    );
-                                    currentTheme.cardGrad = themeChoice == deflt
-                                        ? 4
-                                        : selectedTheme['cardGrad'] as int;
-
-                                    settingsBox.put(
-                                      'bottomGrad',
-                                      themeChoice == deflt
-                                          ? 3
-                                          : selectedTheme['bottomGrad'],
-                                    );
-                                    currentTheme.bottomGrad = themeChoice ==
-                                            deflt
-                                        ? 3
-                                        : selectedTheme['bottomGrad'] as int;
-
-                                    currentTheme.switchCanvasColor(
-                                      themeChoice == deflt
-                                          ? 'Grey'
-                                          : selectedTheme['canvasColor']
-                                              as String,
-                                      notify: false,
-                                    );
-                                    canvasColor = themeChoice == deflt
-                                        ? 'Grey'
-                                        : selectedTheme['canvasColor']
-                                            as String;
-
-                                    currentTheme.switchCardColor(
-                                      themeChoice == deflt
-                                          ? 'Grey900'
-                                          : selectedTheme['cardColor']
-                                              as String,
-                                      notify: false,
-                                    );
-                                    cardColor = themeChoice == deflt
-                                        ? 'Grey900'
-                                        : selectedTheme['cardColor'] as String;
-
-                                    themeColor = themeChoice == deflt
-                                        ? 'Teal'
-                                        : selectedTheme['accentColor']
-                                            as String;
-                                    colorHue = themeChoice == deflt
-                                        ? 400
-                                        : selectedTheme['colorHue'] as int;
-
-                                    currentTheme.switchColor(
-                                      themeColor,
-                                      colorHue,
-                                      notify: false,
-                                    );
-
-                                    currentTheme.switchTheme(
-                                      useSystemTheme: !(themeChoice == deflt) &&
-                                          selectedTheme['useSystemTheme']
-                                              as bool,
-                                      isDark: themeChoice == deflt ||
-                                          selectedTheme['isDark'] as bool,
-                                    );
-                                  },
-                                );
-                              }
-                            },
-                            selectedItemBuilder: (BuildContext context) {
-                              return userThemesList.map<Widget>((String item) {
-                                return Text(item);
-                              }).toList();
-                            },
-                            items: userThemesList.map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Flexible(
-                                      flex: 2,
-                                      child: Text(
-                                        value,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    if (value != 'Default' && value != 'Custom')
-                                      Flexible(
-                                        child: IconButton(
-                                          //padding: EdgeInsets.zero,
-                                          iconSize: 18,
-                                          splashRadius: 18,
-                                          onPressed: () {
-                                            Navigator.of(context).pop();
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                    10.0,
-                                                  ),
-                                                ),
-                                                title: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .deleteTheme,
-                                                  style: TextStyle(
-                                                    color: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary,
-                                                  ),
-                                                ),
-                                                content: Text(
-                                                  '${AppLocalizations.of(
-                                                    context,
-                                                  )!.deleteThemeSubtitle} $value?',
-                                                ),
-                                                actions: [
-                                                  TextButton(
-                                                    onPressed:
-                                                        Navigator.of(context)
-                                                            .pop,
-                                                    child: Text(
-                                                      AppLocalizations.of(
-                                                        context,
-                                                      )!
-                                                          .cancel,
-                                                    ),
-                                                  ),
-                                                  TextButton(
-                                                    style: TextButton.styleFrom(
-                                                      primary: Theme.of(context)
-                                                                  .colorScheme
-                                                                  .secondary ==
-                                                              Colors.white
-                                                          ? Colors.black
-                                                          : null,
-                                                      backgroundColor:
-                                                          Theme.of(context)
-                                                              .colorScheme
-                                                              .secondary,
-                                                    ),
-                                                    onPressed: () {
-                                                      currentTheme
-                                                          .deleteTheme(value);
-                                                      if (currentTheme
-                                                              .getInitialTheme() ==
-                                                          value) {
-                                                        currentTheme
-                                                            .setInitialTheme(
-                                                          'Custom',
-                                                        );
-                                                        theme = 'Custom';
-                                                      }
-                                                      setState(
-                                                        () {
-                                                          userThemes =
-                                                              currentTheme
-                                                                  .getThemes();
-                                                        },
-                                                      );
-                                                      ShowSnackBar()
-                                                          .showSnackBar(
-                                                        context,
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .themeDeleted,
-                                                      );
-                                                      return Navigator.of(
-                                                        context,
-                                                      ).pop();
-                                                    },
-                                                    child: Text(
-                                                      AppLocalizations.of(
-                                                        context,
-                                                      )!
-                                                          .delete,
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    width: 5.0,
-                                                  ),
-                                                ],
-                                              ),
-                                            );
-                                          },
-                                          icon: const Icon(
-                                            Icons.delete_rounded,
-                                          ),
-                                        ),
-                                      )
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                            isDense: true,
-                          ),
-                          dense: true,
-                        ),
-                        Visibility(
-                          visible: theme == 'Custom',
-                          child: ListTile(
-                            title: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .saveTheme,
-                            ),
-                            onTap: () {
-                              final initialThemeName = '${AppLocalizations.of(
-                                context,
-                              )!.theme} ${userThemes.length + 1}';
-                              showTextInputDialog(
-                                context: context,
-                                title: AppLocalizations.of(
-                                  context,
-                                )!
-                                    .enterThemeName,
-                                onSubmitted: (value) {
-                                  if (value == '') return;
-                                  currentTheme.saveTheme(value);
-                                  currentTheme.setInitialTheme(value);
-                                  setState(
-                                    () {
-                                      userThemes = currentTheme.getThemes();
-                                      theme = value;
-                                    },
-                                  );
-                                  ShowSnackBar().showSnackBar(
-                                    context,
-                                    AppLocalizations.of(
-                                      context,
-                                    )!
-                                        .themeSaved,
-                                  );
-                                  Navigator.of(context).pop();
-                                },
-                                keyboardType: TextInputType.text,
-                                initialText: initialThemeName,
-                              );
-                            },
-                            dense: true,
-                          ),
-                        )
+                        backgroundGradient(context),
+                        amoledSettings(),
+                        currentThemeConfig(context, userThemesList),
+                        customThemeConfig(context)
                       ],
                     ),
                   ),
                 ),
+                appUiSection(context),
+                musicPrefs(context),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(
                     10.0,
@@ -1220,10 +400,7 @@ class _SettingPageState extends State<SettingPage> {
                             0,
                           ),
                           child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .ui,
+                            'Download',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -1232,858 +409,8 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .playerScreenBackground,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .playerScreenBackgroundSub,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                opaque: false,
-                                pageBuilder: (_, __, ___) =>
-                                    const PlayerGradientSelection(),
-                              ),
-                            );
-                          },
-                        ),
-
-                        // BoxSwitchTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .useBlurForNowPlaying,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .useBlurForNowPlayingSub,
-                        //   ),
-                        //   keyName: 'useBlurForNowPlaying',
-                        //   defaultValue: true,
-                        //   isThreeLine: true,
-                        // ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useDenseMini,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useDenseMiniSub,
-                          ),
-                          keyName: 'useDenseMini',
-                          defaultValue: false,
-                          isThreeLine: false,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .miniButtons,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .miniButtonsSub,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                final List checked =
-                                    List.from(preferredMiniButtons);
-                                final List<String> order =
-                                    List.from(miniButtonsOrder);
-                                return StatefulBuilder(
-                                  builder: (
-                                    BuildContext context,
-                                    StateSetter setStt,
-                                  ) {
-                                    return AlertDialog(
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                          15.0,
-                                        ),
-                                      ),
-                                      content: SizedBox(
-                                        width: 500,
-                                        child: ReorderableListView(
-                                          physics:
-                                              const BouncingScrollPhysics(),
-                                          shrinkWrap: true,
-                                          padding: const EdgeInsets.fromLTRB(
-                                            0,
-                                            10,
-                                            0,
-                                            10,
-                                          ),
-                                          onReorder:
-                                              (int oldIndex, int newIndex) {
-                                            if (oldIndex < newIndex) {
-                                              newIndex--;
-                                            }
-                                            final temp = order.removeAt(
-                                              oldIndex,
-                                            );
-                                            order.insert(newIndex, temp);
-                                            setStt(
-                                              () {},
-                                            );
-                                          },
-                                          header: Center(
-                                            child: Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .changeOrder,
-                                            ),
-                                          ),
-                                          children: order.map((e) {
-                                            return CheckboxListTile(
-                                              key: Key(e),
-                                              dense: true,
-                                              activeColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              checkColor: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary ==
-                                                      Colors.white
-                                                  ? Colors.black
-                                                  : null,
-                                              value: checked.contains(e),
-                                              title: Text(e),
-                                              onChanged: (bool? value) {
-                                                setStt(
-                                                  () {
-                                                    value!
-                                                        ? checked.add(e)
-                                                        : checked.remove(e);
-                                                  },
-                                                );
-                                              },
-                                            );
-                                          }).toList(),
-                                        ),
-                                      ),
-                                      actions: [
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            primary:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.grey[700],
-                                          ),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!
-                                                .cancel,
-                                          ),
-                                        ),
-                                        TextButton(
-                                          style: TextButton.styleFrom(
-                                            primary: Theme.of(context)
-                                                        .colorScheme
-                                                        .secondary ==
-                                                    Colors.white
-                                                ? Colors.black
-                                                : null,
-                                            backgroundColor: Theme.of(context)
-                                                .colorScheme
-                                                .secondary,
-                                          ),
-                                          onPressed: () {
-                                            setState(
-                                              () {
-                                                final List temp = [];
-                                                for (int i = 0;
-                                                    i < order.length;
-                                                    i++) {
-                                                  if (checked
-                                                      .contains(order[i])) {
-                                                    temp.add(order[i]);
-                                                  }
-                                                }
-                                                preferredMiniButtons = temp;
-                                                miniButtonsOrder = order;
-                                                Navigator.pop(context);
-                                                Hive.box('settings').put(
-                                                  'preferredMiniButtons',
-                                                  preferredMiniButtons,
-                                                );
-                                                Hive.box('settings').put(
-                                                  'miniButtonsOrder',
-                                                  order,
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Text(
-                                            AppLocalizations.of(
-                                              context,
-                                            )!
-                                                .ok,
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          width: 5,
-                                        ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .blacklistedHomeSections,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .blacklistedHomeSectionsSub,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            final GlobalKey<AnimatedListState> listKey =
-                                GlobalKey<AnimatedListState>();
-                            showModalBottomSheet(
-                              isDismissible: true,
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return BottomGradientContainer(
-                                  borderRadius: BorderRadius.circular(
-                                    20.0,
-                                  ),
-                                  child: AnimatedList(
-                                    physics: const BouncingScrollPhysics(),
-                                    shrinkWrap: true,
-                                    padding: const EdgeInsets.fromLTRB(
-                                      0,
-                                      10,
-                                      0,
-                                      10,
-                                    ),
-                                    key: listKey,
-                                    initialItemCount:
-                                        blacklistedHomeSections.length + 1,
-                                    itemBuilder: (cntxt, idx, animation) {
-                                      return (idx == 0)
-                                          ? ListTile(
-                                              title: Text(
-                                                AppLocalizations.of(context)!
-                                                    .addNew,
-                                              ),
-                                              leading: const Icon(
-                                                CupertinoIcons.add,
-                                              ),
-                                              onTap: () async {
-                                                showTextInputDialog(
-                                                  context: context,
-                                                  title: AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .enterText,
-                                                  keyboardType:
-                                                      TextInputType.text,
-                                                  onSubmitted: (String value) {
-                                                    Navigator.pop(context);
-                                                    blacklistedHomeSections.add(
-                                                      value
-                                                          .trim()
-                                                          .toLowerCase(),
-                                                    );
-                                                    Hive.box('settings').put(
-                                                      'blacklistedHomeSections',
-                                                      blacklistedHomeSections,
-                                                    );
-                                                    listKey.currentState!
-                                                        .insertItem(
-                                                      blacklistedHomeSections
-                                                          .length,
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            )
-                                          : SizeTransition(
-                                              sizeFactor: animation,
-                                              child: ListTile(
-                                                leading: const Icon(
-                                                  CupertinoIcons.folder,
-                                                ),
-                                                title: Text(
-                                                  blacklistedHomeSections[
-                                                          idx - 1]
-                                                      .toString(),
-                                                ),
-                                                trailing: IconButton(
-                                                  icon: const Icon(
-                                                    CupertinoIcons.clear,
-                                                    size: 15.0,
-                                                  ),
-                                                  tooltip: 'Remove',
-                                                  onPressed: () {
-                                                    blacklistedHomeSections
-                                                        .removeAt(idx - 1);
-                                                    Hive.box('settings').put(
-                                                      'blacklistedHomeSections',
-                                                      blacklistedHomeSections,
-                                                    );
-                                                    listKey.currentState!
-                                                        .removeItem(
-                                                      idx,
-                                                      (
-                                                        context,
-                                                        animation,
-                                                      ) =>
-                                                          Container(),
-                                                    );
-                                                  },
-                                                ),
-                                              ),
-                                            );
-                                    },
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .showPlaylists,
-                          ),
-                          keyName: 'showPlaylist',
-                          defaultValue: true,
-                          onChanged: (val, box) {
-                            widget.callback!();
-                          },
-                        ),
-
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .showLast,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .showLastSub,
-                          ),
-                          keyName: 'showRecent',
-                          defaultValue: true,
-                          onChanged: (val, box) {
-                            widget.callback!();
-                          },
-                        ),
-                        // BoxSwitchTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .showHistory,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .showHistorySub,
-                        //   ),
-                        //   keyName: 'showHistory',
-                        //   defaultValue: true,
-                        // ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .enableGesture,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .enableGestureSub,
-                          ),
-                          keyName: 'enableGesture',
-                          defaultValue: true,
-                          isThreeLine: true,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    10.0,
-                    10.0,
-                    10.0,
-                    10.0,
-                  ),
-                  child: GradientCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            15,
-                            15,
-                            15,
-                            0,
-                          ),
-                          child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .musicPlayback,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .musicLang,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .musicLangSub,
-                          ),
-                          trailing: SizedBox(
-                            width: 150,
-                            child: Text(
-                              preferredLanguage.isEmpty
-                                  ? 'None'
-                                  : preferredLanguage.join(', '),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              textAlign: TextAlign.end,
-                            ),
-                          ),
-                          dense: true,
-                          onTap: () {
-                            showModalBottomSheet(
-                              isDismissible: true,
-                              backgroundColor: Colors.transparent,
-                              context: context,
-                              builder: (BuildContext context) {
-                                final List checked =
-                                    List.from(preferredLanguage);
-                                return StatefulBuilder(
-                                  builder: (
-                                    BuildContext context,
-                                    StateSetter setStt,
-                                  ) {
-                                    return BottomGradientContainer(
-                                      borderRadius: BorderRadius.circular(
-                                        20.0,
-                                      ),
-                                      child: Column(
-                                        children: [
-                                          Expanded(
-                                            child: ListView.builder(
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              shrinkWrap: true,
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                0,
-                                                10,
-                                                0,
-                                                10,
-                                              ),
-                                              itemCount: languages.length,
-                                              itemBuilder: (context, idx) {
-                                                return CheckboxListTile(
-                                                  activeColor: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  checkColor: Theme.of(context)
-                                                              .colorScheme
-                                                              .secondary ==
-                                                          Colors.white
-                                                      ? Colors.black
-                                                      : null,
-                                                  value: checked.contains(
-                                                    languages[idx],
-                                                  ),
-                                                  title: Text(
-                                                    languages[idx],
-                                                  ),
-                                                  onChanged: (bool? value) {
-                                                    value!
-                                                        ? checked
-                                                            .add(languages[idx])
-                                                        : checked.remove(
-                                                            languages[idx],
-                                                          );
-                                                    setStt(
-                                                      () {},
-                                                    );
-                                                  },
-                                                );
-                                              },
-                                            ),
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  primary: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .cancel,
-                                                ),
-                                              ),
-                                              TextButton(
-                                                style: TextButton.styleFrom(
-                                                  primary: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                ),
-                                                onPressed: () {
-                                                  setState(
-                                                    () {
-                                                      preferredLanguage =
-                                                          checked;
-                                                      Navigator.pop(context);
-                                                      Hive.box('settings').put(
-                                                        'preferredLanguage',
-                                                        checked,
-                                                      );
-                                                      home_screen.fetched =
-                                                          false;
-                                                      home_screen
-                                                              .preferredLanguage =
-                                                          preferredLanguage;
-                                                      widget.callback!();
-                                                    },
-                                                  );
-                                                  if (preferredLanguage
-                                                      .isEmpty) {
-                                                    ShowSnackBar().showSnackBar(
-                                                      context,
-                                                      AppLocalizations.of(
-                                                        context,
-                                                      )!
-                                                          .noLangSelected,
-                                                    );
-                                                  }
-                                                },
-                                                child: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .ok,
-                                                  style: const TextStyle(
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        // ListTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .chartLocation,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .chartLocationSub,
-                        //   ),
-                        //   trailing: SizedBox(
-                        //     width: 150,
-                        //     child: Text(
-                        //       region,
-                        //       textAlign: TextAlign.end,
-                        //     ),
-                        //   ),
-                        //   dense: true,
-                        //   onTap: () async {
-                        //     region = await SpotifyCountry()
-                        //         .changeCountry(context: context);
-                        //     setState(
-                        //       () {},
-                        //     );
-                        //   },
-                        // ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .streamQuality,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .streamQualitySub,
-                          ),
-                          onTap: () {},
-                          trailing: DropdownButton(
-                            value: streamingQuality,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
-                            ),
-                            underline: const SizedBox(),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(
-                                  () {
-                                    streamingQuality = newValue;
-                                    Hive.box('settings')
-                                        .put('streamingQuality', newValue);
-                                  },
-                                );
-                              }
-                            },
-                            items: <String>['96 kbps', '160 kbps', '320 kbps']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          dense: true,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .ytStreamQuality,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .ytStreamQualitySub,
-                          ),
-                          onTap: () {},
-                          trailing: DropdownButton(
-                            value: ytQuality,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
-                            ),
-                            underline: const SizedBox(),
-                            onChanged: (String? newValue) {
-                              if (newValue != null) {
-                                setState(
-                                  () {
-                                    ytQuality = newValue;
-                                    Hive.box('settings')
-                                        .put('ytQuality', newValue);
-                                  },
-                                );
-                              }
-                            },
-                            items: <String>['Low', 'High']
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
-                          ),
-                          dense: true,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .loadLast,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .loadLastSub,
-                          ),
-                          keyName: 'loadStart',
-                          defaultValue: true,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .resetOnSkip,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .resetOnSkipSub,
-                          ),
-                          keyName: 'resetOnSkip',
-                          defaultValue: false,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .enforceRepeat,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .enforceRepeatSub,
-                          ),
-                          keyName: 'enforceRepeat',
-                          defaultValue: false,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .autoplay,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .autoplaySub,
-                          ),
-                          keyName: 'autoplay',
-                          defaultValue: true,
-                          isThreeLine: true,
-                        ),
-                        // BoxSwitchTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .cacheSong,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .cacheSongSub,
-                        //   ),
-                        //   keyName: 'cacheSong',
-                        //   defaultValue: false,
-                        // ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    10.0,
-                    10.0,
-                    10.0,
-                    10.0,
-                  ),
-                  child: GradientCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            15,
-                            15,
-                            15,
-                            0,
-                          ),
-                          child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .down,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
-                            ),
-                          ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downQuality,
+                          title: const Text(
+                            'Download Quality',
                           ),
                           subtitle: Text(
                             AppLocalizations.of(
@@ -2124,17 +451,11 @@ class _SettingPageState extends State<SettingPage> {
                           dense: true,
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .ytDownQuality,
+                          title: const Text(
+                            'Youtube Download Quality',
                           ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .ytDownQualitySub,
+                          subtitle: const Text(
+                            'Higher quality consumes more data ',
                           ),
                           onTap: () {},
                           trailing: DropdownButton(
@@ -2394,10 +715,7 @@ class _SettingPageState extends State<SettingPage> {
                             0,
                           ),
                           child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .others,
+                            'Others',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -2850,14 +1168,6 @@ class _SettingPageState extends State<SettingPage> {
                           keyName: 'stopForegroundService',
                           defaultValue: true,
                         ),
-                        // const BoxSwitchTile(
-                        //   title: Text('Remove Service from foreground when paused'),
-                        //   subtitle: Text(
-                        //       "If turned on, you can slide notification when paused to stop the service. But Service can also be stopped by android to release memory. If you don't want android to stop service while paused, turn it off\nDefault: On\n"),
-                        //   isThreeLine: true,
-                        //   keyName: 'stopServiceOnPause',
-                        //   defaultValue: true,
-                        // ),
                         BoxSwitchTile(
                           title: Text(
                             AppLocalizations.of(
@@ -2963,10 +1273,7 @@ class _SettingPageState extends State<SettingPage> {
                                         Row(
                                           children: [
                                             Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .port,
+                                              'Port',
                                               style: TextStyle(
                                                 color: Theme.of(context)
                                                     .colorScheme
@@ -2993,12 +1300,7 @@ class _SettingPageState extends State<SettingPage> {
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
-                                        child: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!
-                                              .cancel,
-                                        ),
+                                        child: const Text('Cancel'),
                                       ),
                                       TextButton(
                                         style: TextButton.styleFrom(
@@ -3046,11 +1348,8 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .clearCache,
+                          title: const Text(
+                            'Clear cacheed data',
                           ),
                           subtitle: Text(
                             AppLocalizations.of(
@@ -3111,10 +1410,7 @@ class _SettingPageState extends State<SettingPage> {
                             0,
                           ),
                           child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .backNRest,
+                            'BackUp & Restore',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
@@ -3386,9 +1682,9 @@ class _SettingPageState extends State<SettingPage> {
                             onPressed: () async {
                               autoBackPath =
                                   await ExtStorageProvider.getExtStorage(
-                                        dirName: 'BlackHole/Backups',
+                                        dirName: 'Gem/Backups',
                                       ) ??
-                                      '/storage/emulated/0/BlackHole/Backups';
+                                      '/storage/emulated/0/Gem/Backups';
                               Hive.box('settings')
                                   .put('autoBackPath', autoBackPath);
                               setState(
@@ -3432,500 +1728,1692 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    10.0,
-                    10.0,
-                    10.0,
-                    10.0,
-                  ),
-                  child: GradientCard(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
-                            15,
-                            15,
-                            15,
-                            0,
+                aboutSection(context),
+                // Padding(
+                //   padding: const EdgeInsets.fromLTRB(
+                //     5,
+                //     30,
+                //     5,
+                //     20,
+                //   ),
+                //   child: Center(
+                //     child: Text(
+                //       'Copyright (c) Tricky Drevs',
+                //       style: const TextStyle(fontSize: 12),
+                //     ),
+                //   ),
+                // ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Padding aboutSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+      ),
+      child: GradientCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                15,
+                15,
+                15,
+                0,
+              ),
+              child: Text(
+                'About',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
+            ListTile(
+              title: const Text(
+                'Version',
+              ),
+              subtitle: const Text(
+                'Tap to check for updates',
+              ),
+              onTap: () {
+                ShowSnackBar().showSnackBar(
+                  context,
+                  'Checking for updates...',
+                  noAction: true,
+                );
+
+                // SupaBase().getUpdate().then(
+                //   (Map value) async {
+                //     if (compareVersion(
+                //       value['LatestVersion'].toString(),
+                //       appVersion!,
+                //     )) {
+                //       List? abis = await Hive.box('settings')
+                //           .get('supportedAbis') as List?;
+
+                //       if (abis == null) {
+                //         final DeviceInfoPlugin deviceInfo =
+                //             DeviceInfoPlugin();
+                //         final AndroidDeviceInfo androidDeviceInfo =
+                //             await deviceInfo.androidInfo;
+                //         abis = androidDeviceInfo.supportedAbis;
+                //         await Hive.box('settings')
+                //             .put('supportedAbis', abis);
+                //       }
+                //       ShowSnackBar().showSnackBar(
+                //         context,
+                //         'Update Available',
+                //         duration: const Duration(seconds: 15),
+                //         action: SnackBarAction(
+                //           textColor: Theme.of(context)
+                //               .colorScheme
+                //               .secondary,
+                //           label:
+                //               AppLocalizations.of(context)!.update,
+                //           onPressed: () {
+                //             Navigator.pop(context);
+                //             if (abis!.contains('arm64-v8a')) {
+                //               launchUrl(
+                //                 Uri.parse(
+                //                   value['arm64-v8a'] as String,
+                //                 ),
+                //                 mode:
+                //                     LaunchMode.externalApplication,
+                //               );
+                //             } else {
+                //               if (abis.contains('armeabi-v7a')) {
+                //                 launchUrl(
+                //                   Uri.parse(
+                //                     value['armeabi-v7a'] as String,
+                //                   ),
+                //                   mode: LaunchMode
+                //                       .externalApplication,
+                //                 );
+                //               } else {
+                //                 launchUrl(
+                //                   Uri.parse(
+                //                     value['universal'] as String,
+                //                   ),
+                //                   mode: LaunchMode
+                //                       .externalApplication,
+                //                 );
+                //               }
+                //             }
+                //           },
+                //         ),
+                //       );
+                //     } else {
+                //       ShowSnackBar().showSnackBar(
+                //         context,
+                //         AppLocalizations.of(
+                //           context,
+                //         )!
+                //             .latest,
+                //       );
+                //     }
+                //   },
+                // );
+              },
+              trailing: Text(
+                'v$appVersion',
+                style: const TextStyle(fontSize: 12),
+              ),
+              dense: true,
+            ),
+            ListTile(
+              title: const Text(
+                'Share App',
+              ),
+              subtitle: const Text(
+                'Share Gem with your pals',
+              ),
+              onTap: () {
+                // Share.share(
+                //   'Check out this app at https://github.com/',
+                // );
+              },
+              dense: true,
+            ),
+            ListTile(
+              title: const Text(
+                'Contact Us',
+              ),
+              subtitle: const Text(
+                'Report an issue',
+              ),
+              dense: true,
+              onTap: () {},
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .moreInfo,
+              ),
+              dense: true,
+              onTap: () {
+                // Navigator.pushNamed(context, '/about');
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding musicPrefs(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+      ),
+      child: GradientCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                15,
+                15,
+                15,
+                0,
+              ),
+              child: Text(
+                'Music & Playback',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .musicLang,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .musicLangSub,
+              ),
+              trailing: SizedBox(
+                width: 150,
+                child: Text(
+                  preferredLanguage.isEmpty
+                      ? 'None'
+                      : preferredLanguage.join(', '),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.end,
+                ),
+              ),
+              dense: true,
+              onTap: () {
+                showModalBottomSheet(
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (BuildContext context) {
+                    final List checked = List.from(preferredLanguage);
+                    return StatefulBuilder(
+                      builder: (
+                        BuildContext context,
+                        StateSetter setStt,
+                      ) {
+                        return BottomGradientContainer(
+                          borderRadius: BorderRadius.circular(
+                            20.0,
                           ),
-                          child: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .about,
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
+                          child: Column(
+                            children: [
+                              Expanded(
+                                child: ListView.builder(
+                                  physics: const BouncingScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.fromLTRB(
+                                    0,
+                                    10,
+                                    0,
+                                    10,
+                                  ),
+                                  itemCount: languages.length,
+                                  itemBuilder: (context, idx) {
+                                    return CheckboxListTile(
+                                      activeColor: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                      checkColor: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary ==
+                                              Colors.white
+                                          ? Colors.black
+                                          : null,
+                                      value: checked.contains(
+                                        languages[idx],
+                                      ),
+                                      title: Text(
+                                        languages[idx],
+                                      ),
+                                      onChanged: (bool? value) {
+                                        value!
+                                            ? checked.add(languages[idx])
+                                            : checked.remove(
+                                                languages[idx],
+                                              );
+                                        setStt(
+                                          () {},
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      primary: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!
+                                          .cancel,
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      primary: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
+                                    ),
+                                    onPressed: () {
+                                      setState(
+                                        () {
+                                          preferredLanguage = checked;
+                                          Navigator.pop(context);
+                                          Hive.box('settings').put(
+                                            'preferredLanguage',
+                                            checked,
+                                          );
+                                          home_screen.fetched = false;
+                                          home_screen.preferredLanguage =
+                                              preferredLanguage;
+                                          widget.callback!();
+                                        },
+                                      );
+                                      if (preferredLanguage.isEmpty) {
+                                        ShowSnackBar().showSnackBar(
+                                          context,
+                                          AppLocalizations.of(
+                                            context,
+                                          )!
+                                              .noLangSelected,
+                                        );
+                                      }
+                                    },
+                                    child: Text(
+                                      AppLocalizations.of(
+                                        context,
+                                      )!
+                                          .ok,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .streamQuality,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .streamQualitySub,
+              ),
+              onTap: () {},
+              trailing: DropdownButton(
+                value: streamingQuality,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
+                ),
+                underline: const SizedBox(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(
+                      () {
+                        streamingQuality = newValue;
+                        Hive.box('settings').put('streamingQuality', newValue);
+                      },
+                    );
+                  }
+                },
+                items: <String>['96 kbps', '160 kbps', '320 kbps']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              dense: true,
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .ytStreamQuality,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .ytStreamQualitySub,
+              ),
+              onTap: () {},
+              trailing: DropdownButton(
+                value: ytQuality,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Theme.of(context).textTheme.bodyText1!.color,
+                ),
+                underline: const SizedBox(),
+                onChanged: (String? newValue) {
+                  if (newValue != null) {
+                    setState(
+                      () {
+                        ytQuality = newValue;
+                        Hive.box('settings').put('ytQuality', newValue);
+                      },
+                    );
+                  }
+                },
+                items: <String>['Low', 'High']
+                    .map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ),
+              dense: true,
+            ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .loadLast,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .loadLastSub,
+              ),
+              keyName: 'loadStart',
+              defaultValue: true,
+            ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .resetOnSkip,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .resetOnSkipSub,
+              ),
+              keyName: 'resetOnSkip',
+              defaultValue: false,
+            ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .enforceRepeat,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .enforceRepeatSub,
+              ),
+              keyName: 'enforceRepeat',
+              defaultValue: false,
+            ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .autoplay,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .autoplaySub,
+              ),
+              keyName: 'autoplay',
+              defaultValue: true,
+              isThreeLine: true,
+            ),
+            // BoxSwitchTile(
+            //   title: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .cacheSong,
+            //   ),
+            //   subtitle: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .cacheSongSub,
+            //   ),
+            //   keyName: 'cacheSong',
+            //   defaultValue: false,
+            // ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Padding appUiSection(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        10.0,
+        10.0,
+        10.0,
+        10.0,
+      ),
+      child: GradientCard(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(
+                15,
+                15,
+                15,
+                0,
+              ),
+              child: Text(
+                'App UI',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .playerScreenBackground,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .playerScreenBackgroundSub,
+              ),
+              dense: true,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  PageRouteBuilder(
+                    opaque: false,
+                    pageBuilder: (_, __, ___) =>
+                        const PlayerGradientSelection(),
+                  ),
+                );
+              },
+            ),
+
+            // BoxSwitchTile(
+            //   title: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .useBlurForNowPlaying,
+            //   ),
+            //   subtitle: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .useBlurForNowPlayingSub,
+            //   ),
+            //   keyName: 'useBlurForNowPlaying',
+            //   defaultValue: true,
+            //   isThreeLine: true,
+            // ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .useDenseMini,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .useDenseMiniSub,
+              ),
+              keyName: 'useDenseMini',
+              defaultValue: false,
+              isThreeLine: false,
+            ),
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .miniButtons,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .miniButtonsSub,
+              ),
+              dense: true,
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (BuildContext context) {
+                    final List checked = List.from(preferredMiniButtons);
+                    final List<String> order = List.from(miniButtonsOrder);
+                    return StatefulBuilder(
+                      builder: (
+                        BuildContext context,
+                        StateSetter setStt,
+                      ) {
+                        return AlertDialog(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(
+                              15.0,
                             ),
                           ),
+                          content: SizedBox(
+                            width: 500,
+                            child: ReorderableListView(
+                              physics: const BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              padding: const EdgeInsets.fromLTRB(
+                                0,
+                                10,
+                                0,
+                                10,
+                              ),
+                              onReorder: (int oldIndex, int newIndex) {
+                                if (oldIndex < newIndex) {
+                                  newIndex--;
+                                }
+                                final temp = order.removeAt(
+                                  oldIndex,
+                                );
+                                order.insert(newIndex, temp);
+                                setStt(
+                                  () {},
+                                );
+                              },
+                              header: Center(
+                                child: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!
+                                      .changeOrder,
+                                ),
+                              ),
+                              children: order.map((e) {
+                                return CheckboxListTile(
+                                  key: Key(e),
+                                  dense: true,
+                                  activeColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                  checkColor:
+                                      Theme.of(context).colorScheme.secondary ==
+                                              Colors.white
+                                          ? Colors.black
+                                          : null,
+                                  value: checked.contains(e),
+                                  title: Text(e),
+                                  onChanged: (bool? value) {
+                                    setStt(
+                                      () {
+                                        value!
+                                            ? checked.add(e)
+                                            : checked.remove(e);
+                                      },
+                                    );
+                                  },
+                                );
+                              }).toList(),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                primary: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.grey[700],
+                              ),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!
+                                    .cancel,
+                              ),
+                            ),
+                            TextButton(
+                              style: TextButton.styleFrom(
+                                primary:
+                                    Theme.of(context).colorScheme.secondary ==
+                                            Colors.white
+                                        ? Colors.black
+                                        : null,
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.secondary,
+                              ),
+                              onPressed: () {
+                                setState(
+                                  () {
+                                    final List temp = [];
+                                    for (int i = 0; i < order.length; i++) {
+                                      if (checked.contains(order[i])) {
+                                        temp.add(order[i]);
+                                      }
+                                    }
+                                    preferredMiniButtons = temp;
+                                    miniButtonsOrder = order;
+                                    Navigator.pop(context);
+                                    Hive.box('settings').put(
+                                      'preferredMiniButtons',
+                                      preferredMiniButtons,
+                                    );
+                                    Hive.box('settings').put(
+                                      'miniButtonsOrder',
+                                      order,
+                                    );
+                                  },
+                                );
+                              },
+                              child: Text(
+                                AppLocalizations.of(
+                                  context,
+                                )!
+                                    .ok,
+                              ),
+                            ),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                          ],
+                        );
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+
+            ListTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .blacklistedHomeSections,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .blacklistedHomeSectionsSub,
+              ),
+              dense: true,
+              onTap: () {
+                final GlobalKey<AnimatedListState> listKey =
+                    GlobalKey<AnimatedListState>();
+                showModalBottomSheet(
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (BuildContext context) {
+                    return BottomGradientContainer(
+                      borderRadius: BorderRadius.circular(
+                        20.0,
+                      ),
+                      child: AnimatedList(
+                        physics: const BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        padding: const EdgeInsets.fromLTRB(
+                          0,
+                          10,
+                          0,
+                          10,
                         ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .version,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .versionSub,
-                          ),
-                          onTap: () {
-                            ShowSnackBar().showSnackBar(
-                              context,
+                        key: listKey,
+                        initialItemCount: blacklistedHomeSections.length + 1,
+                        itemBuilder: (cntxt, idx, animation) {
+                          return (idx == 0)
+                              ? ListTile(
+                                  title: Text(
+                                    AppLocalizations.of(context)!.addNew,
+                                  ),
+                                  leading: const Icon(
+                                    CupertinoIcons.add,
+                                  ),
+                                  onTap: () async {
+                                    showTextInputDialog(
+                                      context: context,
+                                      title: AppLocalizations.of(
+                                        context,
+                                      )!
+                                          .enterText,
+                                      keyboardType: TextInputType.text,
+                                      onSubmitted: (String value) {
+                                        Navigator.pop(context);
+                                        blacklistedHomeSections.add(
+                                          value.trim().toLowerCase(),
+                                        );
+                                        Hive.box('settings').put(
+                                          'blacklistedHomeSections',
+                                          blacklistedHomeSections,
+                                        );
+                                        listKey.currentState!.insertItem(
+                                          blacklistedHomeSections.length,
+                                        );
+                                      },
+                                    );
+                                  },
+                                )
+                              : SizeTransition(
+                                  sizeFactor: animation,
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      CupertinoIcons.folder,
+                                    ),
+                                    title: Text(
+                                      blacklistedHomeSections[idx - 1]
+                                          .toString(),
+                                    ),
+                                    trailing: IconButton(
+                                      icon: const Icon(
+                                        CupertinoIcons.clear,
+                                        size: 15.0,
+                                      ),
+                                      tooltip: 'Remove',
+                                      onPressed: () {
+                                        blacklistedHomeSections
+                                            .removeAt(idx - 1);
+                                        Hive.box('settings').put(
+                                          'blacklistedHomeSections',
+                                          blacklistedHomeSections,
+                                        );
+                                        listKey.currentState!.removeItem(
+                                          idx,
+                                          (
+                                            context,
+                                            animation,
+                                          ) =>
+                                              Container(),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                );
+                        },
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
+
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .showPlaylists,
+              ),
+              keyName: 'showPlaylist',
+              defaultValue: true,
+              onChanged: (val, box) {
+                widget.callback!();
+              },
+            ),
+
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .showLast,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .showLastSub,
+              ),
+              keyName: 'showRecent',
+              defaultValue: true,
+              onChanged: (val, box) {
+                widget.callback!();
+              },
+            ),
+            // BoxSwitchTile(
+            //   title: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .showHistory,
+            //   ),
+            //   subtitle: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .showHistorySub,
+            //   ),
+            //   keyName: 'showHistory',
+            //   defaultValue: true,
+            // ),
+            BoxSwitchTile(
+              title: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .enableGesture,
+              ),
+              subtitle: Text(
+                AppLocalizations.of(
+                  context,
+                )!
+                    .enableGestureSub,
+              ),
+              keyName: 'enableGesture',
+              defaultValue: true,
+              isThreeLine: true,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Visibility customThemeConfig(BuildContext context) {
+    return Visibility(
+      visible: theme == 'Custom',
+      child: ListTile(
+        title: const Text(
+          'Save Theme',
+        ),
+        onTap: () {
+          final initialThemeName = '${AppLocalizations.of(
+            context,
+          )!.theme} ${userThemes.length + 1}';
+          showTextInputDialog(
+            context: context,
+            title: AppLocalizations.of(
+              context,
+            )!
+                .enterThemeName,
+            onSubmitted: (value) {
+              if (value == '') return;
+              currentTheme.saveTheme(value);
+              currentTheme.setInitialTheme(value);
+              setState(
+                () {
+                  userThemes = currentTheme.getThemes();
+                  theme = value;
+                },
+              );
+              ShowSnackBar().showSnackBar(
+                context,
+                AppLocalizations.of(
+                  context,
+                )!
+                    .themeSaved,
+              );
+              Navigator.of(context).pop();
+            },
+            keyboardType: TextInputType.text,
+            initialText: initialThemeName,
+          );
+        },
+        dense: true,
+      ),
+    );
+  }
+
+  ListTile currentThemeConfig(
+      BuildContext context, List<String> userThemesList) {
+    return ListTile(
+      title: const Text(
+        'Current Theme',
+      ),
+      trailing: DropdownButton(
+        value: theme,
+        style: TextStyle(
+          fontSize: 12,
+          color: Theme.of(context).textTheme.bodyText1!.color,
+        ),
+        underline: const SizedBox(),
+        onChanged: (String? themeChoice) {
+          if (themeChoice != null) {
+            const deflt = 'Default';
+
+            currentTheme.setInitialTheme(themeChoice);
+
+            setState(
+              () {
+                theme = themeChoice;
+                if (themeChoice == 'Custom') return;
+                final selectedTheme = userThemes[themeChoice];
+
+                settingsBox.put(
+                  'backGrad',
+                  themeChoice == deflt ? 2 : selectedTheme['backGrad'],
+                );
+                currentTheme.backGrad =
+                    themeChoice == deflt ? 2 : selectedTheme['backGrad'] as int;
+
+                settingsBox.put(
+                  'cardGrad',
+                  themeChoice == deflt ? 4 : selectedTheme['cardGrad'],
+                );
+                currentTheme.cardGrad =
+                    themeChoice == deflt ? 4 : selectedTheme['cardGrad'] as int;
+
+                settingsBox.put(
+                  'bottomGrad',
+                  themeChoice == deflt ? 3 : selectedTheme['bottomGrad'],
+                );
+                currentTheme.bottomGrad = themeChoice == deflt
+                    ? 3
+                    : selectedTheme['bottomGrad'] as int;
+
+                currentTheme.switchCanvasColor(
+                  themeChoice == deflt
+                      ? 'Grey'
+                      : selectedTheme['canvasColor'] as String,
+                  notify: false,
+                );
+                canvasColor = themeChoice == deflt
+                    ? 'Grey'
+                    : selectedTheme['canvasColor'] as String;
+
+                currentTheme.switchCardColor(
+                  themeChoice == deflt
+                      ? 'Grey900'
+                      : selectedTheme['cardColor'] as String,
+                  notify: false,
+                );
+                cardColor = themeChoice == deflt
+                    ? 'Grey900'
+                    : selectedTheme['cardColor'] as String;
+
+                themeColor = themeChoice == deflt
+                    ? 'Teal'
+                    : selectedTheme['accentColor'] as String;
+                colorHue = themeChoice == deflt
+                    ? 400
+                    : selectedTheme['colorHue'] as int;
+
+                currentTheme.switchColor(
+                  themeColor,
+                  colorHue,
+                  notify: false,
+                );
+
+                currentTheme.switchTheme(
+                  useSystemTheme: !(themeChoice == deflt) &&
+                      selectedTheme['useSystemTheme'] as bool,
+                  isDark:
+                      themeChoice == deflt || selectedTheme['isDark'] as bool,
+                );
+              },
+            );
+          }
+        },
+        selectedItemBuilder: (BuildContext context) {
+          return userThemesList.map<Widget>((String item) {
+            return Text(item);
+          }).toList();
+        },
+        items: userThemesList.map((String value) {
+          return DropdownMenuItem<String>(
+            value: value,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  flex: 2,
+                  child: Text(
+                    value,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                if (value != 'Default' && value != 'Custom')
+                  Flexible(
+                    child: IconButton(
+                      //padding: EdgeInsets.zero,
+                      iconSize: 18,
+                      splashRadius: 18,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(
+                                10.0,
+                              ),
+                            ),
+                            title: Text(
                               AppLocalizations.of(
                                 context,
                               )!
-                                  .checkingUpdate,
-                              noAction: true,
-                            );
-
-                            SupaBase().getUpdate().then(
-                              (Map value) async {
-                                if (compareVersion(
-                                  value['LatestVersion'].toString(),
-                                  appVersion!,
-                                )) {
-                                  List? abis = await Hive.box('settings')
-                                      .get('supportedAbis') as List?;
-
-                                  if (abis == null) {
-                                    final DeviceInfoPlugin deviceInfo =
-                                        DeviceInfoPlugin();
-                                    final AndroidDeviceInfo androidDeviceInfo =
-                                        await deviceInfo.androidInfo;
-                                    abis = androidDeviceInfo.supportedAbis;
-                                    await Hive.box('settings')
-                                        .put('supportedAbis', abis);
-                                  }
-                                  ShowSnackBar().showSnackBar(
+                                  .deleteTheme,
+                              style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                            content: Text(
+                              '${AppLocalizations.of(
+                                context,
+                              )!.deleteThemeSubtitle} $value?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: Navigator.of(context).pop,
+                                child: Text(
+                                  AppLocalizations.of(
                                     context,
-                                    AppLocalizations.of(context)!
-                                        .updateAvailable,
-                                    duration: const Duration(seconds: 15),
-                                    action: SnackBarAction(
-                                      textColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      label:
-                                          AppLocalizations.of(context)!.update,
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        if (abis!.contains('arm64-v8a')) {
-                                          launchUrl(
-                                            Uri.parse(
-                                              value['arm64-v8a'] as String,
-                                            ),
-                                            mode:
-                                                LaunchMode.externalApplication,
-                                          );
-                                        } else {
-                                          if (abis.contains('armeabi-v7a')) {
-                                            launchUrl(
-                                              Uri.parse(
-                                                value['armeabi-v7a'] as String,
-                                              ),
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          } else {
-                                            launchUrl(
-                                              Uri.parse(
-                                                value['universal'] as String,
-                                              ),
-                                              mode: LaunchMode
-                                                  .externalApplication,
-                                            );
-                                          }
-                                        }
-                                      },
-                                    ),
+                                  )!
+                                      .cancel,
+                                ),
+                              ),
+                              TextButton(
+                                style: TextButton.styleFrom(
+                                  primary:
+                                      Theme.of(context).colorScheme.secondary ==
+                                              Colors.white
+                                          ? Colors.black
+                                          : null,
+                                  backgroundColor:
+                                      Theme.of(context).colorScheme.secondary,
+                                ),
+                                onPressed: () {
+                                  currentTheme.deleteTheme(value);
+                                  if (currentTheme.getInitialTheme() == value) {
+                                    currentTheme.setInitialTheme(
+                                      'Custom',
+                                    );
+                                    theme = 'Custom';
+                                  }
+                                  setState(
+                                    () {
+                                      userThemes = currentTheme.getThemes();
+                                    },
                                   );
-                                } else {
                                   ShowSnackBar().showSnackBar(
                                     context,
                                     AppLocalizations.of(
                                       context,
                                     )!
-                                        .latest,
+                                        .themeDeleted,
                                   );
-                                }
-                              },
-                            );
-                          },
-                          trailing: Text(
-                            'v$appVersion',
-                            style: const TextStyle(fontSize: 12),
-                          ),
-                          dense: true,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .shareApp,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .shareAppSub,
-                          ),
-                          onTap: () {
-                            Share.share(
-                              '${AppLocalizations.of(
-                                context,
-                              )!.shareAppText}: https://github.com/Sangwan5688/BlackHole',
-                            );
-                          },
-                          dense: true,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .likedWork,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .buyCoffee,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            launchUrl(
-                              Uri.parse(
-                                'https://www.buymeacoffee.com/ankitsangwan',
+                                  return Navigator.of(
+                                    context,
+                                  ).pop();
+                                },
+                                child: Text(
+                                  AppLocalizations.of(
+                                    context,
+                                  )!
+                                      .delete,
+                                ),
                               ),
-                              mode: LaunchMode.externalApplication,
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .donateGpay,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .donateGpaySub,
-                          ),
-                          dense: true,
-                          isThreeLine: true,
-                          onTap: () {
-                            const String upiUrl =
-                                'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole';
-                            launchUrl(
-                              Uri.parse(upiUrl),
-                              mode: LaunchMode.externalApplication,
-                            );
-                          },
-                          onLongPress: () {
-                            copyToClipboard(
-                              context: context,
-                              text: 'ankit.sangwan.5688@oksbi',
-                              displayText: AppLocalizations.of(
-                                context,
-                              )!
-                                  .upiCopied,
-                            );
-                          },
-                          trailing: TextButton(
-                            style: TextButton.styleFrom(
-                              primary: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? Colors.white
-                                  : Colors.grey[700],
-                            ),
-                            onPressed: () {
-                              copyToClipboard(
-                                context: context,
-                                text: 'ankit.sangwan.5688@oksbi',
-                                displayText: AppLocalizations.of(
-                                  context,
-                                )!
-                                    .upiCopied,
-                              );
-                            },
-                            child: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .copy,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.w500,
+                              const SizedBox(
+                                width: 5.0,
                               ),
-                            ),
+                            ],
                           ),
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .contactUs,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .contactUsSub,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 100,
-                                  child: GradientContainer(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                MdiIcons.gmail,
-                                              ),
-                                              iconSize: 40,
-                                              tooltip: AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .gmail,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                launchUrl(
-                                                  Uri.parse(
-                                                    'https://mail.google.com/mail/?extsrc=mailto&url=mailto%3A%3Fto%3Dblackholeyoucantescape%40gmail.com%26subject%3DRegarding%2520Mobile%2520App',
-                                                  ),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              },
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .gmail,
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                MdiIcons.telegram,
-                                              ),
-                                              iconSize: 40,
-                                              tooltip: AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tg,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                launchUrl(
-                                                  Uri.parse(
-                                                    'https://t.me/joinchat/fHDC1AWnOhw0ZmI9',
-                                                  ),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              },
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tg,
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                MdiIcons.instagram,
-                                              ),
-                                              iconSize: 40,
-                                              tooltip: AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .insta,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                launchUrl(
-                                                  Uri.parse(
-                                                    'https://instagram.com/sangwan5688',
-                                                  ),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              },
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .insta,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .joinTg,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .joinTgSub,
-                          ),
-                          onTap: () {
-                            showModalBottomSheet(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return SizedBox(
-                                  height: 100,
-                                  child: GradientContainer(
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                MdiIcons.telegram,
-                                              ),
-                                              iconSize: 40,
-                                              tooltip: AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tgGp,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                launchUrl(
-                                                  Uri.parse(
-                                                    'https://t.me/joinchat/fHDC1AWnOhw0ZmI9',
-                                                  ),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              },
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tgGp,
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            IconButton(
-                                              icon: const Icon(
-                                                MdiIcons.telegram,
-                                              ),
-                                              iconSize: 40,
-                                              tooltip: AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tgCh,
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                                launchUrl(
-                                                  Uri.parse(
-                                                    'https://t.me/blackhole_official',
-                                                  ),
-                                                  mode: LaunchMode
-                                                      .externalApplication,
-                                                );
-                                              },
-                                            ),
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .tgCh,
-                                            ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          },
-                          dense: true,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .moreInfo,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            Navigator.pushNamed(context, '/about');
-                          },
-                        ),
-                      ],
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.delete_rounded,
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    5,
-                    30,
-                    5,
-                    20,
-                  ),
-                  child: Center(
-                    child: Text(
-                      AppLocalizations.of(
-                        context,
-                      )!
-                          .madeBy,
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                  ),
-                ),
+                  )
               ],
             ),
+          );
+        }).toList(),
+        isDense: true,
+      ),
+      dense: true,
+    );
+  }
+
+  ListTile amoledSettings() {
+    return ListTile(
+      title: const Text(
+        'Use Amoled',
+      ),
+      dense: true,
+      onTap: () {
+        currentTheme.switchTheme(
+          useSystemTheme: false,
+          isDark: true,
+        );
+        Hive.box('settings').put('darkMode', true);
+
+        settingsBox.put('backGrad', 4);
+        currentTheme.backGrad = 4;
+        settingsBox.put('cardGrad', 6);
+        currentTheme.cardGrad = 6;
+        settingsBox.put('bottomGrad', 4);
+        currentTheme.bottomGrad = 4;
+
+        currentTheme.switchCanvasColor('Black');
+        canvasColor = 'Black';
+
+        currentTheme.switchCardColor('Grey900');
+        cardColor = 'Grey900';
+
+        themeColor = 'White';
+        colorHue = 400;
+        currentTheme.switchColor(
+          'White',
+          colorHue,
+        );
+      },
+    );
+  }
+
+  Visibility backgroundGradient(BuildContext context) {
+    return Visibility(
+      visible: Theme.of(context).brightness == Brightness.dark,
+      child: Column(
+        children: [
+          ListTile(
+            title: const Text(
+              'Background Gradient',
+            ),
+            subtitle: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .bgGradSub,
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.all(
+                10.0,
+              ),
+              child: Container(
+                height: 25,
+                width: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    100.0,
+                  ),
+                  color: Theme.of(context).colorScheme.secondary,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: Theme.of(context).brightness == Brightness.dark
+                        ? currentTheme.getBackGradient()
+                        : [
+                            Colors.white,
+                            Theme.of(context).canvasColor,
+                          ],
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.white24,
+                      blurRadius: 5.0,
+                      offset: Offset(
+                        0.0,
+                        3.0,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            onTap: () {
+              final List<List<Color>> gradients = currentTheme.backOpt;
+              PopupDialog().showPopup(
+                context: context,
+                child: SizedBox(
+                  width: 500,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      0,
+                      30,
+                      0,
+                      10,
+                    ),
+                    itemCount: gradients.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          bottom: 15.0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            settingsBox.put(
+                              'backGrad',
+                              index,
+                            );
+                            currentTheme.backGrad = index;
+                            widget.callback!();
+                            switchToCustomTheme();
+                            Navigator.pop(context);
+                            setState(
+                              () {},
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.125,
+                            height: MediaQuery.of(context).size.width * 0.125,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                15.0,
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: gradients[index],
+                              ),
+                            ),
+                            child: (currentTheme.getBackGradient() ==
+                                    gradients[index])
+                                ? const Icon(
+                                    Icons.done_rounded,
+                                    size: 20,
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            dense: true,
+          ),
+          ListTile(
+            title: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .cardGrad,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .cardGradSub,
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.all(
+                10.0,
+              ),
+              child: Container(
+                height: 25,
+                width: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    100.0,
+                  ),
+                  color: Theme.of(context).colorScheme.secondary,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: Theme.of(context).brightness == Brightness.dark
+                        ? currentTheme.getCardGradient()
+                        : [
+                            Colors.white,
+                            Theme.of(context).canvasColor,
+                          ],
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.white24,
+                      blurRadius: 5.0,
+                      offset: Offset(0.0, 3.0),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            onTap: () {
+              final List<List<Color>> gradients = currentTheme.cardOpt;
+              PopupDialog().showPopup(
+                context: context,
+                child: SizedBox(
+                  width: 500,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      0,
+                      30,
+                      0,
+                      10,
+                    ),
+                    itemCount: gradients.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          bottom: 15.0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            settingsBox.put(
+                              'cardGrad',
+                              index,
+                            );
+                            currentTheme.cardGrad = index;
+                            widget.callback!();
+                            switchToCustomTheme();
+                            Navigator.pop(context);
+                            setState(
+                              () {},
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.125,
+                            height: MediaQuery.of(context).size.width * 0.125,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                15.0,
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: gradients[index],
+                              ),
+                            ),
+                            child: (currentTheme.getCardGradient() ==
+                                    gradients[index])
+                                ? const Icon(
+                                    Icons.done_rounded,
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            dense: true,
+          ),
+          ListTile(
+            title: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .bottomGrad,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .bottomGradSub,
+            ),
+            trailing: Padding(
+              padding: const EdgeInsets.all(
+                10.0,
+              ),
+              child: Container(
+                height: 25,
+                width: 25,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(
+                    100.0,
+                  ),
+                  color: Theme.of(context).colorScheme.secondary,
+                  gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: Theme.of(context).brightness == Brightness.dark
+                        ? currentTheme.getBottomGradient()
+                        : [
+                            Colors.white,
+                            Theme.of(context).canvasColor,
+                          ],
+                  ),
+                  boxShadow: const [
+                    BoxShadow(
+                      color: Colors.white24,
+                      blurRadius: 5.0,
+                      offset: Offset(
+                        0.0,
+                        3.0,
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+            onTap: () {
+              final List<List<Color>> gradients = currentTheme.backOpt;
+              PopupDialog().showPopup(
+                context: context,
+                child: SizedBox(
+                  width: 500,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    padding: const EdgeInsets.fromLTRB(
+                      0,
+                      30,
+                      0,
+                      10,
+                    ),
+                    itemCount: gradients.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.only(
+                          left: 20.0,
+                          right: 20.0,
+                          bottom: 15.0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            settingsBox.put(
+                              'bottomGrad',
+                              index,
+                            );
+                            currentTheme.bottomGrad = index;
+                            switchToCustomTheme();
+                            Navigator.pop(context);
+                            setState(
+                              () {},
+                            );
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.125,
+                            height: MediaQuery.of(context).size.width * 0.125,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                15.0,
+                              ),
+                              gradient: LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: gradients[index],
+                              ),
+                            ),
+                            child: (currentTheme.getBottomGradient() ==
+                                    gradients[index])
+                                ? const Icon(
+                                    Icons.done_rounded,
+                                  )
+                                : const SizedBox(),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+            dense: true,
+          ),
+          ListTile(
+            title: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .canvasColor,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .canvasColorSub,
+            ),
+            onTap: () {},
+            trailing: DropdownButton(
+              value: canvasColor,
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).textTheme.bodyText1!.color,
+              ),
+              underline: const SizedBox(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  switchToCustomTheme();
+                  setState(
+                    () {
+                      currentTheme.switchCanvasColor(newValue);
+                      canvasColor = newValue;
+                    },
+                  );
+                }
+              },
+              items: <String>['Grey', 'Black']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            dense: true,
+          ),
+          ListTile(
+            title: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .cardColor,
+            ),
+            subtitle: Text(
+              AppLocalizations.of(
+                context,
+              )!
+                  .cardColorSub,
+            ),
+            onTap: () {},
+            trailing: DropdownButton(
+              value: cardColor,
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).textTheme.bodyText1!.color,
+              ),
+              underline: const SizedBox(),
+              onChanged: (String? newValue) {
+                if (newValue != null) {
+                  switchToCustomTheme();
+                  setState(
+                    () {
+                      currentTheme.switchCardColor(newValue);
+                      cardColor = newValue;
+                    },
+                  );
+                }
+              },
+              items: <String>['Grey800', 'Grey850', 'Grey900', 'Black']
+                  .map<DropdownMenuItem<String>>((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: Text(value),
+                );
+              }).toList(),
+            ),
+            dense: true,
           ),
         ],
       ),
@@ -3985,66 +3473,3 @@ class BoxSwitchTile extends StatelessWidget {
     );
   }
 }
-
-// NO LONGER AVAILABLE
-// class SpotifyCountry {
-//   Future<String> changeCountry({required BuildContext context}) async {
-//     String region =
-//         Hive.box('settings').get('region', defaultValue: 'India') as String;
-//     await showModalBottomSheet(
-//       isDismissible: true,
-//       backgroundColor: Colors.transparent,
-//       context: context,
-//       builder: (BuildContext context) {
-//         const Map<String, String> codes = CountryCodes.countryCodes;
-//         final List<String> countries = codes.keys.toList();
-//         return BottomGradientContainer(
-//           borderRadius: BorderRadius.circular(
-//             20.0,
-//           ),
-//           child: ListView.builder(
-//             physics: const BouncingScrollPhysics(),
-//             shrinkWrap: true,
-//             padding: const EdgeInsets.fromLTRB(
-//               0,
-//               10,
-//               0,
-//               10,
-//             ),
-//             itemCount: countries.length,
-//             itemBuilder: (context, idx) {
-//               return ListTileTheme(
-//                 selectedColor: Theme.of(context).colorScheme.secondary,
-//                 child: ListTile(
-//                   title: Text(
-//                     countries[idx],
-//                   ),
-//                   leading: Radio(
-//                     value: countries[idx],
-//                     groupValue: region,
-//                     onChanged: (value) {
-//                       top_screen.items = [];
-//                       region = countries[idx];
-//                       top_screen.fetched = false;
-//                       Hive.box('settings').put('region', region);
-//                       Navigator.pop(context);
-//                     },
-//                   ),
-//                   selected: region == countries[idx],
-//                   onTap: () {
-//                     top_screen.items = [];
-//                     region = countries[idx];
-//                     top_screen.fetched = false;
-//                     Hive.box('settings').put('region', region);
-//                     Navigator.pop(context);
-//                   },
-//                 ),
-//               );
-//             },
-//           ),
-//         );
-//       },
-//     );
-//     return region;
-//   }
-// }
