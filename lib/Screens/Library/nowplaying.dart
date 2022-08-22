@@ -1,12 +1,12 @@
 
 import 'package:audio_service/audio_service.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
 
 class NowPlaying extends StatefulWidget {
@@ -58,8 +58,7 @@ class _NowPlayingState extends State<NowPlaying> {
                             return mediaItem == null
                                 ? const SizedBox()
                                 : BouncyImageSliverScrollView(
-                                    title: AppLocalizations.of(context)!
-                                        .nowPlaying,
+                                    title: 'Now Playing',
                                     localImage: mediaItem.artUri!
                                         .toString()
                                         .startsWith('file:'),

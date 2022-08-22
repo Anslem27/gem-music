@@ -1,6 +1,5 @@
-
 import 'package:flutter/material.dart';
-import 'package:gem/Helpers/config.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:get_it/get_it.dart';
 
 // ignore: avoid_classes_with_only_static_members

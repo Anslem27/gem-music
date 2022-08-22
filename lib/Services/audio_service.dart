@@ -1,4 +1,6 @@
 
+// ignore_for_file: no_leading_underscores_for_local_identifiers
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
@@ -7,7 +9,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:audio_session/audio_session.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';

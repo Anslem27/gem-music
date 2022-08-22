@@ -1,8 +1,8 @@
+// ignore_for_file: use_super_parameters
 
-
-import 'package:gem/Screens/Player/audioplayer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 
 class PlaylistHead extends StatelessWidget {
   final List songsList;
@@ -27,9 +27,7 @@ class PlaylistHead extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            '${songsList.length} ${AppLocalizations.of(
-              context,
-            )!.songs}',
+            '${songsList.length} ${songsList.length > 1 ? "Songs" : "Song"}',
             style: const TextStyle(fontWeight: FontWeight.w600),
           ),
           const Spacer(),
@@ -52,12 +50,16 @@ class PlaylistHead extends StatelessWidget {
               );
             },
             icon: const Icon(Icons.shuffle_rounded),
-            label: Text(
-              AppLocalizations.of(context)!.shuffle,
-              style: const TextStyle(fontWeight: FontWeight.w600),
+            label: const Text(
+              "Shuffle",
+              style: TextStyle(fontWeight: FontWeight.w600),
             ),
           ),
           IconButton(
+            splashRadius: 24,
+            color: Theme.of(
+              context,
+            ).colorScheme.secondary,
             onPressed: () {
               Navigator.of(context).push(
                 PageRouteBuilder(

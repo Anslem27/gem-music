@@ -1,15 +1,16 @@
+// ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers
 
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -28,10 +29,6 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
   bool done = true;
   bool liveSearch =
       Hive.box('settings').get('liveSearch', defaultValue: true) as bool;
-  // List ytSearch =
-  // Hive.box('settings').get('ytSearch', defaultValue: []) as List;
-  // bool showHistory =
-  // Hive.box('settings').get('showHistory', defaultValue: true) as bool;
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -81,7 +78,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  hintText: AppLocalizations.of(context)!.searchYt,
+                  hintText:'Search Youtube',
                   onQueryChanged: (_query) {
                     return YouTubeServices()
                         .getSearchSuggestions(query: _query);
@@ -105,15 +102,9 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                               0,
                               ':( ',
                               100,
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .sorry,
+                              'Oops',
                               60,
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .resultsNotFound,
+                              'No results',
                               20,
                             )
                           : Stack(
@@ -242,11 +233,6 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                   defaultValue: 'Low',
                                                 )
                                                 .toString(),
-                                            // preferM4a: Hive.box(
-                                            //         'settings')
-                                            //     .get('preferM4a',
-                                            //         defaultValue:
-                                            //             true) as bool
                                           );
                                           setState(() {
                                             done = true;
@@ -432,20 +418,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                               .author,
                                                           overflow: TextOverflow
                                                               .ellipsis,
-                                                          // '${searchedList[index]["channelName"]}'
                                                         ),
-                                                        // leading: CircleAvatar(
-                                                        //   maxRadius: 20,
-                                                        //   backgroundImage: AssetImage(
-                                                        //       'assets/artist.png'),
-                                                        //   foregroundImage:
-                                                        //       CachedNetworkImageProvider(
-                                                        //           'https://yt3.ggpht.com/ytc/AKedOLS47SGZoq9qhTlM6ANNiXN5I3sUcV4_owFydPkU=s68-c-k-c0x00ffffff-no-rj'
-                                                        //           // 'https://yt3.ggpht.com/ytc/${searchedList[index].channelId.value}'
-
-                                                        //           // ["channelImage"],
-                                                        //           ),
-                                                        // ),
                                                         trailing:
                                                             YtSongTileTrailingMenu(
                                                           data: searchedList[
@@ -487,11 +460,8 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                   ),
                                                   strokeWidth: 5,
                                                 ),
-                                                Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .fetchingStream,
+                                                const Text(
+                                                  'Converting media',
                                                 ),
                                               ],
                                             ),

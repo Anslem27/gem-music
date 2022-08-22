@@ -1,7 +1,5 @@
-
-
-import 'package:gem/Helpers/config.dart';
 import 'package:flutter/material.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:palette_generator/palette_generator.dart';
 

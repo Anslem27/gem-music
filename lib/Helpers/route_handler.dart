@@ -1,9 +1,9 @@
 
+import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/Helpers/audio_query.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
-import 'package:flutter/material.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 // ignore: avoid_classes_with_only_static_members
@@ -72,8 +72,7 @@ class HandleRoute {
 class SaavnUrlHandler extends StatelessWidget {
   final String token;
   final String type;
-  const SaavnUrlHandler({Key? key, required this.token, required this.type})
-      : super(key: key);
+  const SaavnUrlHandler({super.key, required this.token, required this.type});
 
   @override
   Widget build(BuildContext context) {
@@ -112,7 +111,7 @@ class SaavnUrlHandler extends StatelessWidget {
 
 class OfflinePlayHandler extends StatelessWidget {
   final String id;
-  const OfflinePlayHandler({Key? key, required this.id}) : super(key: key);
+  const OfflinePlayHandler({super.key, required this.id});
 
   Future<List> playOfflineSong(String id) async {
     final OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();

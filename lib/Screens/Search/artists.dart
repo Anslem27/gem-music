@@ -1,3 +1,8 @@
+// ignore_for_file: use_super_parameters
+
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/artist_like_button.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
@@ -12,10 +17,7 @@ import 'package:gem/CustomWidgets/playlist_popupmenu.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ArtistSearchPage extends StatefulWidget {

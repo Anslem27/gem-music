@@ -1,22 +1,3 @@
-/*
- *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).
- * 
- * BlackHole is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * BlackHole is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License
- * along with BlackHole.  If not, see <http://www.gnu.org/licenses/>.
- * 
- * Copyright (c) 2021-2022, Ankit Sangwan
- */
-
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -30,7 +11,7 @@ Future<void> showTextInputDialog({
   await showDialog(
     context: context,
     builder: (BuildContext ctxt) {
-      final _controller = TextEditingController(text: initialText);
+      final controller = TextEditingController(text: initialText);
       return AlertDialog(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -50,7 +31,7 @@ Future<void> showTextInputDialog({
             ),
             TextField(
               autofocus: true,
-              controller: _controller,
+              controller: controller,
               keyboardType: keyboardType,
               textAlignVertical: TextAlignVertical.bottom,
               onSubmitted: (value) {
@@ -79,15 +60,13 @@ Future<void> showTextInputDialog({
               backgroundColor: Theme.of(context).colorScheme.secondary,
             ),
             onPressed: () {
-              onSubmitted(_controller.text.trim());
+              onSubmitted(controller.text.trim());
             },
             child: Text(
               AppLocalizations.of(context)!.ok,
             ),
           ),
-          const SizedBox(
-            width: 5,
-          ),
+          const SizedBox(width: 5),
         ],
       );
     },

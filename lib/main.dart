@@ -1,3 +1,5 @@
+// ignore_for_file: always_use_package_imports
+
 import 'dart:async';
 import 'dart:io';
 
@@ -7,18 +9,17 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gem/Helpers/config.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/handle_native.dart';
 import 'package:gem/Helpers/route_handler.dart';
-import 'package:gem/Screens/About/about.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
-import 'package:gem/Screens/Library/playlists.dart';
+// import 'package:gem/Screens/Library/online_playlists.dart';
 import 'package:gem/Screens/Library/recent.dart';
-import 'package:gem/Screens/Login/auth.dart';
+import 'package:gem/Screens/Login/initial_wizard.dart';
 import 'package:gem/Screens/Login/pref.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Screens/Settings/setting.dart';
 import 'package:gem/Services/audio_service.dart';
 import 'package:gem/theme/app_theme.dart';
@@ -27,15 +28,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
+import 'Screens/Library/playlist_view.dart';
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   Paint.enableDithering = true;
 
-  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-    await Hive.initFlutter('BlackHole');
-  } else {
-    await Hive.initFlutter();
-  }
+  await Hive.initFlutter();
+
   await openHiveBox('settings');
   await openHiveBox('downloads');
   await openHiveBox('Favorite Songs');
@@ -70,7 +70,7 @@ Future<void> startService() async {
   final AudioPlayerHandler audioHandler = await AudioService.init(
     builder: () => AudioPlayerHandlerImpl(),
     config: AudioServiceConfig(
-      androidNotificationChannelId: 'com.shadow.blackhole.channel.audio',
+      androidNotificationChannelId: 'com.app.gem.channel.audio',
       androidNotificationChannelName: 'Gem',
       androidNotificationOngoing: true,
       androidNotificationIcon: 'drawable/ic_stat_music_note',
@@ -250,8 +250,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => initialFuntion(),
         '/pref': (context) => const PrefScreen(),
         '/setting': (context) => const SettingPage(),
-        '/about': (context) => AboutScreen(),
-        '/playlists': (context) => PlaylistScreen(),
+        '/playlists': (context) => const PlaylistView(),
         '/nowplaying': (context) => NowPlaying(),
         '/recent': (context) => RecentlyPlayed(),
         '/downloads': (context) => const Downloads(),

@@ -1,3 +1,5 @@
+// ignore_for_file: use_super_parameters
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -11,7 +13,7 @@ import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_popupmenu.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -142,8 +144,9 @@ class _SongsListPageState extends State<SongsListPage> {
                               widget.listItem['title']?.toString() ?? 'Songs',
                         ),
                         IconButton(
+                          splashRadius: 24,
                           icon: const Icon(Icons.share_rounded),
-                          tooltip: AppLocalizations.of(context)!.share,
+                          tooltip: 'Share',
                           onPressed: () {
                             Share.share(
                               widget.listItem['perma_url'].toString(),

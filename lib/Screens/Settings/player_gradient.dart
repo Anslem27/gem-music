@@ -1,8 +1,7 @@
+// ignore_for_file: use_super_parameters, use_decorated_box
 
-
-import 'package:gem/Helpers/config.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
@@ -33,11 +32,8 @@ class _PlayerGradientSelectionState extends State<PlayerGradientSelection> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          AppLocalizations.of(
-            context,
-          )!
-              .playerScreenBackground,
+        title: const Text(
+          'Player Screen Background',
         ),
       ),
       body: SafeArea(

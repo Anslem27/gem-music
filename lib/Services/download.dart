@@ -4,13 +4,12 @@ import 'dart:io';
 
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/lyrics.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
-// import 'package:flutter_downloader/flutter_downloader.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
@@ -24,7 +23,6 @@ class Download with ChangeNotifier {
   String preferredYtDownloadQuality = Hive.box('settings')
       .get('ytDownloadQuality', defaultValue: 'High') as String;
   String downloadFormat = 'm4a';
-  // Hive.box('settings').get('downloadFormat', defaultValue: 'm4a');
   bool createDownloadFolder = Hive.box('settings')
       .get('createDownloadFolder', defaultValue: false) as bool;
   bool createYoutubeFolder = Hive.box('settings')
@@ -266,7 +264,7 @@ class Download with ChangeNotifier {
     String? filepath;
     late String filepath2;
     String? appPath;
-    final List<int> _bytes = [];
+    final List<int> bytes = [];
     String lyrics;
     final artname = fileName.replaceAll('.m4a', '.jpg');
     if (!Platform.isWindows) {
@@ -326,7 +324,7 @@ class Download with ChangeNotifier {
     int recieved = 0;
     response.stream.asBroadcastStream();
     response.stream.listen((value) {
-      _bytes.addAll(value);
+      bytes.addAll(value);
       try {
         recieved += value.length;
         progress = recieved / total;
@@ -340,7 +338,7 @@ class Download with ChangeNotifier {
     }).onDone(() async {
       if (download) {
         final file = File(filepath!);
-        await file.writeAsBytes(_bytes);
+        await file.writeAsBytes(bytes);
 
         final client = HttpClient();
         final HttpClientRequest request2 =

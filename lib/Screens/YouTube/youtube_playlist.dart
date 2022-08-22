@@ -1,15 +1,15 @@
+// ignore_for_file: use_super_parameters
 
-
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer.dart';
+import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:hive/hive.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
@@ -181,31 +181,6 @@ class _YouTubePlaylistState extends State<YouTubePlaylist> {
                                         ),
                                       ),
                                     );
-                                    // for (var i = 0;
-                                    //     i < searchedList.length;
-                                    //     i++) {
-                                    //   YouTubeServices()
-                                    //       .formatVideo(
-                                    //     video: searchedList[i],
-                                    //     quality: Hive.box('settings')
-                                    //         .get(
-                                    //           'ytQuality',
-                                    //           defaultValue: 'Low',
-                                    //         )
-                                    //         .toString(),
-                                    //   )
-                                    //       .then((songMap) {
-                                    //     final MediaItem mediaItem =
-                                    //         MediaItemConverter.mapToMediaItem(
-                                    //       songMap!,
-                                    //     );
-                                    //     addToNowPlaying(
-                                    //       context: context,
-                                    //       mediaItem: mediaItem,
-                                    //       showNotification: false,
-                                    //     );
-                                    //   });
-                                    // }
                                   },
                                   trailing: YtSongTileTrailingMenu(data: entry),
                                 ),
