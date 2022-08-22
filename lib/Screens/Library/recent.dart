@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
@@ -38,7 +37,7 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
             child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: Text(AppLocalizations.of(context)!.lastSession),
+                title: const Text('Last Played'),
                 centerTitle: true,
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
                     ? Colors.transparent
@@ -46,13 +45,14 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                 elevation: 0,
                 actions: [
                   IconButton(
+                    splashRadius: 24,
                     onPressed: () {
                       Hive.box('cache').put('recentSongs', []);
                       setState(() {
                         _songs = [];
                       });
                     },
-                    tooltip: AppLocalizations.of(context)!.clearAll,
+                    tooltip: 'Clear all',
                     icon: const Icon(Icons.clear_all_rounded),
                   ),
                 ],

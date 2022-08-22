@@ -10,7 +10,7 @@ import 'package:gem/CustomWidgets/popup.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/backup_restore.dart';
-import 'package:gem/Helpers/config.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Home/home_view.dart' as home_screen;
 import 'package:gem/Screens/Settings/player_gradient.dart';

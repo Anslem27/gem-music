@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:hive/hive.dart';
 
@@ -67,9 +66,7 @@ class _ArtistLikeButtonState extends State<ArtistLikeButton>
           color: liked ? Colors.redAccent : Theme.of(context).iconTheme.color,
         ),
         iconSize: widget.size ?? 24.0,
-        tooltip: liked
-            ? AppLocalizations.of(context)!.unlike
-            : AppLocalizations.of(context)!.like,
+        tooltip: liked ? 'Unlike' : 'Like',
         onPressed: () async {
           if (!liked) {
             _controller.forward();
@@ -87,9 +84,7 @@ class _ArtistLikeButtonState extends State<ArtistLikeButton>
           if (widget.showSnack) {
             ShowSnackBar().showSnackBar(
               context,
-              liked
-                  ? AppLocalizations.of(context)!.addedToFav
-                  : AppLocalizations.of(context)!.removedFromFav,
+              liked ? 'Added to favorites' : 'Removed from favorites',
             );
           }
         },

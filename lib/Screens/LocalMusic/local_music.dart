@@ -2,7 +2,6 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
@@ -19,7 +18,6 @@ import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -251,7 +249,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                     IconButton(
                       splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
-                      tooltip: AppLocalizations.of(context)!.search,
+                      tooltip: 'Search',
                       onPressed: () {
                         showSearch(
                           context: context,
@@ -286,16 +284,16 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                       },
                       itemBuilder: (context) {
                         final List<String> sortTypes = [
-                          AppLocalizations.of(context)!.displayName,
-                          AppLocalizations.of(context)!.dateAdded,
-                          AppLocalizations.of(context)!.album,
-                          AppLocalizations.of(context)!.artist,
-                          AppLocalizations.of(context)!.duration,
-                          AppLocalizations.of(context)!.size,
+                          'Display Name',
+                          'Date Added',
+                          'Album',
+                          'Artist',
+                          'Duration',
+                          'Size',
                         ];
                         final List<String> orderTypes = [
-                          AppLocalizations.of(context)!.inc,
-                          AppLocalizations.of(context)!.dec,
+                          'Increasing',
+                          'Decreasing',
                         ];
                         final menuList = <PopupMenuEntry<int>>[];
                         menuList.addAll(

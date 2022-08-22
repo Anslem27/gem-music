@@ -1,8 +1,5 @@
-
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -29,7 +26,7 @@ class AddToOffPlaylist {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  title: Text(AppLocalizations.of(context)!.createPlaylist),
+                  title: const Text('Create Playlist'),
                   leading: Card(
                     elevation: 0,
                     color: Colors.transparent,
@@ -49,7 +46,7 @@ class AddToOffPlaylist {
                     showTextInputDialog(
                       context: context,
                       keyboardType: TextInputType.text,
-                      title: AppLocalizations.of(context)!.createNewPlaylist,
+                      title: 'Create new playlist',
                       onSubmitted: (String value) async {
                         await offlineAudioQuery.createPlaylist(name: value);
                         playlistDetails =
@@ -94,7 +91,7 @@ class AddToOffPlaylist {
                           playlistDetails[index].playlist,
                         ),
                         subtitle: Text(
-                          '${playlistDetails[index].numOfSongs} Songs',
+                          '${playlistDetails[index].numOfSongs} ${playlistDetails[index].numOfSongs > 0 ? 'songs' : 'song'}',
                         ),
                         onTap: () {
                           Navigator.pop(context);
@@ -104,7 +101,7 @@ class AddToOffPlaylist {
                           );
                           ShowSnackBar().showSnackBar(
                             context,
-                            '${AppLocalizations.of(context)!.addedTo} ${playlistDetails[index].playlist}',
+                            'Added to ${playlistDetails[index].playlist}',
                           );
                         },
                       );
@@ -138,7 +135,7 @@ class AddToPlaylist {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ListTile(
-                  title: Text(AppLocalizations.of(context)!.createPlaylist),
+                  title: const Text('Create Playlist'),
                   leading: Card(
                     elevation: 0,
                     color: Colors.transparent,
@@ -158,7 +155,7 @@ class AddToPlaylist {
                     showTextInputDialog(
                       context: context,
                       keyboardType: TextInputType.name,
-                      title: AppLocalizations.of(context)!.createNewPlaylist,
+                      title: 'Create New playlist',
                       onSubmitted: (String value) async {
                         final RegExp avoid = RegExp(r'[\.\\\*\:\"\?#/;\|]');
                         value.replaceAll(avoid, '').replaceAll('  ', ' ');
@@ -223,7 +220,7 @@ class AddToPlaylist {
                             );
                             ShowSnackBar().showSnackBar(
                               context,
-                              '${AppLocalizations.of(context)!.addedTo} ${playlistDetails.containsKey(playlistNames[index]) ? playlistDetails[playlistNames[index]]["name"] ?? playlistNames[index] : playlistNames[index]}',
+                              'Added to ${playlistDetails.containsKey(playlistNames[index]) ? playlistDetails[playlistNames[index]]["name"] ?? playlistNames[index] : playlistNames[index]}',
                             );
                           }
                         },

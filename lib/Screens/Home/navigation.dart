@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
@@ -9,19 +8,18 @@ import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/downloads_checker.dart';
-import 'package:gem/Helpers/extensions.dart';
 import 'package:gem/Helpers/supabase.dart';
 import 'package:gem/Screens/Home/home_view.dart';
 import 'package:gem/Screens/Library/library_main_page.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:gem/Screens/Search/search.dart';
-import 'package:gem/Screens/Settings/setting.dart';
+// import 'package:gem/Screens/Settings/setting.dart';
 // import 'package:gem/Screens/YouTube/top_charts_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -90,7 +88,7 @@ class _HomePageState extends State<HomePage> {
       backButtonPressTime = now;
       ShowSnackBar().showSnackBar(
         context,
-        AppLocalizations.of(context)!.exitConfirm,
+        'Press back again to exit app',
         duration: const Duration(seconds: 2),
         noAction: true,
       );
@@ -143,11 +141,11 @@ class _HomePageState extends State<HomePage> {
 
               ShowSnackBar().showSnackBar(
                 context,
-                AppLocalizations.of(context)!.updateAvailable,
+                'Update Available',
                 duration: const Duration(seconds: 15),
                 action: SnackBarAction(
                   textColor: Theme.of(context).colorScheme.secondary,
-                  label: AppLocalizations.of(context)!.update,
+                  label: 'Update',
                   onPressed: () {
                     Navigator.pop(context);
                     if (abis!.contains('arm64-v8a')) {
@@ -176,40 +174,19 @@ class _HomePageState extends State<HomePage> {
         }
         if (autoBackup) {
           final List<String> checked = [
-            AppLocalizations.of(
-              context,
-            )!
-                .settings,
-            AppLocalizations.of(
-              context,
-            )!
-                .downs,
-            AppLocalizations.of(
-              context,
-            )!
-                .playlists,
+            'Settings',
+            'Downloads',
+            'Playlists',
           ];
           final List playlistNames = Hive.box('settings').get(
             'playlistNames',
             defaultValue: ['Favorite Songs'],
           ) as List;
           final Map<String, List> boxNames = {
-            AppLocalizations.of(
-              context,
-            )!
-                .settings: ['settings'],
-            AppLocalizations.of(
-              context,
-            )!
-                .cache: ['cache'],
-            AppLocalizations.of(
-              context,
-            )!
-                .downs: ['downloads'],
-            AppLocalizations.of(
-              context,
-            )!
-                .playlists: playlistNames,
+            'Settings': ['settings'],
+            'Cache': ['cache'],
+            'Downloads': ['downloads'],
+            'Playlists': playlistNames,
           };
           final String autoBackPath = Hive.box('settings').get(
             'autoBackPath',
@@ -217,7 +194,7 @@ class _HomePageState extends State<HomePage> {
           ) as String;
           if (autoBackPath == '') {
             ExtStorageProvider.getExtStorage(
-              dirName: 'BlackHole/Backups',
+              dirName: 'Gem/Backups',
             ).then((value) {
               Hive.box('settings').put('autoBackPath', value);
               createBackup(
@@ -225,7 +202,7 @@ class _HomePageState extends State<HomePage> {
                 checked,
                 boxNames,
                 path: value,
-                fileName: 'BlackHole_AutoBackup',
+                fileName: 'Gem_AutoBackup',
                 showDialog: false,
               );
             });
@@ -277,8 +254,7 @@ class _HomePageState extends State<HomePage> {
       MdiIcons.youtube,
       Iconsax.music_playlist,
     ];
-    final double screenWidth = MediaQuery.of(context).size.width;
-    final bool rotated = MediaQuery.of(context).size.height < screenWidth;
+
     return GradientContainer(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
@@ -289,18 +265,6 @@ class _HomePageState extends State<HomePage> {
           child: SafeArea(
             child: Row(
               children: [
-                if (rotated)
-                  ValueListenableBuilder(
-                    valueListenable: _selectedIndex,
-                    builder:
-                        (BuildContext context, int indexValue, Widget? child) {
-                      return landscapeSideNavBar(
-                        context,
-                        indexValue,
-                        screenWidth,
-                      );
-                    },
-                  ),
                 Expanded(
                   child: Column(
                     children: [
@@ -315,274 +279,7 @@ class _HomePageState extends State<HomePage> {
                             Stack(
                               children: [
                                 checkVersion(),
-                                NestedScrollView(
-                                  physics: const BouncingScrollPhysics(),
-                                  controller: _scrollController,
-                                  headerSliverBuilder: (
-                                    BuildContext context,
-                                    bool innerBoxScrolled,
-                                  ) {
-                                    return <Widget>[
-                                      SliverAppBar(
-                                        expandedHeight: 135,
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        // pinned: true,
-                                        toolbarHeight: 65,
-                                        // floating: true,
-                                        automaticallyImplyLeading: false,
-                                        flexibleSpace: LayoutBuilder(
-                                          builder: (
-                                            BuildContext context,
-                                            BoxConstraints constraints,
-                                          ) {
-                                            return FlexibleSpaceBar(
-                                              // update name in app
-                                              background: GestureDetector(
-                                                onTap: () async {
-                                                  await showTextInputDialog(
-                                                    context: context,
-                                                    title: 'Name',
-                                                    initialText: name,
-                                                    keyboardType:
-                                                        TextInputType.name,
-                                                    onSubmitted: (value) {
-                                                      Hive.box('settings').put(
-                                                        'name',
-                                                        value.trim(),
-                                                      );
-                                                      name = value.trim();
-                                                      Navigator.pop(context);
-                                                      updateUserDetails(
-                                                        'name',
-                                                        value.trim(),
-                                                      );
-                                                    },
-                                                  );
-                                                  setState(() {});
-                                                },
-                                                child: Column(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: <Widget>[
-                                                    const SizedBox(height: 60),
-                                                    Row(
-                                                      children: [
-                                                        Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .only(
-                                                            left: 15.0,
-                                                          ),
-                                                          child: Text(
-                                                            "How you doin'",
-                                                            style: TextStyle(
-                                                              letterSpacing: 2,
-                                                              color: Theme.of(
-                                                                context,
-                                                              )
-                                                                  .colorScheme
-                                                                  .secondary,
-                                                              fontSize: 30,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                    Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                        left: 15.0,
-                                                      ),
-                                                      child: Row(
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          ValueListenableBuilder(
-                                                            valueListenable:
-                                                                Hive.box(
-                                                              'settings',
-                                                            ).listenable(),
-                                                            builder: (
-                                                              BuildContext
-                                                                  context,
-                                                              Box box,
-                                                              Widget? child,
-                                                            ) {
-                                                              return Text(
-                                                                (box.get('name') ==
-                                                                            null ||
-                                                                        box.get('name') ==
-                                                                            '')
-                                                                    ? 'Guest'
-                                                                    : box
-                                                                        .get(
-                                                                          'name',
-                                                                        )
-                                                                        .split(
-                                                                          ' ',
-                                                                        )[0]
-                                                                        .toString()
-                                                                        .capitalize(),
-                                                                style:
-                                                                    const TextStyle(
-                                                                  letterSpacing:
-                                                                      2,
-                                                                  fontSize: 20,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                ),
-                                                              );
-                                                            },
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                      SliverAppBar(
-                                        automaticallyImplyLeading: false,
-                                        pinned: true,
-                                        backgroundColor: Colors.transparent,
-                                        elevation: 0,
-                                        stretch: true,
-                                        toolbarHeight: 65,
-                                        title: Align(
-                                          alignment: Alignment.centerRight,
-                                          child: AnimatedBuilder(
-                                            animation: _scrollController,
-                                            builder: (context, child) {
-                                              return GestureDetector(
-                                                child: AnimatedContainer(
-                                                  width: (!_scrollController
-                                                              .hasClients ||
-                                                          _scrollController
-                                                                  // ignore: invalid_use_of_protected_member
-                                                                  .positions
-                                                                  .length >
-                                                              1)
-                                                      ? MediaQuery.of(context)
-                                                          .size
-                                                          .width
-                                                      : max(
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              _scrollController
-                                                                  .offset
-                                                                  .roundToDouble(),
-                                                          MediaQuery.of(context)
-                                                                  .size
-                                                                  .width -
-                                                              75,
-                                                        ),
-                                                  height: 52.0,
-                                                  duration: const Duration(
-                                                    milliseconds: 150,
-                                                  ),
-                                                  padding:
-                                                      const EdgeInsets.all(2.0),
-                                                  // margin: EdgeInsets.zero,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                      10.0,
-                                                    ),
-                                                    color: Theme.of(context)
-                                                        .cardColor,
-                                                    boxShadow: const [
-                                                      BoxShadow(
-                                                        color: Colors.black26,
-                                                        blurRadius: 5.0,
-                                                        offset:
-                                                            Offset(1.5, 1.5),
-                                                        // shadow direction: bottom right
-                                                      )
-                                                    ],
-                                                  ),
-                                                  child: Row(
-                                                    children: [
-                                                      const SizedBox(
-                                                        width: 10.0,
-                                                      ),
-                                                      Icon(
-                                                        CupertinoIcons.search,
-                                                        color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary,
-                                                      ),
-                                                      const SizedBox(
-                                                        width: 10.0,
-                                                      ),
-                                                      Text(
-                                                        'Songs,albums or artists',
-                                                        style: TextStyle(
-                                                          fontSize: 16.0,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .caption!
-                                                                  .color,
-                                                          fontWeight:
-                                                              FontWeight.normal,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                                onTap: () => Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        const SearchPage(
-                                                      query: '',
-                                                      fromHome: true,
-                                                      autofocus: true,
-                                                    ),
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ];
-                                  },
-                                  body: SaavnHomePage(),
-                                ),
-                                if (!rotated || screenWidth > 1050)
-                                  Builder(
-                                    builder: (context) => Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 8.0,
-                                        left: 4.0,
-                                      ),
-                                      child: Transform.rotate(
-                                        angle: 22 / 7 * 2,
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.horizontal_split_rounded,
-                                          ),
-                                          onPressed: () {
-                                            Scaffold.of(context).openDrawer();
-                                          },
-                                          tooltip:
-                                              MaterialLocalizations.of(context)
-                                                  .openAppDrawerTooltip,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                homeBody(),
                               ],
                             ),
                             const YouTube(),
@@ -598,74 +295,159 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: rotated ? null : portaitBottomNavBar(icondata),
+        bottomNavigationBar: portaitBottomNavBar(icondata),
       ),
     );
   }
 
-  NavigationRail landscapeSideNavBar(
-    BuildContext context,
-    int indexValue,
-    double screenWidth,
-  ) {
-    return NavigationRail(
-      minWidth: 70.0,
-      groupAlignment: 0.0,
-      backgroundColor:
-          // Colors.transparent,
-          Theme.of(context).cardColor,
-      selectedIndex: indexValue,
-      onDestinationSelected: (int index) {
-        _onItemTapped(index);
-      },
-      labelType: screenWidth > 1050
-          ? NavigationRailLabelType.selected
-          : NavigationRailLabelType.none,
-      selectedLabelTextStyle: TextStyle(
-        color: Theme.of(context).colorScheme.secondary,
-        fontWeight: FontWeight.w600,
-      ),
-      unselectedLabelTextStyle: TextStyle(
-        color: Theme.of(context).iconTheme.color,
-      ),
-      selectedIconTheme: Theme.of(context).iconTheme.copyWith(
-            color: Theme.of(context).colorScheme.secondary,
-          ),
-      unselectedIconTheme: Theme.of(context).iconTheme,
-      useIndicator: screenWidth < 1050,
-      indicatorColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-      leading: screenWidth > 1050
-          ? null
-          : Builder(
-              builder: (context) => Transform.rotate(
-                angle: 22 / 7 * 2,
-                child: IconButton(
-                  icon: const Icon(
-                    Icons.horizontal_split_rounded,
+  NestedScrollView homeBody() {
+    return NestedScrollView(
+      physics: const BouncingScrollPhysics(),
+      controller: _scrollController,
+      headerSliverBuilder: (
+        BuildContext context,
+        bool innerBoxScrolled,
+      ) {
+        return <Widget>[
+          SliverAppBar(
+            expandedHeight: 135,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            //pinned: true,
+            toolbarHeight: 65,
+            // floating: true,
+            automaticallyImplyLeading: false,
+            flexibleSpace: LayoutBuilder(
+              builder: (
+                BuildContext context,
+                BoxConstraints constraints,
+              ) {
+                return FlexibleSpaceBar(
+                  background: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: <Widget>[
+                      const SizedBox(height: 60),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              left: 15.0,
+                            ),
+                            child: Text(
+                              "How you doin'",
+                              style: TextStyle(
+                                letterSpacing: 2,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.secondary,
+                                fontSize: 30,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            splashRadius: 24,
+                            onPressed: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/recent',
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.history_rounded,
+                              size: 35,
+                            ),
+                          ),
+                          IconButton(
+                            splashRadius: 24,
+                            onPressed: () {
+                              Scaffold.of(context).openDrawer();
+                            },
+                            icon: const Icon(Iconsax.setting, size: 30),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  // color: Theme.of(context).iconTheme.color,
-                  onPressed: () {
-                    Scaffold.of(context).openDrawer();
-                  },
-                  tooltip:
-                      MaterialLocalizations.of(context).openAppDrawerTooltip,
-                ),
+                );
+              },
+            ),
+          ),
+          SliverAppBar(
+            automaticallyImplyLeading: false,
+            pinned: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            stretch: true,
+            toolbarHeight: 65,
+            title: Align(
+              alignment: Alignment.centerRight,
+              child: AnimatedBuilder(
+                animation: _scrollController,
+                builder: (context, child) {
+                  return GestureDetector(
+                    child: AnimatedContainer(
+                      height: 52.0,
+                      duration: const Duration(
+                        milliseconds: 150,
+                      ),
+                      padding: const EdgeInsets.all(2.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(
+                          12.0,
+                        ),
+                        color: Theme.of(context).cardColor,
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 5.0,
+                            offset: Offset(1, 1),
+                          )
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Icon(
+                            CupertinoIcons.search,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Text(
+                            'Songs,albums or artists',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              color: Theme.of(context).textTheme.caption!.color,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const SearchPage(
+                          query: '',
+                          fromHome: true,
+                          autofocus: true,
+                        ),
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-      destinations: [
-        NavigationRailDestination(
-          icon: const Icon(Iconsax.home),
-          label: Text(AppLocalizations.of(context)!.home),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(MdiIcons.youtube),
-          label: Text(AppLocalizations.of(context)!.youTube),
-        ),
-        NavigationRailDestination(
-          icon: const Icon(Icons.my_library_music_rounded),
-          label: Text(AppLocalizations.of(context)!.library),
-        ),
-      ],
+          ),
+        ];
+      },
+      body: HomeViewPage(),
     );
   }
 
@@ -689,7 +471,7 @@ class _HomePageState extends State<HomePage> {
                     itemCount: icondata.length,
                     padding: const EdgeInsets.symmetric(horizontal: 80),
                     itemBuilder: (ctx, i) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
                       child: GestureDetector(
                         onTap: () {
                           _onItemTapped(i);
@@ -719,7 +501,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                           child: Icon(
                             icondata[i],
-                            size: 40,
+                            size: 37,
                             color: i == indexValue
                                 ? Colors.white
                                 : Colors.grey.shade800,
@@ -752,23 +534,14 @@ class _HomePageState extends State<HomePage> {
               stretch: true,
               expandedHeight: MediaQuery.of(context).size.height * 0.2,
               flexibleSpace: FlexibleSpaceBar(
-                title: RichText(
-                  text: TextSpan(
-                    text: "Gem",
-                    style: const TextStyle(
-                      fontSize: 30.0,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    children: <TextSpan>[
-                      TextSpan(
-                        text: appVersion == null ? '' : '\nv$appVersion',
-                        style: const TextStyle(
-                          fontSize: 7.0,
-                        ),
-                      ),
-                    ],
+                title: Text(
+                  'Gem\nMusic',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.lato(
+                    fontSize: 30,
+                    color: Colors.white.withOpacity(0.5),
+                    fontWeight: FontWeight.bold,
                   ),
-                  textAlign: TextAlign.end,
                 ),
                 titlePadding: const EdgeInsets.only(bottom: 40.0),
                 centerTitle: true,
@@ -786,14 +559,11 @@ class _HomePageState extends State<HomePage> {
                     );
                   },
                   blendMode: BlendMode.dstIn,
-                  child: Image(
+                  child: const Image(
                     fit: BoxFit.cover,
                     alignment: Alignment.topCenter,
                     image: AssetImage(
-                      //top background drawer image
-                      Theme.of(context).brightness == Brightness.dark
-                          ? 'assets/header-dark.jpg'
-                          : 'assets/header.jpg',
+                      "assets/icon-white-trans.png",
                     ),
                   ),
                 ),
@@ -822,7 +592,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   if (Platform.isAndroid)
                     ListTile(
-                      title: const Text("My Music"),
+                      title: const Text("Local Music"),
                       contentPadding:
                           const EdgeInsets.symmetric(horizontal: 20.0),
                       leading: Icon(
@@ -855,7 +625,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   ListTile(
-                    title: Text(AppLocalizations.of(context)!.playlists),
+                    title: const Text('Playlists'),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
@@ -868,7 +638,7 @@ class _HomePageState extends State<HomePage> {
                     },
                   ),
                   ListTile(
-                    title: Text(AppLocalizations.of(context)!.settings),
+                    title: const Text('Settings'),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
@@ -877,12 +647,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onTap: () {
                       Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SettingPage(callback: callback),
-                        ),
-                      );
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(
+                      //     builder: (context) => SettingPage(callback: callback),
+                      //   ),
+                      // );
                     },
                   ),
                 ],
@@ -905,7 +675,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, '/about');
+                        //TODO: Add a info dialog
                       },
                     ),
                   ),

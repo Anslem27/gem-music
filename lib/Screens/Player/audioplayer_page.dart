@@ -23,7 +23,7 @@ import 'package:gem/CustomWidgets/popup.dart';
 import 'package:gem/CustomWidgets/seek_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
-import 'package:gem/Helpers/config.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/dominant_color.dart';
 import 'package:gem/Helpers/lyrics.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
@@ -335,14 +335,14 @@ class _PlayScreenState extends State<PlayScreen> {
                   ),
                   actions: [
                     IconButton(
-                      icon: const Icon(Icons.lyrics_rounded),
+                      icon: const Icon(Iconsax.microphone),
                       tooltip: "Lyrics",
                       onPressed: () => cardKey.currentState!.toggleCard(),
                     ),
                     if (!offline)
                       IconButton(
                         splashRadius: 24,
-                        icon: const Icon(Icons.share_rounded),
+                        icon: const Icon(MdiIcons.share),
                         tooltip: "Share",
                         onPressed: () {
                           Share.share(
@@ -358,7 +358,7 @@ class _PlayScreenState extends State<PlayScreen> {
                       ),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
-                          Radius.circular(15.0),
+                          Radius.circular(10.0),
                         ),
                       ),
                       onSelected: (int? value) {
@@ -565,8 +565,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                             Theme.of(context).iconTheme.color,
                                       ),
                                       const SizedBox(width: 10.0),
-                                      Text(
-                                        AppLocalizations.of(context)!.equalizer,
+                                      const Text(
+                                        'Equalizer',
                                       ),
                                     ],
                                   ),
@@ -580,8 +580,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!.songInfo,
+                                    const Text(
+                                      'Track Info',
                                     ),
                                   ],
                                 ),
@@ -592,13 +592,13 @@ class _PlayScreenState extends State<PlayScreen> {
                                 PopupMenuItem(
                                   value: 5,
                                   child: Row(
-                                    children: [
-                                      const Icon(
+                                    children: const [
+                                      Icon(
                                         Icons.album_rounded,
                                       ),
-                                      const SizedBox(width: 10.0),
+                                      SizedBox(width: 10.0),
                                       Text(
-                                        AppLocalizations.of(context)!.viewAlbum,
+                                        'View Album',
                                       ),
                                     ],
                                   ),
@@ -664,14 +664,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                     const SizedBox(width: 10.0),
                                     Text(
                                       mediaItem.genre == 'YouTube'
-                                          ? AppLocalizations.of(
-                                              context,
-                                            )!
-                                              .watchVideo
-                                          : AppLocalizations.of(
-                                              context,
-                                            )!
-                                              .searchVideo,
+                                          ? 'Watch Video'
+                                          : 'Search Video',
                                     ),
                                   ],
                                 ),
@@ -685,8 +679,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!.songInfo,
+                                    const Text(
+                                      'Song Info',
                                     ),
                                   ],
                                 ),
@@ -818,7 +812,7 @@ class _PlayScreenState extends State<PlayScreen> {
         return SimpleDialog(
           title: Center(
             child: Text(
-              AppLocalizations.of(context)!.selectDur,
+              'Select Duration',
               style: TextStyle(
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.secondary,
@@ -860,7 +854,7 @@ class _PlayScreenState extends State<PlayScreen> {
                     sleepTimer(0);
                     Navigator.pop(context);
                   },
-                  child: Text(AppLocalizations.of(context)!.cancel),
+                  child: const Text('Cancel'),
                 ),
                 const SizedBox(
                   width: 10,
@@ -878,14 +872,12 @@ class _PlayScreenState extends State<PlayScreen> {
                     Navigator.pop(context);
                     ShowSnackBar().showSnackBar(
                       context,
-                      '${AppLocalizations.of(context)!.sleepTimerSetFor} ${_time.inMinutes} ${AppLocalizations.of(context)!.minutes}',
+                      'Sleep Timer set for ${_time.inMinutes} min',
                     );
                   },
-                  child: Text(AppLocalizations.of(context)!.ok),
+                  child: const Text('OK'),
                 ),
-                const SizedBox(
-                  width: 20,
-                ),
+                const SizedBox(width: 20),
               ],
             ),
           ],
@@ -897,7 +889,7 @@ class _PlayScreenState extends State<PlayScreen> {
   Future<dynamic> setCounter() async {
     await showTextInputDialog(
       context: context,
-      title: AppLocalizations.of(context)!.enterSongsCount,
+      title: 'Enter number of songs',
       initialText: '',
       keyboardType: TextInputType.number,
       onSubmitted: (String value) {
@@ -907,7 +899,7 @@ class _PlayScreenState extends State<PlayScreen> {
         Navigator.pop(context);
         ShowSnackBar().showSnackBar(
           context,
-          '${AppLocalizations.of(context)!.sleepTimerSetFor} $value ${AppLocalizations.of(context)!.songs}',
+          'Sleep timer set for $value songs',
         );
       },
     );
@@ -1033,7 +1025,7 @@ class ControlButtons extends StatelessWidget {
                         Center(
                           child: playing
                               ? IconButton(
-                                  tooltip: AppLocalizations.of(context)!.pause,
+                                  tooltip: 'Pause',
                                   onPressed: audioHandler.pause,
                                   icon: const Icon(
                                     Icons.pause_rounded,
@@ -1043,7 +1035,7 @@ class ControlButtons extends StatelessWidget {
                                   ).colorScheme.secondary,
                                 )
                               : IconButton(
-                                  tooltip: AppLocalizations.of(context)!.play,
+                                  tooltip: 'Play',
                                   onPressed: audioHandler.play,
                                   icon: const Icon(
                                     Icons.play_arrow_rounded,
@@ -1103,7 +1095,7 @@ class ControlButtons extends StatelessWidget {
                 return IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
                   iconSize: miniplayer ? 24.0 : 45.0,
-                  tooltip: AppLocalizations.of(context)!.skipNext,
+                  tooltip: 'Skip to next',
                   color: dominantColor ?? Theme.of(context).iconTheme.color,
                   onPressed: queueState?.hasNext ?? true
                       ? audioHandler.skipToNext
@@ -1190,6 +1182,7 @@ class NowPlayingStream extends StatelessWidget {
                   trailing: index == queueState.queueIndex
                       ? IconButton(
                           icon: const Icon(
+                            //TODO: Add animated animations
                             Icons.bar_chart_rounded,
                           ),
                           tooltip: AppLocalizations.of(context)!.playing,
@@ -1254,12 +1247,12 @@ class NowPlayingStream extends StatelessWidget {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
-                                RotatedBox(
+                                const RotatedBox(
                                   quarterTurns: 3,
                                   child: Text(
-                                    AppLocalizations.of(context)!.addedBy,
+                                    'Added By',
                                     textAlign: TextAlign.start,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                       fontSize: 5.0,
                                     ),
                                   ),
@@ -1267,7 +1260,7 @@ class NowPlayingStream extends StatelessWidget {
                                 RotatedBox(
                                   quarterTurns: 3,
                                   child: Text(
-                                    AppLocalizations.of(context)!.autoplay,
+                                    'AutoPlay',
                                     textAlign: TextAlign.start,
                                     style: TextStyle(
                                       fontSize: 8.0,
@@ -1397,6 +1390,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
       child: Hero(
         tag: 'currentArtwork',
         child: FlipCard(
+          //direction:FlipDirection.
           key: widget.cardKey,
           flipOnTouch: false,
           onFlipDone: (value) {
@@ -1858,7 +1852,7 @@ class NameNControls extends StatelessWidget {
                             ),
                             SizedBox(width: 10.0),
                             Text(
-                             'View Artist',
+                              'View Artist',
                             ),
                           ],
                         ),

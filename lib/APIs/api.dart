@@ -1,5 +1,3 @@
-
-
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
@@ -273,8 +271,6 @@ class SaavnAPI {
       final List artistResponseList = getMain['artists']['data'] as List;
       position[getMain['artists']['position'] as int] = 'Artists';
 
-   
-
       final List topQuery = getMain['topquery']['data'] as List;
 
       searchedAlbumList =
@@ -290,7 +286,6 @@ class SaavnAPI {
       if (searchedPlaylistList.isNotEmpty) {
         result['Playlists'] = searchedPlaylistList;
       }
-
 
       searchedArtistList = await FormatResponse.formatAlbumResponse(
         artistResponseList,

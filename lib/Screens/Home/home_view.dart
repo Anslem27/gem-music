@@ -1,4 +1,4 @@
-// ignore_for_file: use_decorated_box
+// ignore_for_file: use_decorated_box, require_trailing_commas
 
 import 'dart:io';
 
@@ -23,19 +23,19 @@ import 'package:hive/hive.dart';
 
 bool fetched = false;
 List preferredLanguage = Hive.box('settings')
-    .get('preferredLanguage', defaultValue: ['Hindi']) as List;
+    .get('preferredLanguage', defaultValue: ['English']) as List;
 List likedRadio =
     Hive.box('settings').get('likedRadio', defaultValue: []) as List;
 Map data = Hive.box('cache').get('homepage', defaultValue: {}) as Map;
 List lists = ['recent', 'playlist', ...?data['collections']];
 
-class SaavnHomePage extends StatefulWidget {
+class HomeViewPage extends StatefulWidget {
   @override
-  _SaavnHomePageState createState() => _SaavnHomePageState();
+  _HomeViewPageState createState() => _HomeViewPageState();
 }
 
-class _SaavnHomePageState extends State<SaavnHomePage>
-    with AutomaticKeepAliveClientMixin<SaavnHomePage> {
+class _HomeViewPageState extends State<HomeViewPage>
+    with AutomaticKeepAliveClientMixin<HomeViewPage> {
   List recentList =
       Hive.box('cache').get('recentSongs', defaultValue: []) as List;
   Map likedArtists =
@@ -315,13 +315,12 @@ class _SaavnHomePageState extends State<SaavnHomePage>
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: TextStyle(
-                                                          fontSize: 11,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .caption!
-                                                                  .color,
-                                                        ),
+                                                            fontSize: 11,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .caption!
+                                                                .color),
                                                       )
                                                   ],
                                                 ),
@@ -398,33 +397,34 @@ class _SaavnHomePageState extends State<SaavnHomePage>
                         ],
                       );
               }
-              return (data[lists[idx]] == null ||
-                      blacklistedHomeSections.contains(
-                        data['modules'][lists[idx]]?['title']
-                            ?.toString()
-                            .toLowerCase(),
-                      ))
-                  ? const SizedBox()
-                  : Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
-                          child: Text(
-                            data['modules'][lists[idx]]?['title']
-                                    ?.toString()
-                                    .unescape() ??
-                                '',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        radioSection(boxSize, idx),
-                      ],
-                    );
+              return const SizedBox();
+              // return (data[lists[idx]] == null ||
+              //         blacklistedHomeSections.contains(
+              //           data['modules'][lists[idx]]?['title']
+              //               ?.toString()
+              //               .toLowerCase(),
+              //         ))
+              //     ? const SizedBox()
+              //     : Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         children: [
+              //           Padding(
+              //             padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
+              //             child: Text(
+              //               data['modules'][lists[idx]]?['title']
+              //                       ?.toString()
+              //                       .unescape() ??
+              //                   '',
+              //               style: TextStyle(
+              //                 color: Theme.of(context).colorScheme.secondary,
+              //                 fontSize: 18,
+              //                 fontWeight: FontWeight.bold,
+              //               ),
+              //             ),
+              //           ),
+              //           //radioSection(boxSize, idx),
+              //         ],
+              //       );
             },
           );
   }
@@ -737,7 +737,7 @@ class _SaavnHomePageState extends State<SaavnHomePage>
                                 alignment: Alignment.topRight,
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [ 
+                                  children: [
                                     if (isHover)
                                       LikeButton(
                                         mediaItem:

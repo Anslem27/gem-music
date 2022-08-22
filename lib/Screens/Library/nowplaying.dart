@@ -58,8 +58,7 @@ class _NowPlayingState extends State<NowPlaying> {
                             return mediaItem == null
                                 ? const SizedBox()
                                 : BouncyImageSliverScrollView(
-                                    title: AppLocalizations.of(context)!
-                                        .nowPlaying,
+                                    title: 'Now Playing',
                                     localImage: mediaItem.artUri!
                                         .toString()
                                         .startsWith('file:'),

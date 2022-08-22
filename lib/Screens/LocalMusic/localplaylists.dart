@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/audio_query.dart';
@@ -40,7 +39,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                 dimension: 50,
                 child: Center(
                   child: Icon(
-                    Icons.add_rounded,
+                    Iconsax.add,
                     color: Theme.of(
                       context,
                     ).colorScheme.secondary,
@@ -51,7 +50,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
             onTap: () async {
               await showTextInputDialog(
                 context: context,
-                title: AppLocalizations.of(context)!.createNewPlaylist,
+                title: 'Create New Playlist',
                 initialText: '',
                 keyboardType: TextInputType.name,
                 onSubmitted: (String value) async {
@@ -73,6 +72,76 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
           if (playlistDetails.isEmpty)
             const SizedBox()
           else
+            // MasonryGridView.count(
+            //     padding: const EdgeInsets.all(5),
+            //     crossAxisCount: 2,
+            //     itemBuilder: (_, index) {
+            //       return Card(
+            //         color: Colors.transparent,
+            //         elevation: 0,
+            //         margin: EdgeInsets.zero,
+            //         shape: RoundedRectangleBorder(
+            //           borderRadius: BorderRadius.circular(
+            //             10.0,
+            //           ),
+            //         ),
+            //         clipBehavior: Clip.antiAlias,
+            //         child: Expanded(
+            //           child: Column(
+            //             children: [
+            //               SizedBox(
+            //                 child: QueryArtworkWidget(
+            //                   id: playlistDetails[index].id,
+            //                   type: ArtworkType.PLAYLIST,
+            //                   keepOldArtwork: true,
+            //                   artworkBorder: BorderRadius.circular(7.0),
+            //                   nullArtworkWidget: ClipRRect(
+            //                     borderRadius: BorderRadius.circular(7.0),
+            //                     child: const Image(
+            //                       fit: BoxFit.cover,
+            //                       height: 100.0,
+            //                       width: 100.0,
+            //                       image: AssetImage('assets/cover.jpg'),
+            //                     ),
+            //                   ),
+            //                 ),
+            //               ),
+            //               Padding(
+            //                 padding: const EdgeInsets.symmetric(
+            //                   horizontal: 10.0,
+            //                 ),
+            //                 child: Column(
+            //                   mainAxisSize: MainAxisSize.min,
+            //                   children: [
+            //                     Text(
+            //                       playlistDetails[index].playlist,
+            //                       textAlign: TextAlign.center,
+            //                       softWrap: false,
+            //                       overflow: TextOverflow.ellipsis,
+            //                       style: const TextStyle(
+            //                         fontWeight: FontWeight.w500,
+            //                       ),
+            //                     ),
+            //                     Text(
+            //                       '${playlistDetails[index].numOfSongs} ${playlistDetails[index].numOfSongs > 0 ? 'songs' : 'song'}',
+            //                       textAlign: TextAlign.center,
+            //                       softWrap: false,
+            //                       overflow: TextOverflow.ellipsis,
+            //                       style: TextStyle(
+            //                           fontSize: 11,
+            //                           color: Theme.of(context)
+            //                               .textTheme
+            //                               .caption!
+            //                               .color),
+            //                     )
+            //                   ],
+            //                 ),
+            //               ),
+            //             ],
+            //           ),
+            //         ),
+            //       );
+            //     })
             ListView.builder(
               physics: const NeverScrollableScrollPhysics(),
               shrinkWrap: true,
@@ -106,7 +175,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                     overflow: TextOverflow.ellipsis,
                   ),
                   subtitle: Text(
-                    '${playlistDetails[index].numOfSongs} ${AppLocalizations.of(context)!.songs}',
+                    '${playlistDetails[index].numOfSongs} ${playlistDetails[index].numOfSongs > 0 ? 'songs' : 'song'}',
                   ),
                   trailing: PopupMenuButton(
                     splashRadius: 24,
@@ -123,14 +192,14 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                         )) {
                           ShowSnackBar().showSnackBar(
                             context,
-                            '${AppLocalizations.of(context)!.deleted} ${playlistDetails[index].playlist}',
+                            'Deleted ${playlistDetails[index].playlist}',
                           );
                           playlistDetails.removeAt(index);
                           setState(() {});
                         } else {
                           ShowSnackBar().showSnackBar(
                             context,
-                            AppLocalizations.of(context)!.failedDelete,
+                            'Failed to delete',
                           );
                         }
                       }

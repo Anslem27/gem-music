@@ -1,3 +1,5 @@
+// ignore_for_file: always_use_package_imports
+
 import 'dart:async';
 import 'dart:io';
 
@@ -7,13 +9,13 @@ import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:gem/Helpers/config.dart';
+import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/handle_native.dart';
 import 'package:gem/Helpers/route_handler.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
-import 'package:gem/Screens/Library/playlists.dart';
+// import 'package:gem/Screens/Library/online_playlists.dart';
 import 'package:gem/Screens/Library/recent.dart';
 import 'package:gem/Screens/Login/initial_wizard.dart';
 import 'package:gem/Screens/Login/pref.dart';
@@ -25,6 +27,8 @@ import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:receive_sharing_intent/receive_sharing_intent.dart';
+
+import 'Screens/Library/playlist_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -246,7 +250,7 @@ class _MyAppState extends State<MyApp> {
         '/': (context) => initialFuntion(),
         '/pref': (context) => const PrefScreen(),
         '/setting': (context) => const SettingPage(),
-        '/playlists': (context) => PlaylistScreen(),
+        '/playlists': (context) => const PlaylistView(),
         '/nowplaying': (context) => NowPlaying(),
         '/recent': (context) => RecentlyPlayed(),
         '/downloads': (context) => const Downloads(),
