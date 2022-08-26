@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
@@ -242,8 +241,7 @@ class _SongsListPageState extends State<SongsListPage> {
                                             ),
                                             const SizedBox(width: 5.0),
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                  .play,
+                                              'Play',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,
@@ -326,8 +324,7 @@ class _SongsListPageState extends State<SongsListPage> {
                                             ),
                                             const SizedBox(width: 5.0),
                                             Text(
-                                              AppLocalizations.of(context)!
-                                                  .shuffle,
+                                              'Shuffle',
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 18.0,

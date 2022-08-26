@@ -1,10 +1,10 @@
+// ignore_for_file: avoid_redundant_argument_values
+
 import 'dart:io';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -15,10 +15,11 @@ import 'package:gem/Screens/Home/home_view.dart';
 import 'package:gem/Screens/Library/library_main_page.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:gem/Screens/Search/search.dart';
-// import 'package:gem/Screens/Settings/setting.dart';
+import 'package:gem/Screens/Settings/setting.dart';
 // import 'package:gem/Screens/YouTube/top_charts_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
+import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:iconsax/iconsax.dart';
@@ -612,7 +613,7 @@ class _HomePageState extends State<HomePage> {
                       },
                     ),
                   ListTile(
-                    title: Text(AppLocalizations.of(context)!.downs),
+                    title: const Text('Downloads'),
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 20.0),
                     leading: Icon(
@@ -647,12 +648,12 @@ class _HomePageState extends State<HomePage> {
                     ),
                     onTap: () {
                       Navigator.pop(context);
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => SettingPage(callback: callback),
-                      //   ),
-                      // );
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SettingPage(callback: callback),
+                        ),
+                      );
                     },
                   ),
                 ],

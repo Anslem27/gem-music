@@ -1,8 +1,5 @@
-
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
@@ -19,7 +16,7 @@ void addToNowPlaying({
     if (audioHandler.queue.value.contains(mediaItem) && showNotification) {
       ShowSnackBar().showSnackBar(
         context,
-        AppLocalizations.of(context)!.alreadyInQueue,
+        'Song already in queue',
       );
     } else {
       audioHandler.addQueueItem(mediaItem);
@@ -27,7 +24,7 @@ void addToNowPlaying({
       if (showNotification) {
         ShowSnackBar().showSnackBar(
           context,
-          AppLocalizations.of(context)!.addedToQueue,
+          'Added to playing queue',
         );
       }
     }
@@ -36,8 +33,8 @@ void addToNowPlaying({
       ShowSnackBar().showSnackBar(
         context,
         currentMediaItem == null
-            ? AppLocalizations.of(context)!.nothingPlaying
-            : AppLocalizations.of(context)!.cantAddToQueue,
+            ? 'No music is playing'
+            : 'Cant add online music to offline queue',
       );
     }
   }
@@ -68,14 +65,12 @@ void playNext(
 
     ShowSnackBar().showSnackBar(
       context,
-      '"${mediaItem.title}" ${AppLocalizations.of(context)!.willPlayNext}',
+      '"${mediaItem.title}" set to play next}',
     );
   } else {
     ShowSnackBar().showSnackBar(
       context,
-      currentMediaItem == null
-          ? AppLocalizations.of(context)!.nothingPlaying
-          : AppLocalizations.of(context)!.cantAddToQueue,
+      currentMediaItem == null ? 'No music playing' : 'Cant add song to queue',
     );
   }
 }

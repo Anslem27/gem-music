@@ -1,8 +1,7 @@
-// ignore_for_file: use_super_parameters
+// ignore_for_file: use_super_parameters, avoid_redundant_argument_values
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/artist_like_button.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
@@ -72,16 +71,16 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                           0,
                           ':( ',
                           100,
-                          AppLocalizations.of(context)!.sorry,
+                          'Oops!',
                           60,
-                          AppLocalizations.of(context)!.resultsNotFound,
+                          'No results',
                           20,
                         )
                       : BouncyImageSliverScrollView(
                           actions: [
                             IconButton(
                               icon: const Icon(Icons.share_rounded),
-                              tooltip: AppLocalizations.of(context)!.share,
+                              tooltip: 'Share',
                               onPressed: () {
                                 Share.share(
                                   widget.data['perma_url'].toString(),
@@ -99,8 +98,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                     widget.data['title']?.toString() ?? 'Songs',
                               ),
                           ],
-                          title: widget.data['title']?.toString() ??
-                              AppLocalizations.of(context)!.songs,
+                          title: widget.data['title']?.toString() ?? 'Songs',
                           placeholderImage: 'assets/artist.png',
                           imageUrl: widget.data['image']
                               .toString()
@@ -124,13 +122,9 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                           onTap: () {
                                             ShowSnackBar().showSnackBar(
                                               context,
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .connectingRadio,
-                                              duration: const Duration(
-                                                seconds: 2,
-                                              ),
+                                              'Connecting to radio',
+                                              duration:
+                                                  const Duration(seconds: 2),
                                             );
                                             SaavnAPI().createRadio(
                                               names: [
@@ -213,10 +207,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                   ),
                                                   const SizedBox(width: 5.0),
                                                   Text(
-                                                    AppLocalizations.of(
-                                                      context,
-                                                    )!
-                                                        .playRadio,
+                                                    'Play radio',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -361,9 +352,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                 ),
                                               );
                                             },
-                                            tooltip:
-                                                AppLocalizations.of(context)!
-                                                    .shuffle,
+                                            tooltip: 'Shuffle',
                                           ),
                                         ),
                                       ),
@@ -406,11 +395,8 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                           .spaceBetween,
                                                   children: <Widget>[
                                                     ChoiceChip(
-                                                      label: Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .popularity,
+                                                      label: const Text(
+                                                        'Popularity',
                                                       ),
                                                       selectedColor:
                                                           Theme.of(context)
@@ -446,11 +432,8 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                       width: 5,
                                                     ),
                                                     ChoiceChip(
-                                                      label: Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .date,
+                                                      label: const Text(
+                                                        'Date',
                                                       ),
                                                       selectedColor:
                                                           Theme.of(context)
@@ -488,11 +471,8 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                       width: 5,
                                                     ),
                                                     ChoiceChip(
-                                                      label: Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .alphabetical,
+                                                      label: const Text(
+                                                        'Alphabetical',
                                                       ),
                                                       selectedColor:
                                                           Theme.of(context)

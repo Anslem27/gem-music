@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:hive/hive.dart';
@@ -34,7 +33,7 @@ Future<void> createBackup(
   final String savePath = path ??
       await Picker.selectFolder(
         context: context,
-        message: AppLocalizations.of(context)!.selectBackLocation,
+        message: 'Select a backup path',
       );
   if (savePath.trim() != '') {
     try {
@@ -79,19 +78,19 @@ Future<void> createBackup(
       if (showDialog) {
         ShowSnackBar().showSnackBar(
           context,
-          AppLocalizations.of(context)!.backupSuccess,
+          'Successfully backed-up',
         );
       }
     } catch (e) {
       ShowSnackBar().showSnackBar(
         context,
-        '${AppLocalizations.of(context)!.failedCreateBackup}\nError: $e',
+        'Failed to create backup\nError: $e',
       );
     }
   } else {
     ShowSnackBar().showSnackBar(
       context,
-      AppLocalizations.of(context)!.noFolderSelected,
+      'No folder selected',
     );
   }
 }
@@ -102,7 +101,7 @@ Future<void> restore(
   final String savePath = await Picker.selectFile(
     context: context,
     // ext: ['zip'],
-    message: AppLocalizations.of(context)!.selectBackFile,
+    message: 'Select file to restore from',
   );
   final File zipFile = File(savePath);
   final Directory tempDir = await getTemporaryDirectory();
@@ -129,12 +128,11 @@ Future<void> restore(
       }
     }
     destinationDir.delete(recursive: true);
-    ShowSnackBar()
-        .showSnackBar(context, AppLocalizations.of(context)!.importSuccess);
+    ShowSnackBar().showSnackBar(context, 'Successfully imported');
   } catch (e) {
     ShowSnackBar().showSnackBar(
       context,
-      '${AppLocalizations.of(context)!.failedImport}\nError: $e',
+      'Failed to import\nError: $e',
     );
   }
 }

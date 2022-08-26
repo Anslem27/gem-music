@@ -3,7 +3,6 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/Helpers/add_mediaitem_to_queue.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
@@ -68,11 +67,11 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.queue_music_rounded,
+                Iconsax.music_play,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.playNext),
+              const Text('Play next'),
             ],
           ),
         ),
@@ -81,11 +80,11 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.playlist_add_rounded,
+                Iconsax.music_play,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.addToQueue),
+              const Text('Add to queue'),
             ],
           ),
         ),
@@ -98,7 +97,7 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.addToPlaylist),
+              const Text('Add to playlist'),
             ],
           ),
         ),
@@ -107,11 +106,11 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.album_rounded,
+                Iconsax.music_library_2,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.viewAlbum),
+              const Text('View Album'),
             ],
           ),
         ),
@@ -120,11 +119,11 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.person_rounded,
+                Iconsax.personalcard,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.viewArtist),
+              const Text('View Artist'),
             ],
           ),
         ),
@@ -137,7 +136,7 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.share),
+              const Text('Share'),
             ],
           ),
         ),
@@ -227,12 +226,7 @@ class _YtSongTileTrailingMenuState extends State<YtSongTileTrailingMenu> {
               const SizedBox(
                 width: 10.0,
               ),
-              Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .searchHome,
-              ),
+              const Text('Search'),
             ],
           ),
         ),
@@ -241,11 +235,11 @@ class _YtSongTileTrailingMenuState extends State<YtSongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.queue_music_rounded,
+                Iconsax.music_play,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.playNext),
+              const Text('Play next'),
             ],
           ),
         ),
@@ -258,7 +252,7 @@ class _YtSongTileTrailingMenuState extends State<YtSongTileTrailingMenu> {
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.addToQueue),
+              const Text('Add to queue'),
             ],
           ),
         ),
@@ -267,11 +261,11 @@ class _YtSongTileTrailingMenuState extends State<YtSongTileTrailingMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.playlist_add_rounded,
+                Iconsax.music_playlist,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.addToPlaylist),
+              const Text('Add to playlist'),
             ],
           ),
         ),

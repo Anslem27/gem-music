@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
@@ -23,7 +22,11 @@ class _LibraryPageState extends State<LibraryPage> {
         Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
           child: AppBar(
-            leading: Icon(Iconsax.music,color:Theme.of(context).iconTheme.color,size: 40,),
+            leading: Icon(
+              Iconsax.music,
+              color: Theme.of(context).iconTheme.color,
+              size: 40,
+            ),
             title: Row(
               children: [
                 const SizedBox(width: 10),
@@ -65,7 +68,7 @@ class _LibraryPageState extends State<LibraryPage> {
               MaterialPageRoute(
                 builder: (context) => const LikedSongs(
                   playlistName: 'Favorite Songs',
-                  showName:'Favourite Songs',
+                  showName: 'Favourite Songs',
                 ),
               ),
             );
@@ -93,9 +96,10 @@ class _LibraryPageState extends State<LibraryPage> {
             Navigator.pushNamed(context, '/downloads');
           },
         ),
+        //IconButton(onPressed: (){Navigator.push(context, CupertinoPageRoute(builder: (_)=>PrefScreen()));}, icon: Icon(Icons.add)),
         LibraryTile(
           title: 'Playlists',
-          icon: Icons.playlist_play_rounded,
+          icon: Iconsax.music_dashboard,
           onTap: () {
             Navigator.pushNamed(context, '/playlists');
           },

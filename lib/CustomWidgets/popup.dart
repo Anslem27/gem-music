@@ -1,5 +1,3 @@
-
-
 import 'package:flutter/material.dart';
 
 class PopupDialog {
@@ -35,17 +33,10 @@ class PopupDialog {
               ),
               Align(
                 alignment: Alignment.topRight,
-                child: Card(
-                  elevation: 15.0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: IconButton(
-                    splashRadius: 24,
-                    onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.close_rounded),
-                  ),
+                child: IconButton(
+                  splashRadius: 24,
+                  onPressed: () => Navigator.pop(context),
+                  icon: const Icon(Icons.close_rounded),
                 ),
               ),
             ],

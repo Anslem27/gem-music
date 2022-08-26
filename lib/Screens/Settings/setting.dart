@@ -4,20 +4,18 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/popup.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
-import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/app_config.dart';
+import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/picker.dart';
-import 'package:gem/Screens/Home/home_view.dart' as home_screen;
 import 'package:gem/Screens/Settings/player_gradient.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
-import 'package:gem/main.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingPage extends StatefulWidget {
@@ -35,7 +33,7 @@ class _SettingPageState extends State<SettingPage> {
       .get('downloadPath', defaultValue: '/storage/emulated/0/Music') as String;
   String autoBackPath = Hive.box('settings').get(
     'autoBackPath',
-    defaultValue: '/storage/emulated/0/BlackHole/Backups',
+    defaultValue: '/storage/emulated/0/Gem/Backups',
   ) as String;
   final ValueNotifier<bool> includeOrExclude = ValueNotifier<bool>(
     Hive.box('settings').get('includeOrExclude', defaultValue: false) as bool,
@@ -65,35 +63,35 @@ class _SettingPageState extends State<SettingPage> {
 
   bool useProxy =
       Hive.box('settings').get('useProxy', defaultValue: false) as bool;
-  String themeColor =
-      Hive.box('settings').get('themeColor', defaultValue: 'Teal') as String;
+  String themeColor = Hive.box('settings')
+      .get('themeColor', defaultValue: 'Dark Purple') as String;
   int colorHue = Hive.box('settings').get('colorHue', defaultValue: 400) as int;
   int downFilename =
       Hive.box('settings').get('downFilename', defaultValue: 0) as int;
-  List<String> languages = [
-    'Hindi',
-    'English',
-    'Punjabi',
-    'Tamil',
-    'Telugu',
-    'Marathi',
-    'Gujarati',
-    'Bengali',
-    'Kannada',
-    'Bhojpuri',
-    'Malayalam',
-    'Urdu',
-    'Haryanvi',
-    'Rajasthani',
-    'Odia',
-    'Assamese'
-  ];
+  // List<String> languages = [
+  //   'Hindi',
+  //   'English',
+  //   'Punjabi',
+  //   'Tamil',
+  //   'Telugu',
+  //   'Marathi',
+  //   'Gujarati',
+  //   'Bengali',
+  //   'Kannada',
+  //   'Bhojpuri',
+  //   'Malayalam',
+  //   'Urdu',
+  //   'Haryanvi',
+  //   'Rajasthani',
+  //   'Odia',
+  //   'Assamese'
+  // ];
   List miniButtonsOrder = Hive.box('settings').get(
     'miniButtonsOrder',
     defaultValue: ['Like', 'Previous', 'Play/Pause', 'Next', 'Download'],
   ) as List;
   List preferredLanguage = Hive.box('settings')
-      .get('preferredLanguage', defaultValue: ['Hindi'])?.toList() as List;
+      .get('preferredLanguage', defaultValue: ['English'])?.toList() as List;
   List preferredMiniButtons = Hive.box('settings').get(
     'preferredMiniButtons',
     defaultValue: ['Previous', 'Play/Pause', 'Next'],
@@ -141,7 +139,6 @@ class _SettingPageState extends State<SettingPage> {
     ];
 
     return Scaffold(
-      // backgroundColor: Colors.transparent,
       body: CustomScrollView(
         physics: const BouncingScrollPhysics(),
         slivers: [
@@ -152,30 +149,37 @@ class _SettingPageState extends State<SettingPage> {
             backgroundColor: Theme.of(context).brightness == Brightness.light
                 ? Theme.of(context).colorScheme.secondary
                 : null,
-            expandedHeight: MediaQuery.of(context).size.height / 4.5,
-            flexibleSpace: FlexibleSpaceBar(
-              centerTitle: true,
-              background: ShaderMask(
-                shaderCallback: (rect) {
-                  return const LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.black, Colors.transparent],
-                  ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-                },
-                blendMode: BlendMode.dstIn,
-                child: const Center(
-                  child: Text(
-                    'Settings',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 80,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+            title: const Text(
+              'Settings',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 30,
+                color: Colors.white,
               ),
             ),
+            // flexibleSpace: FlexibleSpaceBar(
+            //   centerTitle: true,
+            //   background: ShaderMask(
+            //     shaderCallback: (rect) {
+            //       return const LinearGradient(
+            //         begin: Alignment.topCenter,
+            //         end: Alignment.bottomCenter,
+            //         colors: [Colors.black, Colors.transparent],
+            //       ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
+            //     },
+            //     blendMode: BlendMode.dstIn,
+            //     child: const Center(
+            //       child: Text(
+            //         'Settings',
+            //         textAlign: TextAlign.center,
+            //         style: TextStyle(
+            //           fontSize: 80,
+            //           color: Colors.white,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -186,14 +190,13 @@ class _SettingPageState extends State<SettingPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 15, 15, 0),
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                           child: Text(
                             'Theme',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ),
@@ -230,7 +233,7 @@ class _SettingPageState extends State<SettingPage> {
                           title: const Text(
                             'Accent Colors',
                           ),
-                          subtitle: Text('$themeColor, $colorHue'),
+                          //subtitle: Text('$themeColor, $colorHue'),
                           trailing: Padding(
                             padding: const EdgeInsets.all(
                               10.0,
@@ -392,8 +395,8 @@ class _SettingPageState extends State<SettingPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(
                             15,
                             15,
                             15,
@@ -404,19 +407,13 @@ class _SettingPageState extends State<SettingPage> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
+                              //color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ),
                         ListTile(
                           title: const Text(
                             'Download Quality',
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downQualitySub,
                           ),
                           onTap: () {},
                           trailing: DropdownButton(
@@ -490,13 +487,10 @@ class _SettingPageState extends State<SettingPage> {
                           dense: true,
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downLocation,
+                          title: const Text(
+                            'Download directory',
                           ),
-                          subtitle: Text(downloadPath),
+                          //subtitle: Text(downloadPath),
                           trailing: TextButton(
                             style: TextButton.styleFrom(
                               primary: Theme.of(context).brightness ==
@@ -516,20 +510,14 @@ class _SettingPageState extends State<SettingPage> {
                                 () {},
                               );
                             },
-                            child: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .reset,
+                            child: const Text(
+                              'Reset',
                             ),
                           ),
                           onTap: () async {
                             final String temp = await Picker.selectFolder(
                               context: context,
-                              message: AppLocalizations.of(
-                                context,
-                              )!
-                                  .selectDownLocation,
+                              message: 'Select download location',
                             );
                             if (temp.trim() != '') {
                               downloadPath = temp;
@@ -540,27 +528,15 @@ class _SettingPageState extends State<SettingPage> {
                             } else {
                               ShowSnackBar().showSnackBar(
                                 context,
-                                AppLocalizations.of(
-                                  context,
-                                )!
-                                    .noFolderSelected,
+                                'No folder selected',
                               );
                             }
                           },
                           dense: true,
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downFilename,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downFilenameSub,
+                          title: const Text(
+                            'Download name format',
                           ),
                           dense: true,
                           onTap: () {
@@ -587,8 +563,8 @@ class _SettingPageState extends State<SettingPage> {
                                         activeColor: Theme.of(context)
                                             .colorScheme
                                             .secondary,
-                                        title: Text(
-                                          '${AppLocalizations.of(context)!.title} - ${AppLocalizations.of(context)!.artist}',
+                                        title: const Text(
+                                          'Title - Artist',
                                         ),
                                         value: downFilename == 0,
                                         selected: downFilename == 0,
@@ -604,8 +580,8 @@ class _SettingPageState extends State<SettingPage> {
                                         activeColor: Theme.of(context)
                                             .colorScheme
                                             .secondary,
-                                        title: Text(
-                                          '${AppLocalizations.of(context)!.artist} - ${AppLocalizations.of(context)!.title}',
+                                        title: const Text(
+                                          'Artist - Title',
                                         ),
                                         value: downFilename == 1,
                                         selected: downFilename == 1,
@@ -621,9 +597,7 @@ class _SettingPageState extends State<SettingPage> {
                                         activeColor: Theme.of(context)
                                             .colorScheme
                                             .secondary,
-                                        title: Text(
-                                          AppLocalizations.of(context)!.title,
-                                        ),
+                                        title: const Text('Title'),
                                         value: downFilename == 2,
                                         selected: downFilename == 2,
                                         onChanged: (val) {
@@ -641,56 +615,27 @@ class _SettingPageState extends State<SettingPage> {
                             );
                           },
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createAlbumFold,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createAlbumFoldSub,
+                            'Create album folder',
                           ),
                           keyName: 'createDownloadFolder',
-                          isThreeLine: true,
                           defaultValue: false,
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createYtFold,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createYtFoldSub,
+                            'Create Youtube folder',
                           ),
                           keyName: 'createYoutubeFolder',
-                          isThreeLine: true,
                           defaultValue: false,
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downLyrics,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .downLyricsSub,
+                            'Download lyrics',
                           ),
                           keyName: 'downloadLyrics',
                           defaultValue: false,
-                          isThreeLine: true,
+                          isThreeLine: false,
                         ),
                       ],
                     ),
@@ -707,8 +652,8 @@ class _SettingPageState extends State<SettingPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(
                             15,
                             15,
                             15,
@@ -719,112 +664,101 @@ class _SettingPageState extends State<SettingPage> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
+                              //color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ),
+                        // ListTile(
+                        //   title: Text(
+                        //     AppLocalizations.of(
+                        //       context,
+                        //     )!
+                        //         .lang,
+                        //   ),
+                        //   subtitle: Text(
+                        //     AppLocalizations.of(
+                        //       context,
+                        //     )!
+                        //         .langSub,
+                        //   ),
+                        //   onTap: () {},
+                        //   trailing: DropdownButton(
+                        //     value: lang,
+                        //     style: TextStyle(
+                        //       fontSize: 12,
+                        //       color:
+                        //           Theme.of(context).textTheme.bodyText1!.color,
+                        //     ),
+                        //     underline: const SizedBox(),
+                        //     onChanged: (String? newValue) {
+                        //       final Map<String, String> codes = {
+                        //         'Chinese': 'zh',
+                        //         'Czech': 'cs',
+                        //         'Dutch': 'nl',
+                        //         'English': 'en',
+                        //         'French': 'fr',
+                        //         'German': 'de',
+                        //         'Hebrew': 'he',
+                        //         'Hindi': 'hi',
+                        //         'Hungarian': 'hu',
+                        //         'Indonesian': 'id',
+                        //         'Italian': 'it',
+                        //         'Polish': 'pl',
+                        //         'Portuguese': 'pt',
+                        //         'Russian': 'ru',
+                        //         'Spanish': 'es',
+                        //         'Tamil': 'ta',
+                        //         'Turkish': 'tr',
+                        //         'Ukrainian': 'uk',
+                        //         'Urdu': 'ur',
+                        //       };
+                        //       if (newValue != null) {
+                        //         setState(
+                        //           () {
+                        //             lang = newValue;
+                        //             MyApp.of(context).setLocale(
+                        //               Locale.fromSubtags(
+                        //                 languageCode: codes[newValue]!,
+                        //               ),
+                        //             );
+                        //             Hive.box('settings').put('lang', newValue);
+                        //           },
+                        //         );
+                        //       }
+                        //     },
+                        //     items: <String>[
+                        //       'Chinese',
+                        //       'Czech',
+                        //       'Dutch',
+                        //       'English',
+                        //       'French',
+                        //       'German',
+                        //       'Hebrew',
+                        //       'Hindi',
+                        //       'Hungarian',
+                        //       'Indonesian',
+                        //       'Italian',
+                        //       'Polish',
+                        //       'Portuguese',
+                        //       'Russian',
+                        //       'Spanish',
+                        //       'Tamil',
+                        //       'Turkish',
+                        //       'Ukrainian',
+                        //       'Urdu',
+                        //     ].map<DropdownMenuItem<String>>((String value) {
+                        //       return DropdownMenuItem<String>(
+                        //         value: value,
+                        //         child: Text(
+                        //           value,
+                        //         ),
+                        //       );
+                        //     }).toList(),
+                        //   ),
+                        //   dense: true,
+                        // ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .lang,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .langSub,
-                          ),
-                          onTap: () {},
-                          trailing: DropdownButton(
-                            value: lang,
-                            style: TextStyle(
-                              fontSize: 12,
-                              color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
-                            ),
-                            underline: const SizedBox(),
-                            onChanged: (String? newValue) {
-                              final Map<String, String> codes = {
-                                'Chinese': 'zh',
-                                'Czech': 'cs',
-                                'Dutch': 'nl',
-                                'English': 'en',
-                                'French': 'fr',
-                                'German': 'de',
-                                'Hebrew': 'he',
-                                'Hindi': 'hi',
-                                'Hungarian': 'hu',
-                                'Indonesian': 'id',
-                                'Italian': 'it',
-                                'Polish': 'pl',
-                                'Portuguese': 'pt',
-                                'Russian': 'ru',
-                                'Spanish': 'es',
-                                'Tamil': 'ta',
-                                'Turkish': 'tr',
-                                'Ukrainian': 'uk',
-                                'Urdu': 'ur',
-                              };
-                              if (newValue != null) {
-                                setState(
-                                  () {
-                                    lang = newValue;
-                                    MyApp.of(context).setLocale(
-                                      Locale.fromSubtags(
-                                        languageCode: codes[newValue]!,
-                                      ),
-                                    );
-                                    Hive.box('settings').put('lang', newValue);
-                                  },
-                                );
-                              }
-                            },
-                            items: <String>[
-                              'Chinese',
-                              'Czech',
-                              'Dutch',
-                              'English',
-                              'French',
-                              'German',
-                              'Hebrew',
-                              'Hindi',
-                              'Hungarian',
-                              'Indonesian',
-                              'Italian',
-                              'Polish',
-                              'Portuguese',
-                              'Russian',
-                              'Spanish',
-                              'Tamil',
-                              'Turkish',
-                              'Ukrainian',
-                              'Urdu',
-                            ].map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(
-                                  value,
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                          dense: true,
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .includeExcludeFolder,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .includeExcludeFolderSub,
-                          ),
+                          title: const Text('Include/Exclude folders'),
                           dense: true,
                           onTap: () {
                             final GlobalKey<AnimatedListState> listKey =
@@ -866,11 +800,8 @@ class _SettingPageState extends State<SettingPage> {
                                                 Row(
                                                   children: <Widget>[
                                                     ChoiceChip(
-                                                      label: Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .excluded,
+                                                      label: const Text(
+                                                        'Excluded',
                                                       ),
                                                       selectedColor:
                                                           Theme.of(context)
@@ -905,11 +836,8 @@ class _SettingPageState extends State<SettingPage> {
                                                       width: 5,
                                                     ),
                                                     ChoiceChip(
-                                                      label: Text(
-                                                        AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                            .included,
+                                                      label: const Text(
+                                                        'Included',
                                                       ),
                                                       selectedColor:
                                                           Theme.of(context)
@@ -951,14 +879,8 @@ class _SettingPageState extends State<SettingPage> {
                                                   ),
                                                   child: Text(
                                                     value
-                                                        ? AppLocalizations.of(
-                                                            context,
-                                                          )!
-                                                            .includedDetails
-                                                        : AppLocalizations.of(
-                                                            context,
-                                                          )!
-                                                            .excludedDetails,
+                                                        ? 'Included Details'
+                                                        : 'Excluded Details',
                                                     textAlign: TextAlign.start,
                                                   ),
                                                 ),
@@ -969,10 +891,7 @@ class _SettingPageState extends State<SettingPage> {
                                       }
                                       if (idx == 1) {
                                         return ListTile(
-                                          title: Text(
-                                            AppLocalizations.of(context)!
-                                                .addNew,
-                                          ),
+                                          title: const Text('Add new'),
                                           leading: const Icon(
                                             CupertinoIcons.add,
                                           ),
@@ -1046,316 +965,201 @@ class _SettingPageState extends State<SettingPage> {
                             );
                           },
                         ),
-                        ListTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .minAudioLen,
+                            'Search lyrics for local music',
                           ),
                           subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .minAudioLenSub,
-                          ),
-                          dense: true,
-                          onTap: () {
-                            showTextInputDialog(
-                              context: context,
-                              title: AppLocalizations.of(
-                                context,
-                              )!
-                                  .minAudioAlert,
-                              initialText: (Hive.box('settings')
-                                          .get('minDuration', defaultValue: 10)
-                                      as int)
-                                  .toString(),
-                              keyboardType: TextInputType.number,
-                              onSubmitted: (String value) {
-                                if (value.trim() == '') {
-                                  value = '0';
-                                }
-                                Hive.box('settings')
-                                    .put('minDuration', int.parse(value));
-                                Navigator.pop(context);
-                              },
-                            );
-                          },
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .liveSearch,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .liveSearchSub,
-                          ),
-                          keyName: 'liveSearch',
-                          isThreeLine: false,
-                          defaultValue: true,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useDown,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useDownSub,
-                          ),
-                          keyName: 'useDown',
-                          isThreeLine: true,
-                          defaultValue: true,
-                        ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .getLyricsOnline,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .getLyricsOnlineSub,
+                            'Search online for local music lyrics',
                           ),
                           keyName: 'getLyricsOnline',
-                          isThreeLine: true,
                           defaultValue: true,
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .supportEq,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .supportEqSub,
+                            'Support Equalizer',
                           ),
                           keyName: 'supportEq',
-                          isThreeLine: true,
                           defaultValue: false,
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .stopOnClose,
+                            'Stop Music on App close',
                           ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .stopOnCloseSub,
-                          ),
-                          isThreeLine: true,
+                          subtitle:
+                              Text('Music will stop playing once its closed'),
                           keyName: 'stopForegroundService',
                           defaultValue: true,
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .checkUpdate,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .checkUpdateSub,
+                            'Auto Check for updates',
                           ),
                           keyName: 'checkUpdate',
-                          isThreeLine: true,
                           defaultValue: false,
                         ),
-                        BoxSwitchTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useProxy,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .useProxySub,
-                          ),
-                          keyName: 'useProxy',
-                          defaultValue: false,
-                          isThreeLine: true,
-                          onChanged: (bool val, Box box) {
-                            useProxy = val;
-                            setState(
-                              () {},
-                            );
-                          },
-                        ),
-                        Visibility(
-                          visible: useProxy,
-                          child: ListTile(
-                            title: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .proxySet,
-                            ),
-                            subtitle: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .proxySetSub,
-                            ),
-                            dense: true,
-                            trailing: Text(
-                              '${Hive.box('settings').get("proxyIp")}:${Hive.box('settings').get("proxyPort")}',
-                              style: const TextStyle(fontSize: 12),
-                            ),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  final controller = TextEditingController(
-                                    text: settingsBox.get('proxyIp').toString(),
-                                  );
-                                  final controller2 = TextEditingController(
-                                    text:
-                                        settingsBox.get('proxyPort').toString(),
-                                  );
-                                  return AlertDialog(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(
-                                        10.0,
-                                      ),
-                                    ),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Text(
-                                              AppLocalizations.of(
-                                                context,
-                                              )!
-                                                  .ipAdd,
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        TextField(
-                                          autofocus: true,
-                                          controller: controller,
-                                        ),
-                                        const SizedBox(
-                                          height: 30,
-                                        ),
-                                        Row(
-                                          children: [
-                                            Text(
-                                              'Port',
-                                              style: TextStyle(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        TextField(
-                                          autofocus: true,
-                                          controller: controller2,
-                                        ),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          primary:
-                                              Theme.of(context).brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.white
-                                                  : Colors.grey[700],
-                                        ),
-                                        onPressed: () {
-                                          Navigator.pop(context);
-                                        },
-                                        child: const Text('Cancel'),
-                                      ),
-                                      TextButton(
-                                        style: TextButton.styleFrom(
-                                          primary: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary ==
-                                                  Colors.white
-                                              ? Colors.black
-                                              : null,
-                                          backgroundColor: Theme.of(context)
-                                              .colorScheme
-                                              .secondary,
-                                        ),
-                                        onPressed: () {
-                                          settingsBox.put(
-                                            'proxyIp',
-                                            controller.text.trim(),
-                                          );
-                                          settingsBox.put(
-                                            'proxyPort',
-                                            int.parse(
-                                              controller2.text.trim(),
-                                            ),
-                                          );
-                                          Navigator.pop(context);
-                                          setState(
-                                            () {},
-                                          );
-                                        },
-                                        child: Text(
-                                          AppLocalizations.of(
-                                            context,
-                                          )!
-                                              .ok,
-                                        ),
-                                      ),
-                                      const SizedBox(
-                                        width: 5,
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                          ),
-                        ),
+                        // BoxSwitchTile(
+                        //   title: Text(
+                        //     AppLocalizations.of(
+                        //       context,
+                        //     )!
+                        //         .useProxy,
+                        //   ),
+                        //   subtitle: Text(
+                        //     AppLocalizations.of(
+                        //       context,
+                        //     )!
+                        //         .useProxySub,
+                        //   ),
+                        //   keyName: 'useProxy',
+                        //   defaultValue: false,
+                        //   isThreeLine: true,
+                        //   onChanged: (bool val, Box box) {
+                        //     useProxy = val;
+                        //     setState(
+                        //       () {},
+                        //     );
+                        //   },
+                        // ),
+                        // Visibility(
+                        //   visible: useProxy,
+                        //   child: ListTile(
+                        //     title: Text(
+                        //       AppLocalizations.of(
+                        //         context,
+                        //       )!
+                        //           .proxySet,
+                        //     ),
+                        //     subtitle: Text(
+                        //       AppLocalizations.of(
+                        //         context,
+                        //       )!
+                        //           .proxySetSub,
+                        //     ),
+                        //     dense: true,
+                        //     trailing: Text(
+                        //       '${Hive.box('settings').get("proxyIp")}:${Hive.box('settings').get("proxyPort")}',
+                        //       style: const TextStyle(fontSize: 12),
+                        //     ),
+                        //     onTap: () {
+                        //       showDialog(
+                        //         context: context,
+                        //         builder: (BuildContext context) {
+                        //           final controller = TextEditingController(
+                        //             text: settingsBox.get('proxyIp').toString(),
+                        //           );
+                        //           final controller2 = TextEditingController(
+                        //             text:
+                        //                 settingsBox.get('proxyPort').toString(),
+                        //           );
+                        //           return AlertDialog(
+                        //             shape: RoundedRectangleBorder(
+                        //               borderRadius: BorderRadius.circular(
+                        //                 10.0,
+                        //               ),
+                        //             ),
+                        //             content: Column(
+                        //               mainAxisSize: MainAxisSize.min,
+                        //               children: [
+                        //                 Row(
+                        //                   children: [
+                        //                     Text(
+                        //                       'Ip Address',
+                        //                       style: TextStyle(
+                        //                         color: Theme.of(context)
+                        //                             .colorScheme
+                        //                             .secondary,
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 TextField(
+                        //                   autofocus: true,
+                        //                   controller: controller,
+                        //                 ),
+                        //                 const SizedBox(
+                        //                   height: 30,
+                        //                 ),
+                        //                 Row(
+                        //                   children: [
+                        //                     Text(
+                        //                       'Port',
+                        //                       style: TextStyle(
+                        //                         color: Theme.of(context)
+                        //                             .colorScheme
+                        //                             .secondary,
+                        //                       ),
+                        //                     ),
+                        //                   ],
+                        //                 ),
+                        //                 TextField(
+                        //                   autofocus: true,
+                        //                   controller: controller2,
+                        //                 ),
+                        //               ],
+                        //             ),
+                        //             actions: [
+                        //               TextButton(
+                        //                 style: TextButton.styleFrom(
+                        //                   primary:
+                        //                       Theme.of(context).brightness ==
+                        //                               Brightness.dark
+                        //                           ? Colors.white
+                        //                           : Colors.grey[700],
+                        //                 ),
+                        //                 onPressed: () {
+                        //                   Navigator.pop(context);
+                        //                 },
+                        //                 child: const Text('Cancel'),
+                        //               ),
+                        //               TextButton(
+                        //                 style: TextButton.styleFrom(
+                        //                   primary: Theme.of(context)
+                        //                               .colorScheme
+                        //                               .secondary ==
+                        //                           Colors.white
+                        //                       ? Colors.black
+                        //                       : null,
+                        //                   backgroundColor: Theme.of(context)
+                        //                       .colorScheme
+                        //                       .secondary,
+                        //                 ),
+                        //                 onPressed: () {
+                        //                   settingsBox.put(
+                        //                     'proxyIp',
+                        //                     controller.text.trim(),
+                        //                   );
+                        //                   settingsBox.put(
+                        //                     'proxyPort',
+                        //                     int.parse(
+                        //                       controller2.text.trim(),
+                        //                     ),
+                        //                   );
+                        //                   Navigator.pop(context);
+                        //                   setState(
+                        //                     () {},
+                        //                   );
+                        //                 },
+                        //                 child: const Text(
+                        //                   'Ok',
+                        //                 ),
+                        //               ),
+                        //               const SizedBox(
+                        //                 width: 5,
+                        //               ),
+                        //             ],
+                        //           );
+                        //         },
+                        //       );
+                        //     },
+                        //   ),
+                        // ),
                         ListTile(
                           title: const Text(
-                            'Clear cacheed data',
+                            'Clear cached data',
                           ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .clearCacheSub,
+                          subtitle: const Text(
+                            'Deletes Cached details including Homepage, YouTube and Last Session Data',
                           ),
                           trailing: SizedBox(
                             height: 70.0,
@@ -1402,8 +1206,8 @@ class _SettingPageState extends State<SettingPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(
+                        const Padding(
+                          padding: EdgeInsets.fromLTRB(
                             15,
                             15,
                             15,
@@ -1414,22 +1218,15 @@ class _SettingPageState extends State<SettingPage> {
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.secondary,
                             ),
                           ),
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createBack,
+                          title: const Text(
+                            'Create backup',
                           ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .createBackSub,
+                          subtitle: const Text(
+                            'Create backup of your data',
                           ),
                           dense: true,
                           onTap: () {
@@ -1452,67 +1249,28 @@ class _SettingPageState extends State<SettingPage> {
                                 }
 
                                 final List<String> persist = [
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .settings,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .playlists,
+                                  'Settings',
+                                  'Playlists',
                                 ];
 
                                 final List<String> checked = [
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .settings,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .downs,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .playlists,
+                                  'Settings',
+                                  'Downloads',
+                                  'Playlists',
                                 ];
 
                                 final List<String> items = [
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .settings,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .playlists,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .downs,
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cache,
+                                  'Settings',
+                                  'Playlists',
+                                  'Downloads',
+                                  'Cache',
                                 ];
 
                                 final Map<String, List> boxNames = {
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .settings: ['settings'],
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cache: ['cache'],
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .downs: ['downloads'],
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .playlists: playlistNames,
+                                  'Settings': ['settings'],
+                                  'Cache': ['cache'],
+                                  'Downloads': ['downloads'],
+                                  'Playlists': playlistNames,
                                 };
                                 return StatefulBuilder(
                                   builder: (
@@ -1587,11 +1345,8 @@ class _SettingPageState extends State<SettingPage> {
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .cancel,
+                                                child: const Text(
+                                                  'Cancel',
                                                 ),
                                               ),
                                               TextButton(
@@ -1608,12 +1363,9 @@ class _SettingPageState extends State<SettingPage> {
                                                   );
                                                   Navigator.pop(context);
                                                 },
-                                                child: Text(
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .ok,
-                                                  style: const TextStyle(
+                                                child: const Text(
+                                                  'Okay',
+                                                  style: TextStyle(
                                                     fontWeight: FontWeight.w600,
                                                   ),
                                                 ),
@@ -1630,17 +1382,11 @@ class _SettingPageState extends State<SettingPage> {
                           },
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .restore,
+                          title: const Text(
+                            'Restore',
                           ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .restoreSub,
+                          subtitle: const Text(
+                            'Restore backed up data, Restart may be required',
                           ),
                           dense: true,
                           onTap: () async {
@@ -1648,28 +1394,16 @@ class _SettingPageState extends State<SettingPage> {
                             currentTheme.refresh();
                           },
                         ),
-                        BoxSwitchTile(
+                        const BoxSwitchTile(
                           title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .autoBack,
-                          ),
-                          subtitle: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .autoBackSub,
+                            'AutoBackup',
                           ),
                           keyName: 'autoBackup',
                           defaultValue: false,
                         ),
                         ListTile(
-                          title: Text(
-                            AppLocalizations.of(
-                              context,
-                            )!
-                                .autoBackLocation,
+                          title: const Text(
+                            'Autobackup location',
                           ),
                           subtitle: Text(autoBackPath),
                           trailing: TextButton(
@@ -1691,20 +1425,14 @@ class _SettingPageState extends State<SettingPage> {
                                 () {},
                               );
                             },
-                            child: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .reset,
+                            child: const Text(
+                              'Reset',
                             ),
                           ),
                           onTap: () async {
                             final String temp = await Picker.selectFolder(
                               context: context,
-                              message: AppLocalizations.of(
-                                context,
-                              )!
-                                  .selectBackLocation,
+                              message: 'Select backup directory',
                             );
                             if (temp.trim() != '') {
                               autoBackPath = temp;
@@ -1715,10 +1443,7 @@ class _SettingPageState extends State<SettingPage> {
                             } else {
                               ShowSnackBar().showSnackBar(
                                 context,
-                                AppLocalizations.of(
-                                  context,
-                                )!
-                                    .noFolderSelected,
+                                'No folder selected',
                               );
                             }
                           },
@@ -1763,8 +1488,8 @@ class _SettingPageState extends State<SettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
+            const Padding(
+              padding: EdgeInsets.fromLTRB(
                 15,
                 15,
                 15,
@@ -1775,7 +1500,7 @@ class _SettingPageState extends State<SettingPage> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
+                  // color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
@@ -1896,11 +1621,8 @@ class _SettingPageState extends State<SettingPage> {
               onTap: () {},
             ),
             ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .moreInfo,
+              title: const Text(
+                'More info',
               ),
               dense: true,
               onTap: () {
@@ -1925,8 +1647,8 @@ class _SettingPageState extends State<SettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
+            const Padding(
+              padding: EdgeInsets.fromLTRB(
                 15,
                 15,
                 15,
@@ -1937,179 +1659,14 @@ class _SettingPageState extends State<SettingPage> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
+                  // color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
-            ),
-            ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .musicLang,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .musicLangSub,
-              ),
-              trailing: SizedBox(
-                width: 150,
-                child: Text(
-                  preferredLanguage.isEmpty
-                      ? 'None'
-                      : preferredLanguage.join(', '),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-              dense: true,
-              onTap: () {
-                showModalBottomSheet(
-                  isDismissible: true,
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (BuildContext context) {
-                    final List checked = List.from(preferredLanguage);
-                    return StatefulBuilder(
-                      builder: (
-                        BuildContext context,
-                        StateSetter setStt,
-                      ) {
-                        return BottomGradientContainer(
-                          borderRadius: BorderRadius.circular(
-                            20.0,
-                          ),
-                          child: Column(
-                            children: [
-                              Expanded(
-                                child: ListView.builder(
-                                  physics: const BouncingScrollPhysics(),
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.fromLTRB(
-                                    0,
-                                    10,
-                                    0,
-                                    10,
-                                  ),
-                                  itemCount: languages.length,
-                                  itemBuilder: (context, idx) {
-                                    return CheckboxListTile(
-                                      activeColor: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                      checkColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary ==
-                                              Colors.white
-                                          ? Colors.black
-                                          : null,
-                                      value: checked.contains(
-                                        languages[idx],
-                                      ),
-                                      title: Text(
-                                        languages[idx],
-                                      ),
-                                      onChanged: (bool? value) {
-                                        value!
-                                            ? checked.add(languages[idx])
-                                            : checked.remove(
-                                                languages[idx],
-                                              );
-                                        setStt(
-                                          () {},
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      primary: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .cancel,
-                                    ),
-                                  ),
-                                  TextButton(
-                                    style: TextButton.styleFrom(
-                                      primary: Theme.of(context)
-                                          .colorScheme
-                                          .secondary,
-                                    ),
-                                    onPressed: () {
-                                      setState(
-                                        () {
-                                          preferredLanguage = checked;
-                                          Navigator.pop(context);
-                                          Hive.box('settings').put(
-                                            'preferredLanguage',
-                                            checked,
-                                          );
-                                          home_screen.fetched = false;
-                                          home_screen.preferredLanguage =
-                                              preferredLanguage;
-                                          widget.callback!();
-                                        },
-                                      );
-                                      if (preferredLanguage.isEmpty) {
-                                        ShowSnackBar().showSnackBar(
-                                          context,
-                                          AppLocalizations.of(
-                                            context,
-                                          )!
-                                              .noLangSelected,
-                                        );
-                                      }
-                                    },
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .ok,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
-                  },
-                );
-              },
             ),
 
             ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .streamQuality,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .streamQualitySub,
+              title: const Text(
+                'Streaming quality',
               ),
               onTap: () {},
               trailing: DropdownButton(
@@ -2140,17 +1697,11 @@ class _SettingPageState extends State<SettingPage> {
               dense: true,
             ),
             ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .ytStreamQuality,
+              title: const Text(
+                'Youtube streaming Quality',
               ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .ytStreamQualitySub,
+              subtitle: const Text(
+                'Higher quality consumes more data',
               ),
               onTap: () {},
               trailing: DropdownButton(
@@ -2180,66 +1731,22 @@ class _SettingPageState extends State<SettingPage> {
               ),
               dense: true,
             ),
-            BoxSwitchTile(
+            const BoxSwitchTile(
               title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .loadLast,
+                'Load last session on App start',
               ),
               subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .loadLastSub,
+                'Automatically load previously playe songs when app starts',
               ),
               keyName: 'loadStart',
               defaultValue: true,
             ),
-            BoxSwitchTile(
+            const BoxSwitchTile(
               title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .resetOnSkip,
+                'AutoPlay',
               ),
               subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .resetOnSkipSub,
-              ),
-              keyName: 'resetOnSkip',
-              defaultValue: false,
-            ),
-            BoxSwitchTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .enforceRepeat,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .enforceRepeatSub,
-              ),
-              keyName: 'enforceRepeat',
-              defaultValue: false,
-            ),
-            BoxSwitchTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .autoplay,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .autoplaySub,
+                'Autoplay music as soon as App is opened',
               ),
               keyName: 'autoplay',
               defaultValue: true,
@@ -2279,34 +1786,24 @@ class _SettingPageState extends State<SettingPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
+            const Padding(
+              padding: EdgeInsets.fromLTRB(
                 15,
                 15,
                 15,
                 0,
               ),
               child: Text(
-                'App UI',
+                'UI',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.secondary,
                 ),
               ),
             ),
             ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .playerScreenBackground,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .playerScreenBackgroundSub,
+              title: const Text(
+                'Player screen background',
               ),
               dense: true,
               onTap: () {
@@ -2321,52 +1818,28 @@ class _SettingPageState extends State<SettingPage> {
               },
             ),
 
-            // BoxSwitchTile(
-            //   title: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .useBlurForNowPlaying,
-            //   ),
-            //   subtitle: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .useBlurForNowPlayingSub,
-            //   ),
-            //   keyName: 'useBlurForNowPlaying',
-            //   defaultValue: true,
-            //   isThreeLine: true,
-            // ),
-            BoxSwitchTile(
+            const BoxSwitchTile(
               title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .useDenseMini,
+                'Use blur for now playing',
               ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .useDenseMiniSub,
+              keyName: 'useBlurForNowPlaying',
+              defaultValue: true,
+            ),
+            const BoxSwitchTile(
+              title: Text(
+                'Use minimal Mini player',
               ),
+              subtitle: Text('Mini player will have shorter height'),
               keyName: 'useDenseMini',
               defaultValue: false,
               isThreeLine: false,
             ),
             ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .miniButtons,
+              title: const Text(
+                'Mini Player Buttons',
               ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .miniButtonsSub,
+              subtitle: const Text(
+                'Change buttons you want to see on miniplayer',
               ),
               dense: true,
               onTap: () {
@@ -2409,13 +1882,8 @@ class _SettingPageState extends State<SettingPage> {
                                   () {},
                                 );
                               },
-                              header: Center(
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .changeOrder,
-                                ),
+                              header: const Center(
+                                child: Text('Change Order'),
                               ),
                               children: order.map((e) {
                                 return CheckboxListTile(
@@ -2454,12 +1922,7 @@ class _SettingPageState extends State<SettingPage> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!
-                                    .cancel,
-                              ),
+                              child: const Text('Cancel'),
                             ),
                             TextButton(
                               style: TextButton.styleFrom(
@@ -2494,12 +1957,7 @@ class _SettingPageState extends State<SettingPage> {
                                   },
                                 );
                               },
-                              child: Text(
-                                AppLocalizations.of(
-                                  context,
-                                )!
-                                    .ok,
-                              ),
+                              child: const Text('Ok'),
                             ),
                             const SizedBox(
                               width: 5,
@@ -2513,125 +1971,115 @@ class _SettingPageState extends State<SettingPage> {
               },
             ),
 
-            ListTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .blacklistedHomeSections,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .blacklistedHomeSectionsSub,
-              ),
-              dense: true,
-              onTap: () {
-                final GlobalKey<AnimatedListState> listKey =
-                    GlobalKey<AnimatedListState>();
-                showModalBottomSheet(
-                  isDismissible: true,
-                  backgroundColor: Colors.transparent,
-                  context: context,
-                  builder: (BuildContext context) {
-                    return BottomGradientContainer(
-                      borderRadius: BorderRadius.circular(
-                        20.0,
-                      ),
-                      child: AnimatedList(
-                        physics: const BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        padding: const EdgeInsets.fromLTRB(
-                          0,
-                          10,
-                          0,
-                          10,
-                        ),
-                        key: listKey,
-                        initialItemCount: blacklistedHomeSections.length + 1,
-                        itemBuilder: (cntxt, idx, animation) {
-                          return (idx == 0)
-                              ? ListTile(
-                                  title: Text(
-                                    AppLocalizations.of(context)!.addNew,
-                                  ),
-                                  leading: const Icon(
-                                    CupertinoIcons.add,
-                                  ),
-                                  onTap: () async {
-                                    showTextInputDialog(
-                                      context: context,
-                                      title: AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .enterText,
-                                      keyboardType: TextInputType.text,
-                                      onSubmitted: (String value) {
-                                        Navigator.pop(context);
-                                        blacklistedHomeSections.add(
-                                          value.trim().toLowerCase(),
-                                        );
-                                        Hive.box('settings').put(
-                                          'blacklistedHomeSections',
-                                          blacklistedHomeSections,
-                                        );
-                                        listKey.currentState!.insertItem(
-                                          blacklistedHomeSections.length,
-                                        );
-                                      },
-                                    );
-                                  },
-                                )
-                              : SizeTransition(
-                                  sizeFactor: animation,
-                                  child: ListTile(
-                                    leading: const Icon(
-                                      CupertinoIcons.folder,
-                                    ),
-                                    title: Text(
-                                      blacklistedHomeSections[idx - 1]
-                                          .toString(),
-                                    ),
-                                    trailing: IconButton(
-                                      icon: const Icon(
-                                        CupertinoIcons.clear,
-                                        size: 15.0,
-                                      ),
-                                      tooltip: 'Remove',
-                                      onPressed: () {
-                                        blacklistedHomeSections
-                                            .removeAt(idx - 1);
-                                        Hive.box('settings').put(
-                                          'blacklistedHomeSections',
-                                          blacklistedHomeSections,
-                                        );
-                                        listKey.currentState!.removeItem(
-                                          idx,
-                                          (
-                                            context,
-                                            animation,
-                                          ) =>
-                                              Container(),
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                );
-                        },
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
+            // ListTile(
+            //   title: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .blacklistedHomeSections,
+            //   ),
+            //   subtitle: Text(
+            //     AppLocalizations.of(
+            //       context,
+            //     )!
+            //         .blacklistedHomeSectionsSub,
+            //   ),
+            //   dense: true,
+            //   onTap: () {
+            //     final GlobalKey<AnimatedListState> listKey =
+            //         GlobalKey<AnimatedListState>();
+            //     showModalBottomSheet(
+            //       isDismissible: true,
+            //       backgroundColor: Colors.transparent,
+            //       context: context,
+            //       builder: (BuildContext context) {
+            //         return BottomGradientContainer(
+            //           borderRadius: BorderRadius.circular(
+            //             20.0,
+            //           ),
+            //           child: AnimatedList(
+            //             physics: const BouncingScrollPhysics(),
+            //             shrinkWrap: true,
+            //             padding: const EdgeInsets.fromLTRB(
+            //               0,
+            //               10,
+            //               0,
+            //               10,
+            //             ),
+            //             key: listKey,
+            //             initialItemCount: blacklistedHomeSections.length + 1,
+            //             itemBuilder: (cntxt, idx, animation) {
+            //               return (idx == 0)
+            //                   ? ListTile(
+            //                       title: const Text('Add new'),
+            //                       leading: const Icon(CupertinoIcons.add),
+            //                       onTap: () async {
+            //                         showTextInputDialog(
+            //                           context: context,
+            //                           title: 'Enter Text',
+            //                           keyboardType: TextInputType.text,
+            //                           onSubmitted: (String value) {
+            //                             Navigator.pop(context);
+            //                             blacklistedHomeSections.add(
+            //                               value.trim().toLowerCase(),
+            //                             );
+            //                             Hive.box('settings').put(
+            //                               'blacklistedHomeSections',
+            //                               blacklistedHomeSections,
+            //                             );
+            //                             listKey.currentState!.insertItem(
+            //                               blacklistedHomeSections.length,
+            //                             );
+            //                           },
+            //                         );
+            //                       },
+            //                     )
+            //                   : SizeTransition(
+            //                       sizeFactor: animation,
+            //                       child: ListTile(
+            //                         leading: const Icon(
+            //                           CupertinoIcons.folder,
+            //                         ),
+            //                         title: Text(
+            //                           blacklistedHomeSections[idx - 1]
+            //                               .toString(),
+            //                         ),
+            //                         trailing: IconButton(
+            //                           icon: const Icon(
+            //                             CupertinoIcons.clear,
+            //                             size: 15.0,
+            //                           ),
+            //                           tooltip: 'Remove',
+            //                           onPressed: () {
+            //                             blacklistedHomeSections
+            //                                 .removeAt(idx - 1);
+            //                             Hive.box('settings').put(
+            //                               'blacklistedHomeSections',
+            //                               blacklistedHomeSections,
+            //                             );
+            //                             listKey.currentState!.removeItem(
+            //                               idx,
+            //                               (
+            //                                 context,
+            //                                 animation,
+            //                               ) =>
+            //                                   Container(),
+            //                             );
+            //                           },
+            //                         ),
+            //                       ),
+            //                     );
+            //             },
+            //           ),
+            //         );
+            //       },
+            //     );
+            //   },
+            // ),
 
             BoxSwitchTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .showPlaylists,
+              title: const Text(
+                'Show playlsts',
               ),
               keyName: 'showPlaylist',
               defaultValue: true,
@@ -2641,18 +2089,10 @@ class _SettingPageState extends State<SettingPage> {
             ),
 
             BoxSwitchTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .showLast,
+              title: const Text(
+                'Show recent',
               ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .showLastSub,
-              ),
+              subtitle: const Text('Show recently played songs'),
               keyName: 'showRecent',
               defaultValue: true,
               onChanged: (val, box) {
@@ -2675,22 +2115,11 @@ class _SettingPageState extends State<SettingPage> {
             //   keyName: 'showHistory',
             //   defaultValue: true,
             // ),
-            BoxSwitchTile(
-              title: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .enableGesture,
-              ),
-              subtitle: Text(
-                AppLocalizations.of(
-                  context,
-                )!
-                    .enableGestureSub,
-              ),
+            const BoxSwitchTile(
+              title: Text('Enable gestures '),
               keyName: 'enableGesture',
               defaultValue: true,
-              isThreeLine: true,
+              isThreeLine: false,
             ),
           ],
         ),
@@ -2705,16 +2134,12 @@ class _SettingPageState extends State<SettingPage> {
         title: const Text(
           'Save Theme',
         ),
+        trailing: const Icon(Iconsax.save_2, size: 20),
         onTap: () {
-          final initialThemeName = '${AppLocalizations.of(
-            context,
-          )!.theme} ${userThemes.length + 1}';
+          final initialThemeName = 'Theme ${userThemes.length + 1}';
           showTextInputDialog(
             context: context,
-            title: AppLocalizations.of(
-              context,
-            )!
-                .enterThemeName,
+            title: 'Enter Theme Name',
             onSubmitted: (value) {
               if (value == '') return;
               currentTheme.saveTheme(value);
@@ -2727,10 +2152,7 @@ class _SettingPageState extends State<SettingPage> {
               );
               ShowSnackBar().showSnackBar(
                 context,
-                AppLocalizations.of(
-                  context,
-                )!
-                    .themeSaved,
+                'Theme Saved',
               );
               Navigator.of(context).pop();
             },
@@ -2744,7 +2166,9 @@ class _SettingPageState extends State<SettingPage> {
   }
 
   ListTile currentThemeConfig(
-      BuildContext context, List<String> userThemesList) {
+    BuildContext context,
+    List<String> userThemesList,
+  ) {
     return ListTile(
       title: const Text(
         'Current Theme',
@@ -2868,28 +2292,18 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                             ),
                             title: Text(
-                              AppLocalizations.of(
-                                context,
-                              )!
-                                  .deleteTheme,
+                              'Delete Theme',
                               style: TextStyle(
                                 color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                             content: Text(
-                              '${AppLocalizations.of(
-                                context,
-                              )!.deleteThemeSubtitle} $value?',
+                              'Are you sure you want to delete $value?',
                             ),
                             actions: [
                               TextButton(
                                 onPressed: Navigator.of(context).pop,
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .cancel,
-                                ),
+                                child: const Text('Cancel'),
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(
@@ -2916,25 +2330,15 @@ class _SettingPageState extends State<SettingPage> {
                                   );
                                   ShowSnackBar().showSnackBar(
                                     context,
-                                    AppLocalizations.of(
-                                      context,
-                                    )!
-                                        .themeDeleted,
+                                    'Theme deleted',
                                   );
                                   return Navigator.of(
                                     context,
                                   ).pop();
                                 },
-                                child: Text(
-                                  AppLocalizations.of(
-                                    context,
-                                  )!
-                                      .delete,
-                                ),
+                                child: const Text('Delete'),
                               ),
-                              const SizedBox(
-                                width: 5.0,
-                              ),
+                              const SizedBox(width: 5.0),
                             ],
                           ),
                         );
@@ -2998,12 +2402,6 @@ class _SettingPageState extends State<SettingPage> {
           ListTile(
             title: const Text(
               'Background Gradient',
-            ),
-            subtitle: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .bgGradSub,
             ),
             trailing: Padding(
               padding: const EdgeInsets.all(
@@ -3108,17 +2506,8 @@ class _SettingPageState extends State<SettingPage> {
             dense: true,
           ),
           ListTile(
-            title: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .cardGrad,
-            ),
-            subtitle: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .cardGradSub,
+            title: const Text(
+              'Card gradient',
             ),
             trailing: Padding(
               padding: const EdgeInsets.all(
@@ -3219,17 +2608,8 @@ class _SettingPageState extends State<SettingPage> {
             dense: true,
           ),
           ListTile(
-            title: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .bottomGrad,
-            ),
-            subtitle: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .bottomGradSub,
+            title: const Text(
+              'Bottom card Gradient',
             ),
             trailing: Padding(
               padding: const EdgeInsets.all(
@@ -3319,6 +2699,7 @@ class _SettingPageState extends State<SettingPage> {
                                     gradients[index])
                                 ? const Icon(
                                     Icons.done_rounded,
+                                    size: 20,
                                   )
                                 : const SizedBox(),
                           ),
@@ -3332,17 +2713,8 @@ class _SettingPageState extends State<SettingPage> {
             dense: true,
           ),
           ListTile(
-            title: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .canvasColor,
-            ),
-            subtitle: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .canvasColorSub,
+            title: const Text(
+              'Canvas color',
             ),
             onTap: () {},
             trailing: DropdownButton(
@@ -3374,18 +2746,7 @@ class _SettingPageState extends State<SettingPage> {
             dense: true,
           ),
           ListTile(
-            title: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .cardColor,
-            ),
-            subtitle: Text(
-              AppLocalizations.of(
-                context,
-              )!
-                  .cardColorSub,
-            ),
+            title: const Text('Card color'),
             onTap: () {},
             trailing: DropdownButton(
               value: cardColor,

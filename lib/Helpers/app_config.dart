@@ -17,8 +17,8 @@ class MyTheme with ChangeNotifier {
   String cardColor =
       Hive.box('settings').get('cardColor', defaultValue: 'Grey900') as String;
 
-  int backGrad = Hive.box('settings').get('backGrad', defaultValue: 2) as int;
-  int cardGrad = Hive.box('settings').get('cardGrad', defaultValue: 4) as int;
+  int backGrad = Hive.box('settings').get('backGrad', defaultValue: 3) as int;
+  int cardGrad = Hive.box('settings').get('cardGrad', defaultValue: 6) as int;
   int bottomGrad =
       Hive.box('settings').get('bottomGrad', defaultValue: 3) as int;
 

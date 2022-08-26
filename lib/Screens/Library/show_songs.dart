@@ -1,12 +1,9 @@
-
-
 // ignore_for_file: use_super_parameters
 
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
@@ -117,8 +114,7 @@ class _SongsListState extends State<SongsList> {
             child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title:
-                    Text(widget.title ?? AppLocalizations.of(context)!.songs),
+                title: const Text('Songs'),
                 actions: [
                   PopupMenuButton(
                     splashRadius: 24,
@@ -139,15 +135,15 @@ class _SongsListState extends State<SongsList> {
                     },
                     itemBuilder: (context) {
                       final List<String> sortTypes = [
-                        AppLocalizations.of(context)!.displayName,
-                        AppLocalizations.of(context)!.dateAdded,
-                        AppLocalizations.of(context)!.album,
-                        AppLocalizations.of(context)!.artist,
-                        AppLocalizations.of(context)!.duration,
+                        'Display Name',
+                        'Date Added',
+                        'Album',
+                        'Artists',
+                        'Duration ',
                       ];
                       final List<String> orderTypes = [
-                        AppLocalizations.of(context)!.inc,
-                        AppLocalizations.of(context)!.dec,
+                        'Increasing',
+                        'Decreasing',
                       ];
                       final menuList = <PopupMenuEntry<int>>[];
                       menuList.addAll(

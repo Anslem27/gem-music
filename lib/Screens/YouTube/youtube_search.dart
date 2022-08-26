@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -78,7 +77,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                     icon: const Icon(Icons.arrow_back_rounded),
                     onPressed: () => Navigator.pop(context),
                   ),
-                  hintText:'Search Youtube',
+                  hintText: 'Search Youtube',
                   onQueryChanged: (_query) {
                     return YouTubeServices()
                         .getSearchSuggestions(query: _query);
@@ -189,10 +188,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                               .duration
                                                               .toString() ==
                                                           'null'
-                                                      ? AppLocalizations.of(
-                                                          context,
-                                                        )!
-                                                          .live
+                                                      ? 'Live now'
                                                       : searchedList[index]
                                                           .duration
                                                           .toString()
@@ -240,10 +236,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                           response == null
                                               ? ShowSnackBar().showSnackBar(
                                                   context,
-                                                  AppLocalizations.of(
-                                                    context,
-                                                  )!
-                                                      .ytLiveAlert,
+                                                  'Video is still streaming',
                                                 )
                                               : Navigator.push(
                                                   context,

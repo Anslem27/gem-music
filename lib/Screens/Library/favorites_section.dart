@@ -4,9 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
-import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -16,6 +15,7 @@ import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/songs_count.dart' as songs_count;
 import 'package:gem/Screens/Library/show_songs.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
@@ -325,18 +325,18 @@ class _LikedSongsState extends State<LikedSongs>
                         context,
                       ).colorScheme.secondary,
                     ),
-                    tabs: [
+                    tabs: const [
                       Tab(
-                        text: AppLocalizations.of(context)!.songs,
+                        text: 'Songs',
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.albums,
+                        text: 'Albums',
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.artists,
+                        text: 'Artists',
                       ),
                       Tab(
-                        text: AppLocalizations.of(context)!.genres,
+                        text: 'Genres',
                       ),
                     ],
                   ),
@@ -353,7 +353,7 @@ class _LikedSongsState extends State<LikedSongs>
                     IconButton(
                       splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
-                      tooltip: AppLocalizations.of(context)!.search,
+                      tooltip: 'Search',
                       onPressed: () {
                         showSearch(
                           context: context,
@@ -391,15 +391,15 @@ class _LikedSongsState extends State<LikedSongs>
                           // ?
                           (context) {
                         final List<String> sortTypes = [
-                          AppLocalizations.of(context)!.displayName,
-                          AppLocalizations.of(context)!.dateAdded,
-                          AppLocalizations.of(context)!.album,
-                          AppLocalizations.of(context)!.artist,
-                          AppLocalizations.of(context)!.duration,
+                          'Display Name',
+                          'Date Added',
+                          'Album',
+                          'Artist',
+                          'Duration',
                         ];
                         final List<String> orderTypes = [
-                          AppLocalizations.of(context)!.inc,
-                          AppLocalizations.of(context)!.dec,
+                          'Increasing',
+                          'Decreasing',
                         ];
                         final menuList = <PopupMenuEntry<int>>[];
                         menuList.addAll(
@@ -550,8 +550,7 @@ class _LikedSongsState extends State<LikedSongs>
                                   ).colorScheme.secondary,
                                   size: 24.0,
                                 ),
-                                if (showFullShuffle)
-                                  const SizedBox(width: 5.0),
+                                if (showFullShuffle) const SizedBox(width: 5.0),
                                 if (showFullShuffle)
                                   Text(
                                     "Shuffle",
@@ -565,8 +564,7 @@ class _LikedSongsState extends State<LikedSongs>
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                if (showFullShuffle)
-                                  const SizedBox(width: 2.5),
+                                if (showFullShuffle) const SizedBox(width: 2.5),
                               ],
                             );
                           },
@@ -804,8 +802,8 @@ class _AlbumsTabState extends State<AlbumsTab>
                 ),
                 subtitle: Text(
                   widget.albums[widget.sortedAlbumKeysList[index]]!.length == 1
-                      ? '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} ${AppLocalizations.of(context)!.song}'
-                      : '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} ${AppLocalizations.of(context)!.songs}',
+                      ? '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} song'
+                      : '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} songs',
                   style: TextStyle(
                     color: Theme.of(context).textTheme.caption!.color,
                   ),

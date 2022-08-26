@@ -1,7 +1,5 @@
-
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -32,7 +30,7 @@ class _NowPlayingState extends State<NowPlaying> {
                   appBar: processingState != AudioProcessingState.idle
                       ? null
                       : AppBar(
-                          title: Text(AppLocalizations.of(context)!.nowPlaying),
+                          title: const Text('Now playing'),
                           centerTitle: true,
                           backgroundColor:
                               Theme.of(context).brightness == Brightness.dark
@@ -44,11 +42,11 @@ class _NowPlayingState extends State<NowPlaying> {
                       ? emptyScreen(
                           context,
                           3,
-                          AppLocalizations.of(context)!.nothingIs,
+                          'Nothing is ',
                           18.0,
-                          AppLocalizations.of(context)!.playingCap,
+                          'Playling',
                           60,
-                          AppLocalizations.of(context)!.playSomething,
+                          'Try playing something',
                           23.0,
                         )
                       : StreamBuilder<MediaItem?>(

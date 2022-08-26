@@ -1,9 +1,7 @@
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/app_config.dart';
+import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/supabase.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -93,20 +91,18 @@ class _AuthScreenState extends State<AuthScreen> {
                           GetIt.I<MyTheme>().refresh();
                           Navigator.popAndPushNamed(context, '/');
                         },
-                        child: Text(
-                          AppLocalizations.of(context)!.restore,
-                        ),
+                        child: const Text('Restore'),
                       ),
                       TextButton(
                         onPressed: () async {
                           await _addUserData(
-                            AppLocalizations.of(context)!.guest,
+                            'Guest',
                           );
                           Navigator.popAndPushNamed(context, '/pref');
                         },
-                        child: Text(
-                          AppLocalizations.of(context)!.skip,
-                          style: const TextStyle(
+                        child: const Text(
+                          'Skip',
+                          style: TextStyle(
                             decoration: TextDecoration.underline,
                           ),
                         ),
@@ -163,75 +159,80 @@ class _AuthScreenState extends State<AuthScreen> {
                             ),
                             Column(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    top: 5,
-                                    bottom: 5,
-                                    left: 10,
-                                    right: 10,
-                                  ),
-                                  height: 57.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                    color: Colors.grey[900],
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black26,
-                                        blurRadius: 5.0,
-                                        offset: Offset(0.0, 3.0),
-                                      )
-                                    ],
-                                  ),
-                                  child: TextField(
-                                    controller: controller,
-                                    textAlignVertical: TextAlignVertical.center,
-                                    textCapitalization:
-                                        TextCapitalization.sentences,
-                                    keyboardType: TextInputType.name,
-                                    decoration: InputDecoration(
-                                      focusedBorder: const UnderlineInputBorder(
-                                        borderSide: BorderSide(
-                                          width: 1.5,
-                                          color: Colors.transparent,
-                                        ),
-                                      ),
-                                      prefixIcon: Icon(
-                                        Icons.person,
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                      ),
-                                      border: InputBorder.none,
-                                      hintText: AppLocalizations.of(context)!
-                                          .enterName,
-                                      hintStyle: const TextStyle(
-                                        color: Colors.white60,
-                                      ),
-                                    ),
-                                    onSubmitted: (String value) async {
-                                      if (value.trim() == '') {
-                                        await _addUserData(
-                                          AppLocalizations.of(context)!.guest,
-                                        );
-                                      } else {
-                                        await _addUserData(value.trim());
-                                      }
-                                      Navigator.popAndPushNamed(
-                                        context,
-                                        '/pref',
-                                      );
-                                    },
-                                  ),
-                                ),
+                                // Container(
+                                //   padding: const EdgeInsets.only(
+                                //     top: 5,
+                                //     bottom: 5,
+                                //     left: 10,
+                                //     right: 10,
+                                //   ),
+                                //   height: 57.0,
+                                //   decoration: BoxDecoration(
+                                //     borderRadius: BorderRadius.circular(10.0),
+                                //     color: Colors.grey[900],
+                                //     boxShadow: const [
+                                //       BoxShadow(
+                                //         color: Colors.black26,
+                                //         blurRadius: 5.0,
+                                //         offset: Offset(0.0, 3.0),
+                                //       )
+                                //     ],
+                                //   ),
+                                //   child: TextField(
+                                //     controller: controller,
+                                //     textAlignVertical: TextAlignVertical.center,
+                                //     textCapitalization:
+                                //         TextCapitalization.sentences,
+                                //     keyboardType: TextInputType.name,
+                                //     decoration: InputDecoration(
+                                //       focusedBorder: const UnderlineInputBorder(
+                                //         borderSide: BorderSide(
+                                //           width: 1.5,
+                                //           color: Colors.transparent,
+                                //         ),
+                                //       ),
+                                //       prefixIcon: Icon(
+                                //         Icons.person,
+                                //         color: Theme.of(context)
+                                //             .colorScheme
+                                //             .secondary,
+                                //       ),
+                                //       border: InputBorder.none,
+                                //       hintText: 'Enter name',
+                                //       hintStyle: const TextStyle(
+                                //         color: Colors.white60,
+                                //       ),
+                                //     ),
+                                //     onSubmitted: (String value) async {
+                                //       // if (value.trim() == '') {
+                                //       //   await _addUserData(
+                                //       //     'Guest',
+                                //       //   );
+                                //       // } else {
+                                //       //   await _addUserData(value.trim());
+                                //       // }
+                                //       await _addUserData(
+                                //         'Guest',
+                                //       );
+                                //       Navigator.popAndPushNamed(
+                                //         context,
+                                //         '/pref',
+                                //       );
+                                //     },
+                                //   ),
+                                //),
                                 GestureDetector(
                                   onTap: () async {
-                                    if (controller.text.trim() == '') {
-                                      await _addUserData('Guest');
-                                    } else {
-                                      await _addUserData(
-                                        controller.text.trim(),
-                                      );
-                                    }
+                                    // if (controller.text.trim() == '') {
+                                    //   await _addUserData('Guest');
+                                    // } else {
+                                    //   await _addUserData(
+                                    //     controller.text.trim(),
+                                    //   );
+                                    // }
+                                    await _addUserData(
+                                      'Guest',
+                                    );
                                     Navigator.popAndPushNamed(context, '/pref');
                                   },
                                   child: Container(
@@ -252,11 +253,10 @@ class _AuthScreenState extends State<AuthScreen> {
                                         )
                                       ],
                                     ),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
-                                        AppLocalizations.of(context)!
-                                            .getStarted,
-                                        style: const TextStyle(
+                                        'Get Started',
+                                        style: TextStyle(
                                           color: Colors.black,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20.0,
@@ -265,30 +265,26 @@ class _AuthScreenState extends State<AuthScreen> {
                                     ),
                                   ),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 20.0,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          Text(
-                                            AppLocalizations.of(context)!
-                                                .disclaimer,
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        AppLocalizations.of(context)!
-                                            .disclaimerText,
-                                        style: TextStyle(
-                                          color: Colors.grey.withOpacity(0.7),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                // Padding(
+                                //   padding: const EdgeInsets.symmetric(
+                                //     vertical: 20.0,
+                                //   ),
+                                //   child: Column(
+                                //     children: [
+                                //       Row(
+                                //         children: const [
+                                //           Text('Disclaimer'),
+                                //         ],
+                                //       ),
+                                //       Text(
+                                //         'We respect your privacy more than anything else. Only your name, which you will enter here, will be recorded',
+                                //         style: TextStyle(
+                                //           color: Colors.grey.withOpacity(0.7),
+                                //         ),
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
                           ],

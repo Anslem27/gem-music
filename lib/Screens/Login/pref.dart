@@ -10,28 +10,6 @@ class PrefScreen extends StatefulWidget {
 }
 
 class _PrefScreenState extends State<PrefScreen> {
-  // List<String> languages = [
-  //   'Hindi',
-  //   'English',
-  //   'Punjabi',
-  //   'Tamil',
-  //   'Telugu',
-  //   'Marathi',
-  //   'Gujarati',
-  //   'Bengali',
-  //   'Kannada',
-  //   'Bhojpuri',
-  //   'Malayalam',
-  //   'Urdu',
-  //   'Haryanvi',
-  //   'Rajasthani',
-  //   'Odia',
-  //   'Assamese'
-  // ];
-  // List<bool> isSelected = [true, false];
-  // List preferredLanguage = Hive.box('settings')
-  //     .get('preferredLanguage', defaultValue: ['English'])?.toList() as List;
-
   @override
   Widget build(BuildContext context) {
     return GradientContainer(
@@ -313,7 +291,9 @@ class _PrefScreenState extends State<PrefScreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(10.0),
                                       // color: Theme.of(context).accentColor,
-                                      color: Colors.tealAccent[400],
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .secondary,
                                       boxShadow: const [
                                         BoxShadow(
                                           color: Colors.black26,

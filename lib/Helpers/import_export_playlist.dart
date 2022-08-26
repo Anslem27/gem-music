@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Helpers/songs_count.dart';
@@ -17,12 +16,12 @@ Future<void> exportPlaylist(
 ) async {
   final String dirPath = await Picker.selectFolder(
     context: context,
-    message: AppLocalizations.of(context)!.selectExportLocation,
+    message: 'Select where to export',
   );
   if (dirPath == '') {
     ShowSnackBar().showSnackBar(
       context,
-      '${AppLocalizations.of(context)!.failedExport} "$showName"',
+      'Failed to export "$showName"',
     );
     return;
   }
@@ -35,7 +34,7 @@ Future<void> exportPlaylist(
   await file.writeAsString(songs);
   ShowSnackBar().showSnackBar(
     context,
-    '${AppLocalizations.of(context)!.exported} "$showName"',
+    'Exported "$showName"',
   );
 }
 
@@ -56,7 +55,7 @@ Future<void> sharePlaylist(
 
   await Share.shareFiles(
     [file.path],
-    text: AppLocalizations.of(context)!.playlistShareText,
+    text: 'Hey there, try this paylist out',
   );
   await Future.delayed(const Duration(seconds: 10), () {});
   if (await file.exists()) {
@@ -71,18 +70,18 @@ Future<List> importPlaylist(BuildContext context, List playlistNames) async {
       temp = await Picker.selectFile(
         context: context,
         // ext: ['json'],
-        message: AppLocalizations.of(context)!.selectJsonImport,
+        message: 'Select Json Import',
       );
     } catch (e) {
       temp = await Picker.selectFile(
         context: context,
-        message: AppLocalizations.of(context)!.selectJsonImport,
+        message: 'Select Json Import',
       );
     }
     if (temp == '') {
       ShowSnackBar().showSnackBar(
         context,
-        AppLocalizations.of(context)!.failedImport,
+        'Failed to import',
       );
       return playlistNames;
     }
@@ -117,19 +116,17 @@ Future<List> importPlaylist(BuildContext context, List playlistNames) async {
     addSongsCount(
       playlistName,
       songs.length,
-      songs.length >= 4
-          ? songs.sublist(0, 4)
-          : songs.sublist(0, songs.length),
+      songs.length >= 4 ? songs.sublist(0, 4) : songs.sublist(0, songs.length),
     );
     ShowSnackBar().showSnackBar(
       context,
-      '${AppLocalizations.of(context)!.importSuccess} "$playlistName"',
+      'Successfully imported "$playlistName"',
     );
     return playlistNames;
   } catch (e) {
     ShowSnackBar().showSnackBar(
       context,
-      '${AppLocalizations.of(context)!.failedImport}\nError: $e',
+      'Failed to import\nError: $e',
     );
   }
   return playlistNames;

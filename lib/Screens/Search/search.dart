@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
@@ -103,24 +102,24 @@ class _SearchPageState extends State<SearchPage> {
       alertShown = true;
     }
     return Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Image.asset("assets/lamp_error.png", height: 100, width: 100),
-                Text(
-                  "Sorry noo results\nTry youtube search",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                    fontSize: 20,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary,
-                  ),
-                ),
-              ],
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Image.asset("assets/lamp_error.png", height: 100, width: 100),
+          Text(
+            "Sorry no results\nTry youtube search",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.roboto(
+              fontSize: 20,
+              color: Theme.of(
+                context,
+              ).colorScheme.secondary,
             ),
-          );
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -215,7 +214,6 @@ class _SearchPageState extends State<SearchPage> {
                                               status = false;
                                               fromHome = false;
                                               searchedData = {};
-                                              
                                             },
                                           );
                                         },
@@ -345,11 +343,7 @@ class _SearchPageState extends State<SearchPage> {
                                                             child: Row(
                                                               children: [
                                                                 Text(
-                                                                  AppLocalizations
-                                                                          .of(
-                                                                    context,
-                                                                  )!
-                                                                      .viewAll,
+                                                                  'View all',
                                                                   style:
                                                                       TextStyle(
                                                                     color: Theme
@@ -401,10 +395,9 @@ class _SearchPageState extends State<SearchPage> {
                                                         ['artist']
                                                     .toString();
                                                 count > 1
-                                                    ? countText =
-                                                        '$count ${AppLocalizations.of(context)!.songs}'
+                                                    ? countText = '$count songs'
                                                     : countText =
-                                                        '$count ${AppLocalizations.of(context)!.song}';
+                                                        '$count song';
                                                 return ListTile(
                                                   contentPadding:
                                                       const EdgeInsets.only(

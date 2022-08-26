@@ -7,8 +7,6 @@ import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/handle_native.dart';
 import 'package:gem/Helpers/route_handler.dart';
@@ -89,8 +87,8 @@ Future<void> openHiveBox(String boxName, {bool limit = false}) async {
     File dbFile = File('$dirPath/$boxName.hive');
     File lockFile = File('$dirPath/$boxName.lock');
     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
-      dbFile = File('$dirPath/BlackHole/$boxName.hive');
-      lockFile = File('$dirPath/BlackHole/$boxName.lock');
+      dbFile = File('$dirPath/Gem/$boxName.hive');
+      lockFile = File('$dirPath/Gem/$boxName.lock');
     }
     await dbFile.delete();
     await lockFile.delete();
@@ -125,30 +123,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    final String lang =
-        Hive.box('settings').get('lang', defaultValue: 'English') as String;
-    final Map<String, String> codes = {
-      'Chinese': 'zh',
-      'Czech': 'cs',
-      'Dutch': 'nl',
-      'English': 'en',
-      'French': 'fr',
-      'German': 'de',
-      'Hebrew': 'he',
-      'Hindi': 'hi',
-      'Hungarian': 'hu',
-      'Indonesian': 'id',
-      'Italian': 'it',
-      'Polish': 'pl',
-      'Portuguese': 'pt',
-      'Russian': 'ru',
-      'Spanish': 'es',
-      'Tamil': 'ta',
-      'Turkish': 'tr',
-      'Ukrainian': 'uk',
-      'Urdu': 'ur',
-    };
-    _locale = Locale(codes[lang]!);
 
     AppTheme.currentTheme.addListener(() {
       setState(() {});
@@ -219,33 +193,6 @@ class _MyAppState extends State<MyApp> {
         context: context,
       ),
       locale: _locale,
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      supportedLocales: const [
-        Locale('zh', ''), // Chinese
-        Locale('cs', ''), // Czech
-        Locale('nl', ''), // Dutch
-        Locale('en', ''), // English, no country code
-        Locale('fr', ''), // French
-        Locale('de', ''), // German
-        Locale('he', ''), // Hebrew
-        Locale('hi', ''), // Hindi
-        Locale('hu', ''), // Hungarian
-        Locale('id', ''), // Indonesian
-        Locale('it', ''), // Italian
-        Locale('pl', ''), // Polish
-        Locale('pt', ''), // Portuguese
-        Locale('ru', ''), // Russian
-        Locale('es', ''), // Spanish
-        Locale('ta', ''), // Tamil
-        Locale('tr', ''), // Turkish
-        Locale('uk', ''), // Ukrainian
-        Locale('ur', ''), // Urdu
-      ],
       routes: {
         '/': (context) => initialFuntion(),
         '/pref': (context) => const PrefScreen(),

@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 
+//TODO: Add recent local songs
 class RecentlyPlayed extends StatefulWidget {
   @override
   _RecentlyPlayedState createState() => _RecentlyPlayedState();
@@ -63,8 +64,11 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset("assets/Puzzle.png",
-                              height: 100, width: 100),
+                          Image.asset(
+                            "assets/Puzzle.png",
+                            height: 100,
+                            width: 100,
+                          ),
                           Text(
                             "Nothing to show here",
                             style: GoogleFonts.roboto(
