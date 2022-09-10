@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -6,7 +5,6 @@ import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/lyrics.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
@@ -126,7 +124,7 @@ class Download with ChangeNotifier {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               title: Text(
-                AppLocalizations.of(context)!.alreadyExists,
+                'Already Exists',
                 style:
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
@@ -134,7 +132,7 @@ class Download with ChangeNotifier {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '"${data['title']}" ${AppLocalizations.of(context)!.downAgain}',
+                    '"${data['title']}" Download Again',
                     softWrap: true,
                   ),
                   const SizedBox(
@@ -164,9 +162,7 @@ class Download with ChangeNotifier {
                                   remember.value = value ?? false;
                                 },
                               ),
-                              Text(
-                                AppLocalizations.of(context)!.rememberChoice,
-                              ),
+                              const Text('Remember Choice'),
                             ],
                           ),
                         );
@@ -189,9 +185,9 @@ class Download with ChangeNotifier {
                               Navigator.pop(context);
                               rememberOption = 0;
                             },
-                            child: Text(
-                              AppLocalizations.of(context)!.no,
-                              style: const TextStyle(color: Colors.white),
+                            child: const Text(
+                              'No',
+                              style: TextStyle(color: Colors.white),
                             ),
                           ),
                           TextButton(
@@ -207,8 +203,7 @@ class Download with ChangeNotifier {
                               downloadSong(context, dlPath, filename, data);
                               rememberOption = 1;
                             },
-                            child:
-                                Text(AppLocalizations.of(context)!.yesReplace),
+                            child: const Text('Yes Replace'),
                           ),
                           const SizedBox(width: 5.0),
                           TextButton(
@@ -227,7 +222,7 @@ class Download with ChangeNotifier {
                               downloadSong(context, dlPath, filename, data);
                             },
                             child: Text(
-                              AppLocalizations.of(context)!.yes,
+                              'Yes',
                               style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.secondary ==
@@ -361,43 +356,6 @@ class Download with ChangeNotifier {
           // print('Error fetching lyrics: $e');
           lyrics = '';
         }
-
-        // if (filepath!.endsWith('.opus')) {
-        // List<String>? _argsList;
-        // ShowSnackBar().showSnackBar(
-        //   context,
-        //   'Converting "opus" to "$downloadFormat"',
-        // );
-
-        // if (downloadFormat == 'mp3')
-        //   _argsList = [
-        //     "-y",
-        //     "-i",
-        //     "$filepath",
-        //     "-c:a",
-        //     "libmp3lame",
-        //     "-b:a",
-        //     "256k",
-        //     "${filepath.replaceAll('.opus', '.mp3')}"
-        //   ];
-        // if (downloadFormat == 'm4a') {
-        //   _argsList = [
-        //     '-y',
-        //     '-i',
-        //     filepath!,
-        //     '-c:a',
-        //     'aac',
-        //     '-b:a',
-        //     '256k',
-        //     filepath!.replaceAll('.opus', '.m4a')
-        //   ];
-        // }
-        // await FlutterFFmpeg().executeWithArguments(_argsList);
-        // await File(filepath!).delete();
-        // filepath = filepath!.replaceAll('.opus', '.$downloadFormat');
-        // }
-
-        // debugPrint('Started tag editing');
         final Tag tag = Tag(
           title: data['title'].toString(),
           artist: data['artist'].toString(),
@@ -458,7 +416,7 @@ class Download with ChangeNotifier {
 
         ShowSnackBar().showSnackBar(
           context,
-          '"${data['title'].toString()}" ${AppLocalizations.of(context)!.downed}',
+          '"${data['title'].toString()}" Downloaded}',
         );
       } else {
         download = true;

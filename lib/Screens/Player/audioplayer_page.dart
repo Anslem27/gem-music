@@ -11,9 +11,7 @@ import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
-import 'package:gem/CustomWidgets/animated_text.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
 import 'package:gem/CustomWidgets/empty_screen.dart';
@@ -29,6 +27,7 @@ import 'package:gem/Helpers/lyrics.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
+import 'package:gem/animations/animated_text.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
@@ -328,7 +327,7 @@ class _PlayScreenState extends State<PlayScreen> {
                   centerTitle: true,
                   leading: IconButton(
                     icon: const Icon(Icons.expand_more_rounded),
-                    tooltip: AppLocalizations.of(context)!.back,
+                    tooltip: 'Back',
                     onPressed: () {
                       Navigator.pop(context);
                     },
@@ -469,7 +468,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                   borderRadius: BorderRadius.circular(15.0),
                                 ),
                                 title: Text(
-                                  AppLocalizations.of(context)!.sleepTimer,
+                                  'Sleep timer',
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
@@ -478,11 +477,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                 contentPadding: const EdgeInsets.all(10.0),
                                 children: [
                                   ListTile(
-                                    title: Text(
-                                      AppLocalizations.of(context)!.sleepDur,
-                                    ),
-                                    subtitle: Text(
-                                      AppLocalizations.of(context)!.sleepDurSub,
+                                    title: const Text(
+                                      'Sleep Duration',
                                     ),
                                     dense: true,
                                     onTap: () {
@@ -494,12 +490,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                     },
                                   ),
                                   ListTile(
-                                    title: Text(
-                                      AppLocalizations.of(context)!.sleepAfter,
-                                    ),
-                                    subtitle: Text(
-                                      AppLocalizations.of(context)!
-                                          .sleepAfterSub,
+                                    title: const Text(
+                                      'Sleep After',
                                     ),
                                     dense: true,
                                     isThreeLine: true,
@@ -530,8 +522,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                             Theme.of(context).iconTheme.color,
                                       ),
                                       const SizedBox(width: 10.0),
-                                      Text(
-                                        AppLocalizations.of(context)!.viewAlbum,
+                                      const Text(
+                                        'View Album',
                                       ),
                                     ],
                                   ),
@@ -545,8 +537,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!.sleepTimer,
+                                    const Text(
+                                      'Sleep timer',
                                     ),
                                   ],
                                 ),
@@ -608,7 +600,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.playlist_add_rounded,
+                                      Iconsax.music_playlist,
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
@@ -1185,7 +1177,7 @@ class NowPlayingStream extends StatelessWidget {
                             //TODO: Add animated animations
                             Icons.bar_chart_rounded,
                           ),
-                          tooltip: AppLocalizations.of(context)!.playing,
+                          tooltip: 'Playing',
                           onPressed: () {},
                         )
                       : queue[index]
@@ -1473,6 +1465,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                           return value
                               ? lyrics['lyrics'] == ''
                                   ? emptyScreen(
+                                    //TODO: Replace with no lyrics icon
                                       context,
                                       0,
                                       ':( ',
@@ -1498,16 +1491,16 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                 ),
                 /* Copy card */
                 Align(
-                  alignment: Alignment.bottomRight,
+                  alignment: Alignment.topLeft,
                   child: Card(
                     elevation: 10.0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10.0),
                     ),
-                    color: Theme.of(context).cardColor.withOpacity(0.6),
+                    color: Theme.of(context).cardColor.withOpacity(0.8),
                     clipBehavior: Clip.antiAlias,
                     child: IconButton(
-                      tooltip: AppLocalizations.of(context)!.copy,
+                      tooltip: 'Copy',
                       onPressed: () {
                         Feedback.forLongPress(context);
                         copyToClipboard(
@@ -1977,7 +1970,7 @@ class NameNControls extends StatelessWidget {
                                                 Theme.of(context).disabledColor,
                                           ),
                                     tooltip:
-                                        AppLocalizations.of(context)!.shuffle,
+                                       'Shuffle',
                                     onPressed: () async {
                                       final enable = !shuffleModeEnabled;
                                       await audioHandler.setShuffleMode(

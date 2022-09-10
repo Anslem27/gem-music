@@ -1,15 +1,13 @@
-
-
 // ignore_for_file: use_super_parameters
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
+import 'package:iconsax/iconsax.dart';
 
 class PlaylistPopupMenu extends StatefulWidget {
   final List data;
@@ -40,24 +38,24 @@ class _PlaylistPopupMenuState extends State<PlaylistPopupMenu> {
           child: Row(
             children: [
               Icon(
-                Icons.playlist_add_rounded,
+                Iconsax.play_add,
                 color: Theme.of(context).iconTheme.color,
               ),
               const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.addToQueue),
+              const Text('Add to playing queue'),
             ],
           ),
         ),
         PopupMenuItem(
           value: 1,
           child: Row(
-            children: [
+            children: const [
               Icon(
-                Icons.favorite_border_rounded,
-                color: Theme.of(context).iconTheme.color,
+                Iconsax.heart,
+                color: Colors.redAccent,
               ),
-              const SizedBox(width: 10.0),
-              Text(AppLocalizations.of(context)!.savePlaylist),
+              SizedBox(width: 10.0),
+              Text('Save Playlist'),
             ],
           ),
         ),
@@ -67,7 +65,7 @@ class _PlaylistPopupMenuState extends State<PlaylistPopupMenu> {
           addPlaylist(widget.title, widget.data).then(
             (value) => ShowSnackBar().showSnackBar(
               context,
-              '"${widget.title}" ${AppLocalizations.of(context)!.addedToPlaylists}',
+              '"${widget.title}" Added to playlist',
             ),
           );
         }
@@ -87,14 +85,14 @@ class _PlaylistPopupMenuState extends State<PlaylistPopupMenu> {
 
             ShowSnackBar().showSnackBar(
               context,
-              '"${widget.title}" ${AppLocalizations.of(context)!.addedToQueue}',
+              '"${widget.title}" Added to queue',
             );
           } else {
             ShowSnackBar().showSnackBar(
               context,
               currentMediaItem == null
-                  ? AppLocalizations.of(context)!.nothingPlaying
-                  : AppLocalizations.of(context)!.cantAddToQueue,
+                  ? 'No song in queue'
+                  : 'Cant add to queue',
             );
           }
         }

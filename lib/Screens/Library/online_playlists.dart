@@ -1,7 +1,6 @@
 // ignore_for_file: require_trailing_commas
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -180,7 +179,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                                         0
                                                 ? null
                                                 : Text(
-                                                    '${playlistDetails[name]['count']} ${AppLocalizations.of(context)!.songs}',
+                                                    '${playlistDetails[name]['count']} songs',
                                                   ),
                                         secondary: (playlistDetails[name] ==
                                                     null ||
@@ -239,12 +238,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                     onPressed: () {
                                       Navigator.pop(context);
                                     },
-                                    child: Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .cancel,
-                                    ),
+                                    child: const Text('Cancel'),
                                   ),
                                   TextButton(
                                     style: TextButton.styleFrom(
@@ -447,7 +441,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                               if (value == 0) {
                                 ShowSnackBar().showSnackBar(
                                   context,
-                                  '${AppLocalizations.of(context)!.deleted} $showName',
+                                  'Deleted $showName',
                                 );
                                 playlistDetails.remove(name);
                                 await settingsBox.put(
@@ -606,12 +600,10 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                               PopupMenuItem(
                                 value: 1,
                                 child: Row(
-                                  children: [
-                                    const Icon(MdiIcons.export),
-                                    const SizedBox(width: 10.0),
-                                    Text(
-                                      AppLocalizations.of(context)!.export,
-                                    ),
+                                  children: const [
+                                    Icon(MdiIcons.export),
+                                    SizedBox(width: 10.0),
+                                    Text('Export'),
                                   ],
                                 ),
                               ),

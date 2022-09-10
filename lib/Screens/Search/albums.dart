@@ -1,9 +1,7 @@
-
 // ignore_for_file: use_super_parameters
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
@@ -128,9 +126,9 @@ class _AlbumSearchPageState extends State<AlbumSearchPage> {
                           0,
                           ':( ',
                           100,
-                          AppLocalizations.of(context)!.sorry,
+                          'Bummer',
                           60,
-                          AppLocalizations.of(context)!.resultsNotFound,
+                          'No results ',
                           20,
                         )
                       : BouncyImageSliverScrollView(

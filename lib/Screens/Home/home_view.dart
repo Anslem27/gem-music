@@ -1,10 +1,9 @@
-// ignore_for_file: use_decorated_box, require_trailing_commas
+// ignore_for_file: use_decorated_box, require_trailing_commas, avoid_redundant_argument_values
 
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/horizontal_albumlist.dart';
@@ -20,6 +19,7 @@ import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Screens/Search/artists.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
 
 bool fetched = false;
 List preferredLanguage = Hive.box('settings')
@@ -221,7 +221,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                             null ||
                                         playlistDetails[name]['count'] == 0
                                     ? null
-                                    : '${playlistDetails[name]['count']} ${AppLocalizations.of(context)!.songs}';
+                                    : '${playlistDetails[name]['count']} songs';
                                 return GestureDetector(
                                   child: SizedBox(
                                     width: boxSize - 30,
@@ -530,7 +530,7 @@ class _HomeViewPageState extends State<HomeViewPage>
               if (item['type'] == 'radio_station') {
                 ShowSnackBar().showSnackBar(
                   context,
-                  AppLocalizations.of(context)!.connectingRadio,
+                  'Connecting to radio',
                   duration: const Duration(seconds: 2),
                 );
                 SaavnAPI()
@@ -704,21 +704,15 @@ class _HomeViewPageState extends State<HomeViewPage>
                                 child: IconButton(
                                   icon: likedRadio.contains(item)
                                       ? const Icon(
-                                          Icons.favorite_rounded,
+                                          Iconsax.heart,
                                           color: Colors.red,
                                         )
                                       : const Icon(
                                           Icons.favorite_border_rounded,
                                         ),
                                   tooltip: likedRadio.contains(item)
-                                      ? AppLocalizations.of(
-                                          context,
-                                        )!
-                                          .unlike
-                                      : AppLocalizations.of(
-                                          context,
-                                        )!
-                                          .like,
+                                      ? 'Unlike'
+                                      : 'Like',
                                   onPressed: () {
                                     likedRadio.contains(item)
                                         ? likedRadio.remove(item)

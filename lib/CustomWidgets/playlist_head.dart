@@ -1,7 +1,6 @@
 // ignore_for_file: use_super_parameters
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 
 class PlaylistHead extends StatelessWidget {
@@ -75,7 +74,7 @@ class PlaylistHead extends StatelessWidget {
                 ),
               );
             },
-            tooltip: AppLocalizations.of(context)!.shuffle,
+            tooltip: 'Shuffle',
             icon: const Icon(Icons.play_arrow_rounded),
             iconSize: 30.0,
           ),

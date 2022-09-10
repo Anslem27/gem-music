@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -207,24 +206,23 @@ class _YouTubePlaylistState extends State<YouTubePlaylist> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0,
-                                    ),
-                                    child: Text(
-                                      AppLocalizations.of(context)!.useHome,
-                                      textAlign: TextAlign.center,
-                                    ),
-                                  ),
+                                  // Padding(
+                                  //   padding: const EdgeInsets.symmetric(
+                                  //     horizontal: 8.0,
+                                  //   ),
+                                  //   child: Text(
+                                  //     AppLocalizations.of(context)!.useHome,
+                                  //     textAlign: TextAlign.center,
+                                  //   ),
+                                  // ),
                                   CircularProgressIndicator(
                                     valueColor: AlwaysStoppedAnimation<Color>(
                                       Theme.of(context).colorScheme.secondary,
                                     ),
                                     strokeWidth: 5,
                                   ),
-                                  Text(
-                                    AppLocalizations.of(context)!
-                                        .fetchingStream,
+                                  const Text(
+                                    'Converting media',
                                   ),
                                 ],
                               ),

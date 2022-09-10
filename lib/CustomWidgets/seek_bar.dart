@@ -1,10 +1,7 @@
-
-
 import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 
 class SeekBar extends StatefulWidget {
@@ -104,16 +101,6 @@ class _SeekBarState extends State<SeekBar> {
             },
           ),
         ),
-        // if (widget.offline)
-        //   Positioned(
-        //     left: 22.0,
-        //     bottom: 45.0,
-        //     child: Icon(
-        //       Icons.wifi_off_rounded,
-        //       color: Theme.of(context).disabledColor,
-        //       size: 15.0,
-        //     ),
-        //   ),
         Positioned(
           right: 25.0,
           top: widget.height / 30,
@@ -135,7 +122,7 @@ class _SeekBarState extends State<SeekBar> {
                 onTap: () {
                   showSliderDialog(
                     context: context,
-                    title: AppLocalizations.of(context)!.adjustSpeed,
+                    title: 'Adjust speed',
                     divisions: 25,
                     min: 0.5,
                     max: 3.0,
@@ -164,9 +151,6 @@ class _SeekBarState extends State<SeekBar> {
                     .firstMatch('$_duration')
                     ?.group(1) ??
                 '$_duration',
-            // style: Theme.of(context).textTheme.caption!.copyWith(
-            //       color: Theme.of(context).iconTheme.color,
-            //     ),
           ),
         ),
       ],

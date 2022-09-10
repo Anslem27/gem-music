@@ -3,7 +3,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
-import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -12,6 +11,7 @@ import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/audio_query.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';

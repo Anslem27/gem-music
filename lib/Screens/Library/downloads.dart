@@ -8,8 +8,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:gem/CustomWidgets/custom_physics.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -18,6 +16,7 @@ import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
@@ -287,12 +286,12 @@ class _DownloadsState extends State<Downloads>
       }
       ShowSnackBar().showSnackBar(
         context,
-        '${AppLocalizations.of(context)!.deleted} ${song['title']}',
+        'Deleted ${song['title']}',
       );
     } catch (e) {
       ShowSnackBar().showSnackBar(
         context,
-        '${AppLocalizations.of(context)!.failedDelete}: ${audioFile.path}\nError: $e',
+        'Failed to delete: ${audioFile.path}\nError: $e',
       );
     }
   }
@@ -308,7 +307,7 @@ class _DownloadsState extends State<Downloads>
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
-                  title: Text(AppLocalizations.of(context)!.downs),
+                  title: const Text('Downloads'),
                   centerTitle: true,
                   backgroundColor:
                       Theme.of(context).brightness == Brightness.dark
@@ -345,7 +344,7 @@ class _DownloadsState extends State<Downloads>
                     IconButton(
                       splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
-                      tooltip: AppLocalizations.of(context)!.search,
+                      tooltip: 'Search',
                       onPressed: () {
                         showSearch(
                           context: context,
@@ -389,15 +388,15 @@ class _DownloadsState extends State<Downloads>
                             // ?
                             (context) {
                           final List<String> sortTypes = [
-                            AppLocalizations.of(context)!.displayName,
-                            AppLocalizations.of(context)!.dateAdded,
-                            AppLocalizations.of(context)!.album,
-                            AppLocalizations.of(context)!.artist,
-                            AppLocalizations.of(context)!.duration,
+                            'Display name',
+                            'Date added',
+                            'Album',
+                            'Artists',
+                            'Duration',
                           ];
                           final List<String> orderTypes = [
-                            AppLocalizations.of(context)!.inc,
-                            AppLocalizations.of(context)!.dec,
+                            'Increasing',
+                            'Decreasing',
                           ];
                           final menuList = <PopupMenuEntry<int>>[];
                           menuList.addAll(
@@ -556,7 +555,7 @@ class _DownloadsState extends State<Downloads>
                                 if (showFullShuffle) const SizedBox(width: 5.0),
                                 if (showFullShuffle)
                                   Text(
-                                    AppLocalizations.of(context)!.shuffle,
+                                    'Shuffle',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18.0,
@@ -673,7 +672,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.title,
+                      'Title',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -691,7 +690,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.artist,
+                      'Artist',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -709,7 +708,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.albumArtist,
+                      'Album Artist',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -727,7 +726,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.album,
+                      'Album',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -745,7 +744,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.genre,
+                     'Genre',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -763,7 +762,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.year,
+                      'Year',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -781,7 +780,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                      AppLocalizations.of(context)!.songPath,
+                      'Song directory',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -847,18 +846,18 @@ Future<Map> editTags(Map song, BuildContext context) async {
                   );
                   ShowSnackBar().showSnackBar(
                     context,
-                    AppLocalizations.of(context)!.successTagEdit,
+                    'Tag successfully editted',
                   );
                 }
               } catch (e) {
                 ShowSnackBar().showSnackBar(
                   context,
-                  '${AppLocalizations.of(context)!.failedTagEdit}\nError: $e',
+                  'Failed to edit tag\nError: $e',
                 );
               }
             },
             child: Text(
-              AppLocalizations.of(context)!.ok,
+              'Ok',
               style: TextStyle(
                 color: Theme.of(context).colorScheme.secondary == Colors.white
                     ? Colors.black
@@ -1027,18 +1026,15 @@ class _DownSongsTabState extends State<DownSongsTab>
                               PopupMenuItem(
                                 value: 0,
                                 child: Row(
-                                  children: [
-                                    const Icon(
+                                  children: const [
+                                    Icon(
                                       Icons.edit_rounded,
                                     ),
-                                    const SizedBox(
+                                    SizedBox(
                                       width: 10.0,
                                     ),
                                     Text(
-                                      AppLocalizations.of(
-                                        context,
-                                      )!
-                                          .edit,
+                                     'Edit',
                                     ),
                                   ],
                                 ),

@@ -1,7 +1,4 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Services/download.dart';
@@ -82,10 +79,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                                 ),
                                 iconSize: 25.0,
                                 color: Theme.of(context).iconTheme.color,
-                                tooltip: AppLocalizations.of(
-                                  context,
-                                )!
-                                    .stopDown,
+                                tooltip: 'Stop downloading',
                                 onPressed: () {
                                   down.download = false;
                                 },
@@ -183,17 +177,17 @@ class _MultiDownloadButtonState extends State<MultiDownloadButton> {
                 ),
                 color: Theme.of(context).colorScheme.secondary,
                 iconSize: 25.0,
-                tooltip: AppLocalizations.of(context)!.downDone,
+                tooltip: 'Download done',
                 onPressed: () {},
               )
             : down.progress == 0
                 ? Center(
                     child: IconButton(
                       icon: const Icon(
-                        Icons.download_rounded,
+                        Icons.download,
                       ),
                       iconSize: 25.0,
-                      tooltip: AppLocalizations.of(context)!.down,
+                      tooltip: 'Download',
                       onPressed: () async {
                         for (final items in widget.data) {
                           down.prepareDownload(
@@ -291,7 +285,7 @@ class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
                 ),
                 color: Theme.of(context).colorScheme.secondary,
                 iconSize: 25.0,
-                tooltip: AppLocalizations.of(context)!.downDone,
+                tooltip: 'Download done',
                 onPressed: () {},
               )
             : down.progress == 0
@@ -302,11 +296,11 @@ class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
                       ),
                       iconSize: 25.0,
                       color: Theme.of(context).iconTheme.color,
-                      tooltip: AppLocalizations.of(context)!.down,
+                      tooltip: 'Download',
                       onPressed: () async {
                         ShowSnackBar().showSnackBar(
                           context,
-                          '${AppLocalizations.of(context)!.downingAlbum} "${widget.albumName}"',
+                          'Downloading Album "${widget.albumName}"',
                         );
 
                         data = (await SaavnAPI()

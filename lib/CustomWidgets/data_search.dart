@@ -1,11 +1,8 @@
-
-
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/Helpers/audio_query.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -22,7 +19,7 @@ class DataSearch extends SearchDelegate {
       if (query.isEmpty)
         IconButton(
           icon: const Icon(CupertinoIcons.search),
-          tooltip: AppLocalizations.of(context)!.search,
+          tooltip: 'Search',
           onPressed: () {},
         )
       else
@@ -30,7 +27,7 @@ class DataSearch extends SearchDelegate {
           onPressed: () {
             query = '';
           },
-          tooltip: AppLocalizations.of(context)!.clear,
+          tooltip: 'Clear',
           icon: const Icon(
             Icons.clear_rounded,
           ),
@@ -42,7 +39,7 @@ class DataSearch extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.arrow_back_rounded),
-      tooltip: AppLocalizations.of(context)!.back,
+      tooltip: 'Back',
       onPressed: () {
         close(context, null);
       },
@@ -92,7 +89,7 @@ class DataSearch extends SearchDelegate {
         ),
         subtitle: Text(
           suggestionList[index].artist! == '<unknown>'
-              ? AppLocalizations.of(context)!.unknown
+              ? 'Unknown'
               : suggestionList[index].artist!,
           overflow: TextOverflow.ellipsis,
         ),
@@ -158,7 +155,7 @@ class DataSearch extends SearchDelegate {
         ),
         subtitle: Text(
           suggestionList[index].artist! == '<unknown>'
-              ? AppLocalizations.of(context)!.unknown
+              ? 'Unknown'
               : suggestionList[index].artist!,
           overflow: TextOverflow.ellipsis,
         ),
@@ -212,7 +209,7 @@ class DownloadsSearch extends SearchDelegate {
       if (query.isEmpty)
         IconButton(
           icon: const Icon(CupertinoIcons.search),
-          tooltip: AppLocalizations.of(context)!.search,
+          tooltip: 'Search',
           onPressed: () {},
         )
       else
@@ -220,7 +217,7 @@ class DownloadsSearch extends SearchDelegate {
           onPressed: () {
             query = '';
           },
-          tooltip: AppLocalizations.of(context)!.clear,
+          tooltip: 'Clear',
           icon: const Icon(
             Icons.clear_rounded,
           ),
@@ -232,7 +229,7 @@ class DownloadsSearch extends SearchDelegate {
   Widget buildLeading(BuildContext context) {
     return IconButton(
       icon: const Icon(Icons.arrow_back_rounded),
-      tooltip: AppLocalizations.of(context)!.back,
+      tooltip: 'Back',
       onPressed: () {
         close(context, null);
       },

@@ -185,7 +185,12 @@ class _PlayerGradientSelectionState extends State<PlayerGradientSelection> {
                           ],
                         ),
                         if (gradientType == type)
-                          const Center(child: Icon(Icons.check_rounded)),
+                          const Center(
+                            child: Icon(
+                              Icons.check_rounded,
+                              size: 20,
+                            ),
+                          ),
                       ],
                     ),
                   ),

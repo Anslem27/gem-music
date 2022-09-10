@@ -7,7 +7,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
@@ -36,7 +35,7 @@ class _EqualizerState extends State<Equalizer> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SwitchListTile(
-              title: Text(AppLocalizations.of(context)!.equalizer),
+              title: const Text('Equalizer'),
               value: enabled,
               activeColor: Theme.of(context).colorScheme.secondary,
               onChanged: (value) {

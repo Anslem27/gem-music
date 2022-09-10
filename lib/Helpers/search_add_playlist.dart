@@ -1,8 +1,6 @@
-
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/Helpers/playlist.dart';
@@ -174,11 +172,10 @@ class SearchAddPlaylist {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          Center(
+                          const Center(
                             child: Text(
-                              AppLocalizations.of(context)!.convertingSongs,
-                              style:
-                                  const TextStyle(fontWeight: FontWeight.w600),
+                              'Converting media',
+                              style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                           ),
                           SizedBox(

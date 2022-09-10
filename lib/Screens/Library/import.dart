@@ -2,7 +2,6 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/APIs/spotify_api.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -50,9 +49,7 @@ class ImportPlaylist extends StatelessWidget {
                 itemBuilder: (cntxt, index) {
                   return ListTile(
                     title: Text(
-                      index == 0
-                          ? AppLocalizations.of(context)!.importFile
-                          : AppLocalizations.of(context)!.importYt,
+                      index == 0 ? 'Import from file' : 'Import from youtube',
                     ),
                     leading: SizedBox.square(
                       dimension: 50,
@@ -129,7 +126,7 @@ Future<void> importYt(
 ) async {
   await showTextInputDialog(
     context: context,
-    title: AppLocalizations.of(context)!.enterPlaylistLink,
+    title: 'Enter playlist link',
     initialText: '',
     keyboardType: TextInputType.url,
     onSubmitted: (value) async {
@@ -140,7 +137,7 @@ Future<void> importYt(
         if (data['title'] == '' && data['count'] == 0) {
           ShowSnackBar().showSnackBar(
             context,
-            '${AppLocalizations.of(context)!.failedImport}\n${AppLocalizations.of(context)!.confirmViewable}',
+            'Failed to import',
             duration: const Duration(seconds: 3),
           );
         } else {
@@ -164,7 +161,7 @@ Future<void> importYt(
       } else {
         ShowSnackBar().showSnackBar(
           context,
-          AppLocalizations.of(context)!.failedImport,
+          'Failed to import',
         );
       }
     },
@@ -196,8 +193,8 @@ Future<void> fetchPlaylists(
             itemBuilder: (ctxt, idx) {
               if (idx == 0) {
                 return ListTile(
-                  title: Text(
-                    AppLocalizations.of(context)!.importPublicPlaylist,
+                  title: const Text(
+                    'Import public playlist',
                   ),
                   leading: Card(
                     elevation: 0,
@@ -215,7 +212,7 @@ Future<void> fetchPlaylists(
                   onTap: () async {
                     await showTextInputDialog(
                       context: context,
-                      title: AppLocalizations.of(context)!.enterPlaylistLink,
+                      title: 'Enter playlist link',
                       initialText: '',
                       keyboardType: TextInputType.url,
                       onSubmitted: (String value) async {
@@ -239,8 +236,7 @@ Future<void> fetchPlaylists(
                             tracks.addAll(data['tracks'] as List);
                           }
 
-                          String playName =
-                              AppLocalizations.of(context)!.spotifyPublic;
+                          String playName = 'Spotify Public';
                           while (playlistNames.contains(playName) ||
                               await Hive.boxExists(value)) {
                             // ignore: use_string_buffers
@@ -297,9 +293,7 @@ Future<void> fetchPlaylists(
                   : ListTile(
                       title: Text(playName),
                       subtitle: Text(
-                        playTotal == 1
-                            ? '$playTotal ${AppLocalizations.of(context)!.song}'
-                            : '$playTotal ${AppLocalizations.of(context)!.songs}',
+                        playTotal == 1 ? '$playTotal song' : '$playTotal songs',
                       ),
                       leading: Card(
                         elevation: 8,
