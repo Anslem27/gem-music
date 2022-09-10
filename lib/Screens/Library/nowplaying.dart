@@ -8,6 +8,8 @@ import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
 
 class NowPlaying extends StatefulWidget {
+  const NowPlaying({Key? key}) : super(key: key);
+
   @override
   _NowPlayingState createState() => _NowPlayingState();
 }

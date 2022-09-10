@@ -10,9 +10,10 @@ class SuggestionConatiner extends StatelessWidget {
   const SuggestionConatiner(
     this.color,
     this.widget, {
+    Key? key,
     this.height = 300,
     this.width = 0,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

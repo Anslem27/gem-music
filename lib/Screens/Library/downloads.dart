@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -41,8 +42,6 @@ class _DownloadsState extends State<Downloads>
   List _sortedArtistKeysList = [];
   List _sortedGenreKeysList = [];
   TabController? _tcontroller;
-  // int currentIndex = 0;
-  // String? tempPath = Hive.box('settings').get('tempDirPath')?.toString();
   int sortValue = Hive.box('settings').get('sortValue', defaultValue: 1) as int;
   int orderValue =
       Hive.box('settings').get('orderValue', defaultValue: 1) as int;
@@ -62,12 +61,7 @@ class _DownloadsState extends State<Downloads>
         _showShuffle.value = true;
       }
     });
-    // _tcontroller!.addListener(changeTitle);
-    // if (tempPath == null) {
-    //   getTemporaryDirectory().then((value) {
-    //     Hive.box('settings').put('tempDirPath', value.path);
-    //   });
-    // }
+
     getDownloads();
     super.initState();
   }
@@ -78,12 +72,6 @@ class _DownloadsState extends State<Downloads>
     _tcontroller!.dispose();
     _scrollController.dispose();
   }
-
-  // void changeTitle() {
-  //   setState(() {
-  //     currentIndex = _tcontroller!.index;
-  //   });
-  // }
 
   Future<void> getDownloads() async {
     _songs = downloadsBox.values.toList();
@@ -307,7 +295,10 @@ class _DownloadsState extends State<Downloads>
               child: Scaffold(
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
-                  title: const Text('Downloads'),
+                  title: Text(
+                    'Downloads',
+                    style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
+                  ),
                   centerTitle: true,
                   backgroundColor:
                       Theme.of(context).brightness == Brightness.dark
@@ -316,27 +307,43 @@ class _DownloadsState extends State<Downloads>
                   elevation: 0,
                   bottom: TabBar(
                     controller: _tcontroller,
-                    indicator: RectangularIndicator(
-                      bottomLeftRadius: 12,
-                      bottomRightRadius: 12,
-                      topLeftRadius: 12,
-                      topRightRadius: 12,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary,
+                    indicator: MaterialIndicator(
+                      horizontalPadding: 28,
+                      color: Theme.of(context).focusColor,
+                      height: 6,
                     ),
-                    tabs: const [
-                      Tab(
-                        text: "Songs",
+                    tabs: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Songs",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: "Albums",
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Albums",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: "Artists",
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Artists",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: "Genres",
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Genres",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
                     ],
                   ),
@@ -363,8 +370,6 @@ class _DownloadsState extends State<Downloads>
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         ),
                         onSelected:
-                            // (currentIndex == 0)
-                            // ?
                             (int value) {
                           if (value < 5) {
                             sortValue = value;
@@ -375,17 +380,9 @@ class _DownloadsState extends State<Downloads>
                           }
                           sortSongs(sortVal: sortValue, order: orderValue);
                           setState(() {});
-                          //   }
-                          // : (int value) {
-                          //     albumSortValue = value;
-                          //     Hive.box('settings')
-                          //         .put('albumSortValue', value);
-                          //     sortAlbums();
-                          //     setState(() {});
+                       
                         },
                         itemBuilder:
-                            // (currentIndex == 0)
-                            // ?
                             (context) {
                           final List<String> sortTypes = [
                             'Display name',
@@ -744,7 +741,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
                 Row(
                   children: [
                     Text(
-                     'Genre',
+                      'Genre',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),
@@ -926,14 +923,14 @@ class _DownSongsTabState extends State<DownSongsTab>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                SvgPicture.asset("assets/svg/add_content.svg",
+                    height: 140, width: 100),
+                const SizedBox(height: 20),
                 Text(
-                  "Nothing to show here",
+                  "Try downloading\nsome music",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.roboto(
                     fontSize: 20,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary,
                   ),
                 ),
               ],
@@ -1034,7 +1031,7 @@ class _DownSongsTabState extends State<DownSongsTab>
                                       width: 10.0,
                                     ),
                                     Text(
-                                     'Edit',
+                                      'Edit',
                                     ),
                                   ],
                                 ),
@@ -1050,7 +1047,7 @@ class _DownSongsTabState extends State<DownSongsTab>
                                       width: 10.0,
                                     ),
                                     Text(
-                                     'Delete',
+                                      'Delete',
                                     ),
                                   ],
                                 ),

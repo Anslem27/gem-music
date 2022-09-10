@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/Helpers/audio_query.dart';
+import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';

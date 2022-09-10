@@ -2,13 +2,14 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/Helpers/audio_query.dart';
+import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/animations/custom_physics.dart';
@@ -210,20 +211,16 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                 backgroundColor: Colors.transparent,
                 appBar: AppBar(
                   title: Text(
-                    widget.title ?? "My Music",
-                    style: GoogleFonts.roboto(),
+                    widget.title ?? "All Music",
+                    style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
                   ),
                   bottom: TabBar(
                     isScrollable: widget.showPlaylists,
                     controller: _tcontroller,
-                    indicator: RectangularIndicator(
-                      bottomLeftRadius: 12,
-                      bottomRightRadius: 12,
-                      topLeftRadius: 12,
-                      topRightRadius: 12,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary,
+                    indicator: MaterialIndicator(
+                      horizontalPadding: 10,
+                      color: Theme.of(context).focusColor,
+                      height: 6,
                     ),
                     // indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
@@ -262,11 +259,8 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                     ),
                     PopupMenuButton(
                       splashRadius: 24,
-                      icon: Icon(
-                        Iconsax.menu,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondary,
+                      icon: const Icon(
+                        Iconsax.filter,
                       ),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
@@ -447,14 +441,14 @@ class _SongsTabState extends State<SongsTab>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                SvgPicture.asset("assets/svg/add_content.svg",
+                    height: 140, width: 100),
+                const SizedBox(height: 20),
                 Text(
-                  "Nothing to show here",
+                  "No music\nhere",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.roboto(
                     fontSize: 20,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary,
                   ),
                 ),
               ],
@@ -487,13 +481,21 @@ class _SongsTabState extends State<SongsTab>
                             ? widget.songs[index].title
                             : widget.songs[index].displayNameWOExt,
                         overflow: TextOverflow.ellipsis,
+                        style: GoogleFonts.roboto(
+                          fontSize: 17,
+                        ),
                       ),
                       subtitle: Text(
                         '${widget.songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'} - ${widget.songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
                         overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(fontWeight: FontWeight.normal),
                       ),
                       trailing: PopupMenuButton(
-                        icon: const Icon(Icons.more_vert_rounded),
+                        splashRadius: 24,
+                        icon: const Icon(
+                          Icons.more_horiz_rounded,
+                          color: Colors.grey,
+                        ),
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         ),

@@ -42,7 +42,7 @@ Future<void> main() async {
     setOptimalDisplayMode();
   }
   await startService();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 Future<void> setOptimalDisplayMode() async {
@@ -102,6 +102,8 @@ Future<void> openHiveBox(String boxName, {bool limit = false}) async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   _MyAppState createState() => _MyAppState();
 
@@ -154,8 +156,8 @@ class _MyAppState extends State<MyApp> {
 
   Widget initialFuntion() {
     return Hive.box('settings').get('userId') != null
-        ? HomePage()
-        : AuthScreen();
+        ? const HomePage()
+        : const AuthScreen();
   }
 
   @override
@@ -198,8 +200,8 @@ class _MyAppState extends State<MyApp> {
         '/pref': (context) => const PrefScreen(),
         '/setting': (context) => const SettingPage(),
         '/playlists': (context) => const PlaylistView(),
-        '/nowplaying': (context) => NowPlaying(),
-        '/recent': (context) => RecentlyPlayed(),
+        '/nowplaying': (context) => const NowPlaying(),
+        '/recent': (context) => const RecentlyPlayed(),
         '/downloads': (context) => const Downloads(),
       },
       navigatorKey: navigatorKey,

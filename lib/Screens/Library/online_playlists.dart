@@ -8,11 +8,14 @@ import 'package:gem/CustomWidgets/textinput_dialog.dart';
 import 'package:gem/Helpers/import_export_playlist.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Library/import.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class OnlinePlaylistScreen extends StatefulWidget {
+  const OnlinePlaylistScreen({Key? key}) : super(key: key);
+
   @override
   _OnlinePlaylistScreenState createState() => _OnlinePlaylistScreenState();
 }
@@ -41,15 +44,14 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
               children: [
                 const SizedBox(height: 5),
                 ListTile(
-                  title: const Text("Create Playlist"),
-                  leading: SizedBox.square(
+                  title: Text("Create Playlist",
+                      style: GoogleFonts.roboto(
+                          fontSize: 18, fontWeight: FontWeight.w400)),
+                  leading: const SizedBox.square(
                     dimension: 50,
                     child: Center(
                       child: Icon(
                         Icons.add_rounded,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -78,15 +80,16 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                   },
                 ),
                 ListTile(
-                  title: const Text("Import Playlist"),
-                  leading: SizedBox.square(
+                  title: Text(
+                    "Import Playlist",
+                    style: GoogleFonts.roboto(
+                        fontSize: 18, fontWeight: FontWeight.w400),
+                  ),
+                  leading: const SizedBox.square(
                     dimension: 50,
                     child: Center(
                       child: Icon(
                         MdiIcons.import,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondary,
                       ),
                     ),
                   ),
@@ -101,7 +104,9 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                 ),
                 if (playlistNames.length > 1)
                   ListTile(
-                    title: const Text('Merge Playlists'),
+                    title: Text('Merge Playlists',
+                        style: GoogleFonts.roboto(
+                            fontSize: 18, fontWeight: FontWeight.w400)),
                     leading: SizedBox.square(
                       dimension: 50,
                       child: Center(
@@ -319,13 +324,9 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                       }
                                       Navigator.pop(context);
                                     },
-                                    child: const Text(
-                                      'Ok',
-                                    ),
+                                    child: const Text('Ok'),
                                   ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
+                                  const SizedBox(width: 5),
                                 ],
                               );
                             },

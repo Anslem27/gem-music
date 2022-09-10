@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
@@ -11,6 +12,8 @@ import 'package:iconsax/iconsax.dart';
 
 //TODO: Add recent local songs
 class RecentlyPlayed extends StatefulWidget {
+  const RecentlyPlayed({Key? key}) : super(key: key);
+
   @override
   _RecentlyPlayedState createState() => _RecentlyPlayedState();
 }
@@ -38,14 +41,38 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
             child: Scaffold(
               backgroundColor: Colors.transparent,
               appBar: AppBar(
-                title: const Text('Last Played'),
+                title: Text(
+                  'Previously Played',
+                  style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
+                ),
                 centerTitle: true,
                 backgroundColor: Theme.of(context).brightness == Brightness.dark
                     ? Colors.transparent
                     : Theme.of(context).colorScheme.secondary,
                 elevation: 0,
-                actions: [
-                  IconButton(
+                // actions: [
+                //   IconButton(
+                //     splashRadius: 24,
+                //     onPressed: () {
+                //       Hive.box('cache').put('recentSongs', []);
+                //       setState(() {
+                //         _songs = [];
+                //       });
+                //     },
+                //     tooltip: 'Clear queue',
+                //     icon: const Icon(Iconsax.trash),
+                //   ),
+                // ],
+              ),
+              floatingActionButton: Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary),
+                child: Padding(
+                  padding: const EdgeInsets.all(3.0),
+                  child: IconButton(
                     splashRadius: 24,
                     onPressed: () {
                       Hive.box('cache').put('recentSongs', []);
@@ -53,10 +80,10 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                         _songs = [];
                       });
                     },
-                    tooltip: 'Clear all',
-                    icon: const Icon(Icons.clear_all_rounded),
+                    tooltip: 'Clear queue',
+                    icon: const Icon(Iconsax.trash),
                   ),
-                ],
+                ),
               ),
               body: _songs.isEmpty
                   ? Center(
@@ -64,18 +91,14 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            "assets/Puzzle.png",
-                            height: 100,
-                            width: 100,
-                          ),
+                          SvgPicture.asset("assets/svg/listening.svg",
+                              height: 140, width: 100),
+                          const SizedBox(height: 20),
                           Text(
-                            "Nothing to show here",
+                            "Try playing\nsome music",
+                            textAlign: TextAlign.center,
                             style: GoogleFonts.roboto(
                               fontSize: 20,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.secondary,
                             ),
                           ),
                         ],

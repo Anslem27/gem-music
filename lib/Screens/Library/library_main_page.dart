@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,93 +17,107 @@ class LibraryPage extends StatefulWidget {
 class _LibraryPageState extends State<LibraryPage> {
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      physics: const BouncingScrollPhysics(),
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
-          child: AppBar(
-            leading: Icon(
-              Iconsax.music,
-              color: Theme.of(context).iconTheme.color,
-              size: 40,
-            ),
-            title: Row(
-              children: [
-                const SizedBox(width: 10),
-                Text(
-                  "Your Library",
-                  style: GoogleFonts.roboto(
-                    color: Theme.of(context).iconTheme.color,
-                    fontSize: 28,
-                  ),
+        Positioned(
+          left: MediaQuery.of(context).size.width / 1.85,
+          child: SizedBox(
+              width: MediaQuery.of(context).size.width,
+              height: MediaQuery.of(context).size.width,
+              child: SvgPicture.asset(
+                "assets/svg/buds.svg",
+                fit: BoxFit.contain,
+              )),
+        ),
+        ListView(
+          physics: const BouncingScrollPhysics(),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
+              child: AppBar(
+                leading: Icon(
+                  Iconsax.music,
+                  color: Theme.of(context).iconTheme.color,
+                  size: 40,
                 ),
-              ],
-            ),
-            centerTitle: false,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            automaticallyImplyLeading: false,
-          ),
-        ),
-        LibraryTile(
-          title: 'Now Playing',
-          icon: Iconsax.music,
-          onTap: () {
-            Navigator.pushNamed(context, '/nowplaying');
-          },
-        ),
-        LibraryTile(
-          title: 'Last session',
-          icon: Icons.history_rounded,
-          onTap: () {
-            Navigator.pushNamed(context, '/recent');
-          },
-        ),
-        LibraryTile(
-          title: 'Favorites',
-          icon: Iconsax.heart,
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => const LikedSongs(
-                  playlistName: 'Favorite Songs',
-                  showName: 'Favourite Songs',
+                title: Row(
+                  children: [
+                    const SizedBox(width: 10),
+                    Text(
+                      "Your Library",
+                      style: GoogleFonts.roboto(
+                        color: Theme.of(context).iconTheme.color,
+                        fontSize: 28,
+                      ),
+                    ),
+                  ],
                 ),
+                centerTitle: false,
+                backgroundColor: Colors.transparent,
+                elevation: 0,
+                automaticallyImplyLeading: false,
               ),
-            );
-          },
-        ),
-        if (!Platform.isIOS)
-          LibraryTile(
-            title: "My Music",
-            icon: MdiIcons.folderMusic,
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const DownloadedSongs(
-                    showPlaylists: true,
+            ),
+            LibraryTile(
+              title: 'Now Playing',
+              icon: Iconsax.music,
+              onTap: () {
+                Navigator.pushNamed(context, '/nowplaying');
+              },
+            ),
+            LibraryTile(
+              title: 'Last session',
+              icon: Icons.history_rounded,
+              onTap: () {
+                Navigator.pushNamed(context, '/recent');
+              },
+            ),
+            LibraryTile(
+              title: 'Favorites',
+              icon: Iconsax.heart,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const LikedSongs(
+                      playlistName: 'Favorite Songs',
+                      showName: 'Favourite Songs',
+                    ),
                   ),
-                ),
-              );
-            },
-          ),
-        LibraryTile(
-          title: 'Downloads',
-          icon: Icons.download_done_rounded,
-          onTap: () {
-            Navigator.pushNamed(context, '/downloads');
-          },
-        ),
-        //IconButton(onPressed: (){Navigator.push(context, CupertinoPageRoute(builder: (_)=>PrefScreen()));}, icon: Icon(Icons.add)),
-        LibraryTile(
-          title: 'Playlists',
-          icon: Iconsax.music_dashboard,
-          onTap: () {
-            Navigator.pushNamed(context, '/playlists');
-          },
+                );
+              },
+            ),
+            if (!Platform.isIOS)
+              LibraryTile(
+                title: "My Music",
+                icon: MdiIcons.folderMusic,
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const DownloadedSongs(
+                        showPlaylists: true,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            LibraryTile(
+              title: 'Downloads',
+              icon: Icons.download_done_rounded,
+              onTap: () {
+                Navigator.pushNamed(context, '/downloads');
+              },
+            ),
+            //IconButton(onPressed: (){Navigator.push(context, CupertinoPageRoute(builder: (_)=>PrefScreen()));}, icon: Icon(Icons.add)),
+            LibraryTile(
+              title: 'Playlists',
+              icon: Iconsax.music_dashboard,
+              onTap: () {
+                Navigator.pushNamed(context, '/playlists');
+              },
+            ),
+          ],
         ),
       ],
     );

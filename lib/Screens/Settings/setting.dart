@@ -20,7 +20,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingPage extends StatefulWidget {
   final Function? callback;
-  const SettingPage({this.callback});
+  const SettingPage({Key? key, this.callback}) : super(key: key);
   @override
   _SettingPageState createState() => _SettingPageState();
 }

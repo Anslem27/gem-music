@@ -28,6 +28,8 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -336,13 +338,13 @@ class _HomePageState extends State<HomePage> {
                               left: 15.0,
                             ),
                             child: Text(
-                              "How you doin'",
-                              style: TextStyle(
+                              "Gem",
+                              style: GoogleFonts.robotoCondensed(
                                 letterSpacing: 2,
                                 color: Theme.of(
                                   context,
                                 ).colorScheme.secondary,
-                                fontSize: 30,
+                                fontSize: 40,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -448,7 +450,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ];
       },
-      body: HomeViewPage(),
+      body: const HomeViewPage(),
     );
   }
 
@@ -492,21 +494,18 @@ class _HomePageState extends State<HomePage> {
                             gradient: i == indexValue
                                 ? LinearGradient(
                                     colors: [
-                                      Colors.grey.shade800,
-                                      Colors.black
-                                    ],
+                                        Colors.grey.shade800,
+                                        Colors.black
+                                      ],
                                     begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                  )
+                                    end: Alignment.bottomCenter)
                                 : null,
                           ),
-                          child: Icon(
-                            icondata[i],
-                            size: 37,
-                            color: i == indexValue
-                                ? Colors.white
-                                : Colors.grey.shade800,
-                          ),
+                          child: Icon(icondata[i],
+                              size: 37,
+                              color: i == indexValue
+                                  ? Colors.white
+                                  : Colors.grey.shade800),
                         ),
                       ),
                     ),
