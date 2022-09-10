@@ -326,6 +326,7 @@ class _PlayScreenState extends State<PlayScreen> {
                   backgroundColor: Colors.transparent,
                   centerTitle: true,
                   leading: IconButton(
+                    splashRadius: 24,
                     icon: const Icon(Icons.expand_more_rounded),
                     tooltip: 'Back',
                     onPressed: () {
@@ -385,6 +386,7 @@ class _PlayScreenState extends State<PlayScreen> {
                               ),
                             ]);
                           }
+                          //song info dialog 
                           PopupDialog().showPopup(
                             context: context,
                             child: SingleChildScrollView(
@@ -393,32 +395,36 @@ class _PlayScreenState extends State<PlayScreen> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: details.keys.map((e) {
-                                  return SelectableText.rich(
-                                    TextSpan(
-                                      children: <TextSpan>[
-                                        TextSpan(
-                                          text: format(
-                                            e.toString(),
+                                  return Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: SelectableText.rich(
+                                      TextSpan(
+                                        children: <TextSpan>[
+                                          TextSpan(
+                                            text: format(
+                                              e.toString(),
+                                            ),
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w600,
+                                              fontSize:17,
+                                              color: Theme.of(context)
+                                                  .textTheme
+                                                  .bodyText1!
+                                                  .color,
+                                            ),
                                           ),
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.w600,
-                                            color: Theme.of(context)
-                                                .textTheme
-                                                .bodyText1!
-                                                .color,
+                                          TextSpan(
+                                            text: details[e].toString(),
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.normal,
+                                            ),
                                           ),
-                                        ),
-                                        TextSpan(
-                                          text: details[e].toString(),
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                          ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
+                                      showCursor: true,
+                                      cursorColor: Colors.black,
+                                      cursorRadius: const Radius.circular(5),
                                     ),
-                                    showCursor: true,
-                                    cursorColor: Colors.black,
-                                    cursorRadius: const Radius.circular(5),
                                   );
                                 }).toList(),
                               ),
@@ -568,7 +574,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.info_rounded,
+                                      Icons.info_outline_rounded,
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
@@ -667,7 +673,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                 child: Row(
                                   children: [
                                     Icon(
-                                      Icons.info_rounded,
+                                      Icons.info_outline_rounded,
                                       color: Theme.of(context).iconTheme.color,
                                     ),
                                     const SizedBox(width: 10.0),
@@ -948,11 +954,12 @@ class ControlButtons extends StatelessWidget {
 
   const ControlButtons(
     this.audioHandler, {
+    Key? key,
     this.shuffle = false,
     this.miniplayer = false,
     this.buttons = const ['Previous', 'Play/Pause', 'Next'],
     this.dominantColor,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1127,11 +1134,12 @@ class NowPlayingStream extends StatelessWidget {
   final double headHeight;
 
   const NowPlayingStream({
+    Key? key,
     required this.audioHandler,
     this.scrollController,
     this.head = false,
     this.headHeight = 50,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -1166,7 +1174,7 @@ class NowPlayingStream extends StatelessWidget {
                 audioHandler.removeQueueItemAt(index);
               },
               child: ListTileTheme(
-                selectedColor: Theme.of(context).colorScheme.secondary,
+                //selectedColor: Theme.of(context).colorScheme.secondary,
                 child: ListTile(
                   contentPadding:
                       const EdgeInsets.only(left: 16.0, right: 10.0),
@@ -1265,9 +1273,7 @@ class NowPlayingStream extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            const SizedBox(
-                              height: 5.0,
-                            ),
+                            const SizedBox(height: 5.0),
                           ],
                         ),
                       Card(
@@ -1357,13 +1363,14 @@ class ArtWorkWidget extends StatefulWidget {
   final AudioPlayerHandler audioHandler;
 
   const ArtWorkWidget({
+    Key? key,
     required this.cardKey,
     required this.mediaItem,
     required this.width,
     this.offline = false,
     required this.getLyricsOnline,
     required this.audioHandler,
-  });
+  }) : super(key: key);
 
   @override
   _ArtWorkWidgetState createState() => _ArtWorkWidgetState();
@@ -1465,7 +1472,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                           return value
                               ? lyrics['lyrics'] == ''
                                   ? emptyScreen(
-                                    //TODO: Replace with no lyrics icon
+                                      //TODO: Replace with no lyrics icon
                                       context,
                                       0,
                                       ':( ',
@@ -1491,31 +1498,47 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                 ),
                 /* Copy card */
                 Align(
-                  alignment: Alignment.topLeft,
+                  alignment: Alignment.bottomRight,
                   child: Card(
                     elevation: 10.0,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10.0),
+                      borderRadius: BorderRadius.circular(15.0),
                     ),
-                    color: Theme.of(context).cardColor.withOpacity(0.8),
+                    color: Theme.of(context).cardColor.withOpacity(0.4),
                     clipBehavior: Clip.antiAlias,
-                    child: IconButton(
-                      tooltip: 'Copy',
-                      onPressed: () {
-                        Feedback.forLongPress(context);
-                        copyToClipboard(
-                          context: context,
-                          text: lyrics['lyrics'].toString(),
-                        );
-                      },
-                      icon: Icon(
-                        Iconsax.copy,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondary,
-                      ),
-                      color:
-                          Theme.of(context).iconTheme.color!.withOpacity(0.6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          tooltip: 'Copy',
+                          onPressed: () {
+                            Feedback.forLongPress(context);
+                            copyToClipboard(
+                              context: context,
+                              text: lyrics['lyrics'].toString(),
+                            );
+                          },
+                          icon: Icon(
+                            Iconsax.copy,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondary,size:22,
+                          ),
+                          color: Theme.of(context)
+                              .iconTheme
+                              .color!
+                              .withOpacity(0.6),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: Text(
+                            "Copy",
+                            style: GoogleFonts.roboto(
+                                fontSize: 17, fontWeight: FontWeight.w400),
+                          ),
+                        ),
+                        const SizedBox(width: 10)
+                      ],
                     ),
                   ),
                 ),
@@ -1727,19 +1750,18 @@ class NameNControls extends StatelessWidget {
   final bool offline;
   final double width;
   final double height;
-  // final List<Color?>? gradientColor;
   final PanelController panelController;
   final AudioPlayerHandler audioHandler;
 
   const NameNControls({
+    Key? key,
     required this.width,
     required this.height,
     required this.mediaItem,
-    // required this.gradientColor,
     required this.audioHandler,
     required this.panelController,
     this.offline = false,
-  });
+  }) : super(key: key);
 
   Stream<Duration> get _bufferedPositionStream => audioHandler.playbackState
       .map((state) => state.bufferedPosition)
@@ -1969,8 +1991,7 @@ class NameNControls extends StatelessWidget {
                                             color:
                                                 Theme.of(context).disabledColor,
                                           ),
-                                    tooltip:
-                                       'Shuffle',
+                                    tooltip: 'Shuffle',
                                     onPressed: () async {
                                       final enable = !shuffleModeEnabled;
                                       await audioHandler.setShuffleMode(

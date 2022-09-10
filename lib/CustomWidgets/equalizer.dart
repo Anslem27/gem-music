@@ -61,7 +61,7 @@ class _EqualizerState extends State<Equalizer> {
 
 class EqualizerControls extends StatefulWidget {
   final AudioPlayerHandler audioHandler;
-  const EqualizerControls({required this.audioHandler});
+   const EqualizerControls({Key? key, required this.audioHandler}) : super(key: key);
   @override
   _EqualizerControlsState createState() => _EqualizerControlsState();
 }

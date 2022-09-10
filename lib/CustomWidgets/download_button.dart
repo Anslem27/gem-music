@@ -172,21 +172,23 @@ class _MultiDownloadButtonState extends State<MultiDownloadButton> {
       child: Center(
         child: (down.lastDownloadId == widget.data.last['id'])
             ? IconButton(
+                splashRadius: 24,
                 icon: const Icon(
                   Icons.download_done_rounded,
                 ),
                 color: Theme.of(context).colorScheme.secondary,
-                iconSize: 25.0,
+                iconSize: 20.0,
                 tooltip: 'Download done',
                 onPressed: () {},
               )
             : down.progress == 0
                 ? Center(
                     child: IconButton(
+                      splashRadius: 24,
                       icon: const Icon(
                         Icons.download,
                       ),
-                      iconSize: 25.0,
+                      iconSize: 20.0,
                       tooltip: 'Download',
                       onPressed: () async {
                         for (final items in widget.data) {

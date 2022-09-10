@@ -16,6 +16,7 @@ class SeekBar extends StatefulWidget {
   final ValueChanged<Duration>? onChangeEnd;
 
   const SeekBar({
+    Key? key,
     required this.duration,
     required this.position,
     required this.offline,
@@ -25,7 +26,7 @@ class SeekBar extends StatefulWidget {
     this.bufferedPosition = Duration.zero,
     this.onChanged,
     this.onChangeEnd,
-  });
+  }) : super(key: key);
 
   @override
   _SeekBarState createState() => _SeekBarState();

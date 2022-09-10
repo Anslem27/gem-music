@@ -11,7 +11,6 @@ class SpotifyApi {
     'playlist-read-collaborative',
   ];
 
-  /// You can signup for spotify developer account and get your own clientID and clientSecret incase you don't want to use these
   /// id= 6ac6511f2ed1432e9917624fc7a67bef
   final String clientID = '6ac6511f2ed1432e9917624fc7a67bef';
   /* secret= d6331f83644e4d93b27f63bd97da3f3c */

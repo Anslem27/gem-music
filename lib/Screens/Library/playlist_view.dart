@@ -8,7 +8,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
 import '../../CustomWidgets/gradient_containers.dart';
-import '../../Helpers/audio_query.dart';
+import '../../Helpers/local_music_functions.dart';
 
 class PlaylistView extends StatefulWidget {
   const PlaylistView({super.key});
@@ -26,7 +26,12 @@ class _PlaylistViewState extends State<PlaylistView>
   @override
   void initState() {
     _tcontroller = TabController(length: 2, vsync: this);
+    fillData();
     super.initState();
+  }
+
+  Future<void> fillData() async {
+    playlistDetails = await offlineAudioQuery.getPlaylists();
   }
 
   @override
@@ -46,26 +51,33 @@ class _PlaylistViewState extends State<PlaylistView>
             "My Playlists",
             style: GoogleFonts.roboto(
               fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
           bottom: TabBar(
             controller: _tcontroller,
-            indicator: RectangularIndicator(
-              bottomLeftRadius: 12,
-              bottomRightRadius: 12,
-              topLeftRadius: 12,
-              topRightRadius: 12,
-              color: Theme.of(
-                context,
-              ).colorScheme.secondary,
+            indicator: MaterialIndicator(
+              horizontalPadding: 32,
+              color: Theme.of(context).focusColor,
+              height: 6,
             ),
-            tabs: const [
-              Tab(
-                text: "Online",
+            tabs: [
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  "Online",
+                  style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
               ),
-              Tab(
-                text: "Offline",
-              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10.0),
+                child: Text(
+                  "Offline",
+                  style: GoogleFonts.roboto(
+                      fontWeight: FontWeight.bold, fontSize: 18),
+                ),
+              )
             ],
           ),
         ),
@@ -73,7 +85,7 @@ class _PlaylistViewState extends State<PlaylistView>
         body: TabBarView(
           controller: _tcontroller,
           children: [
-            OnlinePlaylistScreen(),
+            const OnlinePlaylistScreen(),
             LocalPlaylists(
               playlistDetails: playlistDetails,
               offlineAudioQuery: offlineAudioQuery,

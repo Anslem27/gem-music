@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_svg/svg.dart';
 // import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
@@ -316,27 +317,43 @@ class _LikedSongsState extends State<LikedSongs>
                   elevation: 0,
                   bottom: TabBar(
                     controller: _tcontroller,
-                    indicator: RectangularIndicator(
-                      bottomLeftRadius: 12,
-                      bottomRightRadius: 12,
-                      topLeftRadius: 12,
-                      topRightRadius: 12,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary,
+                    indicator: MaterialIndicator(
+                      horizontalPadding: 10,
+                      color: Theme.of(context).focusColor,
+                      height: 6,
                     ),
-                    tabs: const [
-                      Tab(
-                        text: 'Songs',
+                    tabs: [
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Songs",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: 'Albums',
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Albums",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: 'Artists',
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Artists",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
-                      Tab(
-                        text: 'Genres',
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 10.0),
+                        child: Text(
+                          "Genres",
+                          style: GoogleFonts.roboto(
+                              fontWeight: FontWeight.w400, fontSize: 16),
+                        ),
                       ),
                     ],
                   ),
@@ -614,14 +631,23 @@ class _SongsTabState extends State<SongsTab>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                SvgPicture.asset("assets/svg/music.svg",
+                    height: 140, width: 100),
+                const SizedBox(height: 20),
                 Text(
-                  "No songs here",
+                  "Ooops...",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary),
+                ),
+                Text(
+                  "No music here",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.roboto(
                     fontSize: 20,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary,
                   ),
                 ),
               ],
@@ -751,14 +777,23 @@ class _AlbumsTabState extends State<AlbumsTab>
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset("assets/Puzzle.png", height: 100, width: 100),
+                SvgPicture.asset("assets/svg/add_content.svg",
+                    height: 140, width: 100),
+                const SizedBox(height: 20),
                 Text(
-                  "Nothing to show here",
+                  "Ooops...",
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.roboto(
+                      fontSize: 20,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary),
+                ),
+                Text(
+                  "No music here",
+                  textAlign: TextAlign.center,
                   style: GoogleFonts.roboto(
                     fontSize: 20,
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary,
                   ),
                 ),
               ],

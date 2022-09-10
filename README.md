@@ -36,12 +36,12 @@ Flutter music App project.
 - Fix local music widget [images]
 - Add suitablw music search API
 - Clean Out unneccesary code
+- Add daily shuffle to home
 
 ## Building from Source
 
 1. If you don't have Flutter SDK installed, please visit official [Flutter](https://flutter.dev/) site.
 2. Fetch latest source code from master branch.
-
 
 3. Run the app with Android Studio or VS Code. Or the command line:
 
@@ -49,3 +49,7 @@ Flutter music App project.
 flutter pub get
 flutter run
 ```
+
+## OpenSource
+
+[Illustraions](https://algolia.com)

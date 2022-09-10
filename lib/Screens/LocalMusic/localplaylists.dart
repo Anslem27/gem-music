@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/textinput_dialog.dart';
-import 'package:gem/Helpers/audio_query.dart';
+import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -10,9 +10,10 @@ class LocalPlaylists extends StatefulWidget {
   final List<PlaylistModel> playlistDetails;
   final OfflineAudioQuery offlineAudioQuery;
   const LocalPlaylists({
+    Key? key,
     required this.playlistDetails,
     required this.offlineAudioQuery,
-  });
+  }) : super(key: key);
   @override
   _LocalPlaylistsState createState() => _LocalPlaylistsState();
 }
