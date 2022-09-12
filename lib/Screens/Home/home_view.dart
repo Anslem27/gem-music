@@ -41,7 +41,7 @@ class HomeViewPage extends StatefulWidget {
 
 class _HomeViewPageState extends State<HomeViewPage>
     with AutomaticKeepAliveClientMixin<HomeViewPage> {
-  List<SongModel> _songs = [];
+  //List<SongModel> _songs = [];
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
   late final List<SongModel>? cachedSongs;
 
@@ -49,7 +49,8 @@ class _HomeViewPageState extends State<HomeViewPage>
   //   _songs =
   //       (await offlineAudioQuery.getSongs(orderType: OrderType.ASC_OR_SMALLER))
   //           .toList();
-  //           print(_songs);
+
+  //   setState(() {});
   //   return _songs;
   // }
 
@@ -83,8 +84,6 @@ class _HomeViewPageState extends State<HomeViewPage>
       lists = ['recent', 'playlist', ...?data['collections']];
       lists.insert((lists.length / 2).round(), 'likedArtists');
     }
-    _songs =
-        await offlineAudioQuery.getSongs(orderType: OrderType.ASC_OR_SMALLER);
 
     setState(() {});
   }
@@ -207,7 +206,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                 padding:
                                     const EdgeInsets.fromLTRB(15, 10, 0, 5),
                                 child: Text(
-                                  "Your Playlists",
+                                  "Online Playlists",
                                   style: TextStyle(
                                     color:
                                         Theme.of(context).colorScheme.secondary,
@@ -376,8 +375,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                         ],
                       );
               }
-              /* Recently Added */
-              recentlyAdded(context, boxSize, _songs);
+
               if (lists[idx] == 'likedArtists') {
                 final List likedArtistsList = likedArtists.values.toList();
                 return likedArtists.isEmpty
@@ -450,139 +448,6 @@ class _HomeViewPageState extends State<HomeViewPage>
               //       );
             },
           );
-  }
-//FIXME: Not Working fro some reason
-  Column recentlyAdded(
-      BuildContext context, double boxSize, List<SongModel> songs) {
-    final String? tempPath =
-        Hive.box('settings').get('tempDirPath')?.toString();
-    return Column(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
-              child: Text(
-                "Recently Added",
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.secondary,
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: boxSize + 15,
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            scrollDirection: Axis.horizontal,
-            padding: const EdgeInsets.symmetric(horizontal: 10),
-            itemCount: songs.length,
-            itemBuilder: (context, index) {
-              return GestureDetector(
-                child: SizedBox(
-                  width: boxSize - 30,
-                  child: HoverBox(
-                    child: Card(
-                        elevation: 5,
-                        color: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            10.0,
-                          ),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: OfflineAudioQuery.offlineArtworkWidget(
-                          id: songs[index].id,
-                          type: ArtworkType.AUDIO,
-                          tempPath: tempPath as String,
-                          fileName: songs[index].displayNameWOExt,
-                        ) /* const Image(
-                                image: AssetImage(
-                                  'assets/album.png',
-                                ),
-                              ), */
-                        ),
-                    builder:
-                        (BuildContext context, bool isHover, Widget? child) {
-                      return Card(
-                        color: isHover ? null : Colors.transparent,
-                        elevation: 0,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(
-                            10.0,
-                          ),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Column(
-                          children: [
-                            SizedBox.square(
-                              dimension: isHover ? boxSize - 25 : boxSize - 30,
-                              child: child,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 10.0,
-                              ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    songs[index].title.trim() != ''
-                                        ? songs[index].title
-                                        : songs[index].displayNameWOExt,
-                                    textAlign: TextAlign.center,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                  Text(
-                                    '${songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'} - ${songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
-                                    textAlign: TextAlign.center,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        color: Theme.of(context)
-                                            .textTheme
-                                            .caption!
-                                            .color),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                onTap: () async {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (_, __, ___) => PlayScreen(
-                        songsList: songs,
-                        index: index,
-                        offline: true,
-                        fromDownloads: false,
-                        fromMiniplayer: false,
-                        recommend: false,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        )
-      ],
-    );
   }
 
   SizedBox radioSection(double boxSize, int idx) {

@@ -37,6 +37,7 @@ Flutter music App project.
 - Add suitablw music search API
 - Clean Out unneccesary code
 - Add daily shuffle to home
+- Artist, plylist detail page customed pages
 
 ## Building from Source
 

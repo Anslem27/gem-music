@@ -386,7 +386,7 @@ class _PlayScreenState extends State<PlayScreen> {
                               ),
                             ]);
                           }
-                          //song info dialog 
+                          //song info dialog
                           PopupDialog().showPopup(
                             context: context,
                             child: SingleChildScrollView(
@@ -406,7 +406,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                             ),
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
-                                              fontSize:17,
+                                              fontSize: 17,
                                               color: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1!
@@ -1522,7 +1522,8 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                             Iconsax.copy,
                             color: Theme.of(
                               context,
-                            ).colorScheme.secondary,size:22,
+                            ).colorScheme.secondary,
+                            size: 22,
                           ),
                           color: Theme.of(context)
                               .iconTheme
@@ -1628,12 +1629,21 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               .toString()
                               .startsWith('file')
                           //TODO: fix issue with local music image image thats low quality
-                          ? Image.file(
-                              File(widget.mediaItem.artUri!.toFilePath()),
-                              fit: BoxFit.contain,
-                              //width: widget.width * 0.85,
-                              gaplessPlayback: true,
-                            )
+
+                          ? widget.mediaItem.artUri!.toFilePath().isEmpty ||
+                                  widget.mediaItem.artUri!.toFilePath() == null
+                              //expression checks for an empty mediaItem file string
+                              //TODO: Add a placeholder image for null string
+                              ? const Image(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/cover.jpg'),
+                                )
+                              : Image.file(
+                                  File(widget.mediaItem.artUri!.toFilePath()),
+                                  fit: BoxFit.contain,
+                                  //width: widget.width * 0.85,
+                                  gaplessPlayback: true,
+                                )
                           : CachedNetworkImage(
                               fit: BoxFit.contain,
                               errorWidget: (BuildContext context, _, __) =>

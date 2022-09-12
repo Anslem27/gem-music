@@ -218,10 +218,13 @@ class _SettingPageState extends State<SettingPage> {
                             switchToCustomTheme();
                           },
                         ),
+                        amoledSettings(),
                         BoxSwitchTile(
                           title: const Text(
                             'Use System Theme',
                           ),
+                          subtitle:
+                              const Text("We prefer using Gem with dark mode"),
                           keyName: 'useSystemTheme',
                           defaultValue: true,
                           onChanged: (bool val, Box box) {
@@ -230,21 +233,15 @@ class _SettingPageState extends State<SettingPage> {
                           },
                         ),
                         ListTile(
-                          title: const Text(
-                            'Accent Colors',
-                          ),
-                          //subtitle: Text('$themeColor, $colorHue'),
+                          title: const Text('Accent Colors'),
+                          subtitle: Text(themeColor),
                           trailing: Padding(
-                            padding: const EdgeInsets.all(
-                              10.0,
-                            ),
+                            padding: const EdgeInsets.all(10.0),
                             child: Container(
                               height: 25,
                               width: 25,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  100.0,
-                                ),
+                                borderRadius: BorderRadius.circular(100.0),
                                 color: Theme.of(context).colorScheme.secondary,
                                 boxShadow: [
                                   BoxShadow(
@@ -323,7 +320,6 @@ class _SettingPageState extends State<SettingPage> {
                                                   switchToCustomTheme();
                                                   Navigator.pop(context);
                                                 },
-                                                //TODO: Add color name somewhere
                                                 child: Container(
                                                   width: MediaQuery.of(context)
                                                           .size
@@ -336,12 +332,9 @@ class _SettingPageState extends State<SettingPage> {
                                                   decoration: BoxDecoration(
                                                     borderRadius:
                                                         BorderRadius.circular(
-                                                      50.0,
-                                                    ),
+                                                            50.0),
                                                     color: MyTheme().getColor(
-                                                      colors[index],
-                                                      hue,
-                                                    ),
+                                                        colors[index], hue),
                                                     boxShadow: [
                                                       BoxShadow(
                                                         color:
@@ -375,7 +368,6 @@ class _SettingPageState extends State<SettingPage> {
                           dense: true,
                         ),
                         backgroundGradient(context),
-                        amoledSettings(),
                         currentThemeConfig(context, userThemesList),
                         customThemeConfig(context)
                       ],
@@ -2360,9 +2352,8 @@ class _SettingPageState extends State<SettingPage> {
 
   ListTile amoledSettings() {
     return ListTile(
-      title: const Text(
-        'Use Amoled',
-      ),
+      title: const Text('Use Amoled'),
+      subtitle: const Text("Amoled theme for best battery perfomance"),
       dense: true,
       onTap: () {
         currentTheme.switchTheme(
@@ -2386,10 +2377,7 @@ class _SettingPageState extends State<SettingPage> {
 
         themeColor = 'White';
         colorHue = 400;
-        currentTheme.switchColor(
-          'White',
-          colorHue,
-        );
+        currentTheme.switchColor('White', colorHue);
       },
     );
   }

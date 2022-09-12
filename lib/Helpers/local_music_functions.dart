@@ -1,5 +1,3 @@
-
-
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -116,7 +114,7 @@ class OfflineAudioQuery {
     required String tempPath,
     required String fileName,
     int size = 200,
-    int quality = 100,
+    int quality = 200,
     ArtworkFormat format = ArtworkFormat.JPEG,
   }) async {
     final File file = File('$tempPath/$fileName.jpg');
@@ -147,7 +145,7 @@ class OfflineAudioQuery {
     BorderRadius? borderRadius,
     Clip clipBehavior = Clip.antiAlias,
     BoxFit fit = BoxFit.cover,
-    FilterQuality filterQuality = FilterQuality.low,
+    FilterQuality filterQuality = FilterQuality.medium,
     double height = 50.0,
     double width = 50.0,
     double elevation = 5,
@@ -176,9 +174,7 @@ class OfflineAudioQuery {
             clipBehavior: clipBehavior,
             child: Image(
               image: FileImage(
-                File(
-                  item.data!,
-                ),
+                File(item.data!),
               ),
               gaplessPlayback: gaplessPlayback,
               repeat: imageRepeat,

@@ -13,7 +13,6 @@ import 'package:gem/Helpers/route_handler.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
-// import 'package:gem/Screens/Library/online_playlists.dart';
 import 'package:gem/Screens/Library/recent.dart';
 import 'package:gem/Screens/Login/initial_wizard.dart';
 import 'package:gem/Screens/Login/pref.dart';
@@ -86,10 +85,10 @@ Future<void> openHiveBox(String boxName, {bool limit = false}) async {
     final String dirPath = dir.path;
     File dbFile = File('$dirPath/$boxName.hive');
     File lockFile = File('$dirPath/$boxName.lock');
-    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+   /*  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       dbFile = File('$dirPath/Gem/$boxName.hive');
       lockFile = File('$dirPath/Gem/$boxName.lock');
-    }
+    } */
     await dbFile.delete();
     await lockFile.delete();
     await Hive.openBox(boxName);

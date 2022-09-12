@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
@@ -217,29 +217,23 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                   bottom: TabBar(
                     isScrollable: widget.showPlaylists,
                     controller: _tcontroller,
-                    indicator: MaterialIndicator(
-                      horizontalPadding: 10,
-                      color: Theme.of(context).focusColor,
-                      height: 6,
+                    indicator: RectangularIndicator(
+                      topLeftRadius: 15,
+                      topRightRadius: 15,
+                      bottomLeftRadius: 15,
+                      bottomRightRadius: 15,
+                      strokeWidth: 1,
+                      paintingStyle: PaintingStyle.stroke,
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary,
                     ),
-                    // indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
-                      const Tab(
-                        text: "Songs",
-                      ),
-                      const Tab(
-                        text: "Albums",
-                      ),
-                      const Tab(
-                        text: "Artists",
-                      ),
-                      const Tab(
-                        text: "Genres",
-                      ),
-                      if (widget.showPlaylists)
-                        const Tab(
-                          text: "Playlists",
-                        ),
+                      const Tab(text: "Songs"),
+                      const Tab(text: "Albums"),
+                      const Tab(text: "Artists"),
+                      const Tab(text: "Genres"),
+                      if (widget.showPlaylists) const Tab(text: "Playlists"),
                     ],
                   ),
                   actions: [
@@ -309,9 +303,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -397,7 +389,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                               playlistDetails: playlistDetails,
                               offlineAudioQuery: offlineAudioQuery,
                             ),
-                          // videosTab(),
                         ],
                       ),
               ),
@@ -434,6 +425,10 @@ class _SongsTabState extends State<SongsTab>
 
   @override
   Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
     super.build(context);
     return widget.songs.isEmpty
         ? Center(
@@ -466,10 +461,184 @@ class _SongsTabState extends State<SongsTab>
                   physics: const BouncingScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: 10),
                   shrinkWrap: true,
-                  itemExtent: 70.0,
+                  //itemExtent: 70.0,
                   itemCount: widget.songs.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
+                    return Padding(
+                      padding: const EdgeInsets.only(left: 2.0, right: 5),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: boxSize - 60,
+                            child: Container(
+                              margin: const EdgeInsets.only(right: 20),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  OfflineAudioQuery.offlineArtworkWidget(
+                                    id: widget.songs[index].id,
+                                    type: ArtworkType.AUDIO,
+                                    height: 98,
+                                    width: 98,
+                                    tempPath: widget.tempPath,
+                                    fileName:
+                                        widget.songs[index].displayNameWOExt,
+                                  ),
+                                  const SizedBox(width: 10),
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0,
+                                            right: 20,
+                                            top: 8,
+                                            bottom: 8),
+                                        child: Text(
+                                          widget.songs[index].title.trim() != ''
+                                              ? widget.songs[index].title
+                                              : widget.songs[index]
+                                                  .displayNameWOExt,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          style:
+                                              GoogleFonts.roboto(fontSize: 17),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, right: 20),
+                                        child: Text(
+                                          widget.songs[index].album?.replaceAll(
+                                                  '<unknown>', 'Unknown') ??
+                                              'Unknown',
+                                          overflow: TextOverflow.ellipsis,
+                                          maxLines: 2,
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 8.0, top: 5,right: 20),
+                                        child: Text(
+                                          widget.songs[index].artist
+                                                  ?.replaceAll(
+                                                      '<unknown>', 'Unknown') ??
+                                              'Unknown',
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 18,
+                                          ),
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                  const Spacer(),
+                                  Padding(
+                                    padding: const EdgeInsets.only(right: 3.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        PopupMenuButton(
+                                          splashRadius: 24,
+                                          icon: const Icon(
+                                            Icons.more_horiz_rounded,
+                                            color: Colors.grey,
+                                          ),
+                                          shape: const RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(15.0)),
+                                          ),
+                                          onSelected: (int? value) async {
+                                            if (value == 0) {
+                                              AddToOffPlaylist()
+                                                  .addToOffPlaylist(
+                                                context,
+                                                widget.songs[index].id,
+                                              );
+                                            }
+                                            if (value == 1) {
+                                              await OfflineAudioQuery()
+                                                  .removeFromPlaylist(
+                                                playlistId: widget.playlistId!,
+                                                audioId: widget.songs[index].id,
+                                              );
+                                              ShowSnackBar().showSnackBar(
+                                                context,
+                                                '${'Removed from'} ${widget.playlistName}',
+                                              );
+                                            }
+                                          },
+                                          itemBuilder: (context) => [
+                                            PopupMenuItem(
+                                              value: 0,
+                                              child: Row(
+                                                children: const [
+                                                  Icon(Icons
+                                                      .playlist_add_rounded),
+                                                  SizedBox(width: 10.0),
+                                                  Text(
+                                                    'Add to Playlist',
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            if (widget.playlistId != null)
+                                              PopupMenuItem(
+                                                value: 1,
+                                                child: Row(
+                                                  children: const [
+                                                    Icon(Iconsax.trash),
+                                                    SizedBox(width: 10.0),
+                                                    Text('Remove'),
+                                                  ],
+                                                ),
+                                              ),
+                                          ],
+                                        ),
+                                        IconButton(
+                                          onPressed: () {
+                                            Navigator.of(context).push(
+                                              PageRouteBuilder(
+                                                opaque: false,
+                                                pageBuilder: (_, __, ___) =>
+                                                    PlayScreen(
+                                                  songsList: widget.songs,
+                                                  index: index,
+                                                  offline: true,
+                                                  fromDownloads: false,
+                                                  fromMiniplayer: false,
+                                                  recommend: false,
+                                                ),
+                                              ),
+                                            );
+                                          },
+                                          icon: const Icon(Iconsax.play),
+                                        )
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ); /* ListTile(
                       leading: OfflineAudioQuery.offlineArtworkWidget(
                         id: widget.songs[index].id,
                         type: ArtworkType.AUDIO,
@@ -558,7 +727,7 @@ class _SongsTabState extends State<SongsTab>
                           ),
                         );
                       },
-                    );
+                    ); */
                   },
                 ),
               ),
@@ -590,41 +759,137 @@ class _AlbumsTabState extends State<AlbumsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20, bottom: 10),
-      shrinkWrap: true,
-      itemExtent: 70.0,
-      itemCount: widget.albumsList.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: OfflineAudioQuery.offlineArtworkWidget(
-            id: widget.albums[widget.albumsList[index]]![0].id,
-            type: ArtworkType.AUDIO,
-            tempPath: widget.tempPath,
-            fileName:
-                widget.albums[widget.albumsList[index]]![0].displayNameWOExt,
-          ),
-          title: Text(
-            widget.albumsList[index],
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            '${widget.albums[widget.albumsList[index]]!.length} Songs',
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DownloadedSongs(
-                  title: widget.albumsList[index],
-                  cachedSongs: widget.albums[widget.albumsList[index]],
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    // return ListView.builder(
+    //   physics: const BouncingScrollPhysics(),
+    //   padding: const EdgeInsets.only(top: 20, bottom: 10),
+    //   shrinkWrap: true,
+    //   itemExtent: 70.0,
+    //   itemCount: widget.albumsList.length,
+    //   itemBuilder: (context, index) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: StaggeredGridView.countBuilder(
+        shrinkWrap: true,
+        crossAxisCount: 2,
+        mainAxisSpacing: 0,
+        itemCount: widget.albumsList.length,
+        physics: const BouncingScrollPhysics(),
+        staggeredTileBuilder: (int index) {
+          return const StaggeredTile.count(1, 1.2);
+        },
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DownloadedSongs(
+                    title: widget.albumsList[index],
+                    cachedSongs: widget.albums[widget.albumsList[index]],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+            child: Stack(
+              children: [
+                Card(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          child: OfflineAudioQuery.offlineArtworkWidget(
+                        id: widget.albums[widget.albumsList[index]]![0].id,
+                        type: ArtworkType.ALBUM,
+                        height: boxSize - 35,
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        tempPath: widget.tempPath,
+                        fileName: widget.albums[widget.albumsList[index]]![0]
+                            .displayNameWOExt,
+                      ) /*  QueryArtworkWidget(
+                          id: widget.albums[widget.albumsList[index]]![0].id,
+                          type: ArtworkType.ALBUM,
+                          artworkHeight: boxSize - 35,
+                          artworkWidth: MediaQuery.of(context).size.width / 2.5,
+                          artworkBorder: BorderRadius.circular(7.0),
+                          nullArtworkWidget: ClipRRect(
+                            borderRadius: BorderRadius.circular(7.0),
+                            child: Image(
+                              fit: BoxFit.cover,
+                              height: boxSize - 35,
+                              width: MediaQuery.of(context).size.width / 2.5,
+                              image: const AssetImage('assets/cover.jpg'),
+                            ),
+                          ),
+                        ), */
+                          ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 6.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      widget.albumsList[index],
+                                      textAlign: TextAlign.center,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                  /* Subtitle */
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 5.0, right: 5),
+                                    child: Text(
+                                      widget.albums[widget.albumsList[index]]!
+                                                  .length >
+                                              1
+                                          ? '${widget.albums[widget.albumsList[index]]!.length} Songs'
+                                          : '${widget.albums[widget.albumsList[index]]!.length} Song',
+                                      textAlign: TextAlign.start,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.roboto(
+                                        fontSize: 14,
+                                        color: Colors.grey,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

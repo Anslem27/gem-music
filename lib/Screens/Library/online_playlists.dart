@@ -107,14 +107,11 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                     title: Text('Merge Playlists',
                         style: GoogleFonts.roboto(
                             fontSize: 18, fontWeight: FontWeight.w400)),
-                    leading: SizedBox.square(
+                    leading: const SizedBox.square(
                       dimension: 50,
                       child: Center(
                         child: Icon(
                           Icons.merge_type_rounded,
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary,
                         ),
                       ),
                     ),

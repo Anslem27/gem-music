@@ -32,6 +32,7 @@ class _PlaylistViewState extends State<PlaylistView>
 
   Future<void> fillData() async {
     playlistDetails = await offlineAudioQuery.getPlaylists();
+    setState(() {});
   }
 
   @override
