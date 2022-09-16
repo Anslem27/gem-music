@@ -16,7 +16,7 @@ class SpotifyApi {
   /* secret= d6331f83644e4d93b27f63bd97da3f3c */
   final String clientSecret = 'd6331f83644e4d93b27f63bd97da3f3c';
   final String redirectUrl = 'app://gem/auth';
-  final String spotifyApiBaseUrl = 'https://accounts.spotify.com/api';
+  final String spotifyApiBaseUrl = 'https://accounts.spotify.com/api';  
   final String spotifyPlaylistBaseUrl =
       'https://api.spotify.com/v1/me/playlists';
   final String spotifyTrackBaseUrl = 'https://api.spotify.com/v1/playlists';

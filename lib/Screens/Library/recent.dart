@@ -50,19 +50,6 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                     ? Colors.transparent
                     : Theme.of(context).colorScheme.secondary,
                 elevation: 0,
-                // actions: [
-                //   IconButton(
-                //     splashRadius: 24,
-                //     onPressed: () {
-                //       Hive.box('cache').put('recentSongs', []);
-                //       setState(() {
-                //         _songs = [];
-                //       });
-                //     },
-                //     tooltip: 'Clear queue',
-                //     icon: const Icon(Iconsax.trash),
-                //   ),
-                // ],
               ),
               floatingActionButton: Container(
                 decoration: BoxDecoration(

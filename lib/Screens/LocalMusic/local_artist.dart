@@ -3,11 +3,14 @@ import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 
 class LocalArtist extends StatefulWidget {
   final String title;
+  final List<SongModel>? cachedSongs;
 
-  const LocalArtist({Key? key, required this.title}) : super(key: key);
+  const LocalArtist({Key? key, required this.title, required this.cachedSongs})
+      : super(key: key);
 
   @override
   State<LocalArtist> createState() => _LocalArtistState();

@@ -1,8 +1,7 @@
-// ignore_for_file: use_decorated_box, require_trailing_commas, avoid_redundant_argument_values, always_use_package_imports
-
 import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/collage.dart';
@@ -18,15 +17,17 @@ import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/Screens/Search/artists.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../../Helpers/local_music_functions.dart';
+import '../../Services/spotify_playlist_downloader.dart';
+import '../Library/import.dart';
+import '../LocalMusic/local_music.dart';
 
 bool fetched = false;
-// List preferredLanguage = Hive.box('settings')
-//     .get('preferredLanguage', defaultValue: ['English']) as List;
 List likedRadio =
     Hive.box('settings').get('likedRadio', defaultValue: []) as List;
 Map data = Hive.box('cache').get('homepage', defaultValue: {}) as Map;
@@ -41,18 +42,13 @@ class HomeViewPage extends StatefulWidget {
 
 class _HomeViewPageState extends State<HomeViewPage>
     with AutomaticKeepAliveClientMixin<HomeViewPage> {
-  //List<SongModel> _songs = [];
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
-  late final List<SongModel>? cachedSongs;
+  List<PlaylistModel> offlinePlaylists = [];
 
-  // Future<List<SongModel>> getSongs() async {
-  //   _songs =
-  //       (await offlineAudioQuery.getSongs(orderType: OrderType.ASC_OR_SMALLER))
-  //           .toList();
-
-  //   setState(() {});
-  //   return _songs;
-  // }
+  final Box fetchBox = Hive.box('settings');
+  final List getPlaylists =
+      Hive.box('settings').get('playlistNames')?.toList() as List? ??
+          ['Favorite Songs'];
 
   List recentList =
       Hive.box('cache').get('recentSongs', defaultValue: []) as List;
@@ -67,6 +63,11 @@ class _HomeViewPageState extends State<HomeViewPage>
       Hive.box('settings').get('playlistDetails', defaultValue: {}) as Map;
   int recentIndex = 0;
   int playlistIndex = 1;
+
+  Future<void> fillData() async {
+    offlinePlaylists = await offlineAudioQuery.getPlaylists();
+    setState(() {});
+  }
 
   Future<void> getHomePageData() async {
     Map recievedData = await SaavnAPI().fetchHomePageData();
@@ -110,6 +111,12 @@ class _HomeViewPageState extends State<HomeViewPage>
             .toList();
         return artists?.join(', ')?.toString().unescape() ?? '';
     }
+  }
+
+  @override
+  void initState() {
+    fillData();
+    super.initState();
   }
 
   @override
@@ -180,7 +187,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                   pageBuilder: (_, __, ___) => PlayScreen(
                                     songsList: recentList,
                                     index: idx,
-                                    offline: false,
+                                    offline: true,
                                     fromDownloads: false,
                                     fromMiniplayer: false,
                                     recommend: true,
@@ -197,20 +204,230 @@ class _HomeViewPageState extends State<HomeViewPage>
                         !(Hive.box('settings')
                             .get('showPlaylist', defaultValue: true) as bool))
                     ? const SizedBox()
-                    /* User Playlists */
+                    /* Local Playlists */
                     : Column(
                         children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                youtubeImportCard(context),
+                                spotifyImportCard(context)
+                              ],
+                            ),
+                          ),
+                          /* Local playlists */
+                          offlinePlaylists.isNotEmpty
+                              ? Column(
+                                  children: [
+                                    Row(
+                                      children: const [
+                                        Padding(
+                                          padding:
+                                              EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                          child: Text(
+                                            'Local Playlists',
+                                            style: TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    SizedBox(
+                                      height: boxSize + 25,
+                                      child: ListView.builder(
+                                        itemCount: offlinePlaylists.length,
+                                        physics: const BouncingScrollPhysics(),
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return Padding(
+                                            padding: EdgeInsets.only(
+                                                left: index == 2 ? 3 : 5,
+                                                right: 5,
+                                                top: 3,
+                                                bottom: 3),
+                                            child: InkWell(
+                                              onTap: () async {
+                                                final songs =
+                                                    await offlineAudioQuery
+                                                        .getPlaylistSongs(
+                                                  offlinePlaylists[index].id,
+                                                );
+                                                Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        DownloadedSongs(
+                                                      title: offlinePlaylists[
+                                                              index]
+                                                          .playlist,
+                                                      cachedSongs: songs,
+                                                      playlistId:
+                                                          offlinePlaylists[
+                                                                  index]
+                                                              .id,
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                              child: Stack(
+                                                children: [
+                                                  Card(
+                                                    color: Colors.transparent,
+                                                    elevation: 0,
+                                                    margin: EdgeInsets.zero,
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              10.0),
+                                                    ),
+                                                    clipBehavior:
+                                                        Clip.antiAlias,
+                                                    child: Column(
+                                                      children: [
+                                                        QueryArtworkWidget(
+                                                          id: offlinePlaylists[
+                                                                  index]
+                                                              .id,
+                                                          type: ArtworkType
+                                                              .PLAYLIST,
+                                                          artworkHeight:
+                                                              boxSize - 45,
+                                                          artworkWidth:
+                                                              MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2.5,
+                                                          artworkBorder:
+                                                              BorderRadius
+                                                                  .circular(
+                                                                      7.0),
+                                                          nullArtworkWidget:
+                                                              ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        7.0),
+                                                            child: Image(
+                                                              fit: BoxFit.cover,
+                                                              height:
+                                                                  boxSize - 45,
+                                                              width: MediaQuery.of(
+                                                                          context)
+                                                                      .size
+                                                                      .width /
+                                                                  2.5,
+                                                              image: const AssetImage(
+                                                                  'assets/file_playlist.png'),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Padding(
+                                                          padding:
+                                                              const EdgeInsets
+                                                                      .only(
+                                                                  left: 6.0),
+                                                          child: Row(
+                                                            mainAxisAlignment:
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
+                                                            children: [
+                                                              Column(
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .start,
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                mainAxisSize:
+                                                                    MainAxisSize
+                                                                        .min,
+                                                                children: [
+                                                                  Padding(
+                                                                    padding:
+                                                                        const EdgeInsets.all(
+                                                                            5.0),
+                                                                    child: Text(
+                                                                      offlinePlaylists[
+                                                                              index]
+                                                                          .playlist,
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      softWrap:
+                                                                          false,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts
+                                                                          .roboto(
+                                                                        fontSize:
+                                                                            16,
+                                                                        fontWeight:
+                                                                            FontWeight.w400,
+                                                                      ),
+                                                                    ),
+                                                                  ),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            5.0,
+                                                                        right:
+                                                                            5),
+                                                                    child: Text(
+                                                                      offlinePlaylists[index].numOfSongs >
+                                                                              0
+                                                                          ? "${offlinePlaylists[index].numOfSongs} songs"
+                                                                          : "Empty playlist",
+                                                                      textAlign:
+                                                                          TextAlign
+                                                                              .center,
+                                                                      softWrap:
+                                                                          false,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      style: GoogleFonts
+                                                                          .roboto(
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontSize:
+                                                                            14,
+                                                                      ),
+                                                                    ),
+                                                                  )
+                                                                ],
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    )
+                                  ],
+                                )
+                              : const SizedBox(height: 0, width: 0),
                           Row(
-                            children: [
+                            children: const [
                               Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                padding: EdgeInsets.fromLTRB(15, 10, 0, 5),
                                 child: Text(
                                   "Online Playlists",
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -292,9 +509,8 @@ class _HomeViewPageState extends State<HomeViewPage>
                                           elevation: 0,
                                           margin: EdgeInsets.zero,
                                           shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                              10.0,
-                                            ),
+                                            borderRadius:
+                                                BorderRadius.circular(10.0),
                                           ),
                                           clipBehavior: Clip.antiAlias,
                                           child: Column(
@@ -308,8 +524,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                               Padding(
                                                 padding:
                                                     const EdgeInsets.symmetric(
-                                                  horizontal: 10.0,
-                                                ),
+                                                        horizontal: 10.0),
                                                 child: Column(
                                                   mainAxisSize:
                                                       MainAxisSize.min,
@@ -322,9 +537,9 @@ class _HomeViewPageState extends State<HomeViewPage>
                                                       overflow:
                                                           TextOverflow.ellipsis,
                                                       style: const TextStyle(
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
+                                                          fontWeight:
+                                                              FontWeight.w500,
+                                                          fontSize: 15.5),
                                                     ),
                                                     if (subtitle != null)
                                                       Text(
@@ -335,12 +550,12 @@ class _HomeViewPageState extends State<HomeViewPage>
                                                         overflow: TextOverflow
                                                             .ellipsis,
                                                         style: TextStyle(
-                                                            fontSize: 11,
-                                                            color: Theme.of(
-                                                                    context)
-                                                                .textTheme
-                                                                .caption!
-                                                                .color),
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .caption!
+                                                                  .color,
+                                                        ),
                                                       )
                                                   ],
                                                 ),
@@ -376,25 +591,21 @@ class _HomeViewPageState extends State<HomeViewPage>
                       );
               }
 
+              /* Liked Artitsts */
               if (lists[idx] == 'likedArtists') {
                 final List likedArtistsList = likedArtists.values.toList();
                 return likedArtists.isEmpty
                     ? const SizedBox()
-
-                    /* Liked Artitsts */
                     : Column(
                         children: [
                           Row(
-                            children: [
+                            children: const [
                               Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                padding: EdgeInsets.fromLTRB(15, 10, 0, 5),
                                 child: Text(
                                   'Liked Artists',
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 18,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -448,6 +659,104 @@ class _HomeViewPageState extends State<HomeViewPage>
               //       );
             },
           );
+  }
+
+  youtubeImportCard(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          importYt(
+            context,
+            getPlaylists,
+            fetchBox,
+          );
+        },
+        child: Card(
+          // color: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: Icon(
+                    MdiIcons.youtube,
+                    size: 35,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 2.0, right: 5),
+                  child: Text(
+                    "Import Youtube\nPlaylist",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  spotifyImportCard(BuildContext context) {
+    return Expanded(
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (_) => const SpotifyPlaylistGetter(),
+            ),
+          );
+        },
+        child: Card(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                SizedBox(
+                  height: 50,
+                  width: 50,
+                  child: Icon(
+                    Iconsax.music,
+                    size: 35,
+                    color: Theme.of(context).colorScheme.secondary,
+                  ),
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 2.0, right: 5),
+                  child: Text(
+                    "Import Spotify\nPlaylist",
+                    textAlign: TextAlign.start,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 16,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   SizedBox radioSection(double boxSize, int idx) {

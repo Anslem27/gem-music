@@ -68,24 +68,7 @@ class _SettingPageState extends State<SettingPage> {
   int colorHue = Hive.box('settings').get('colorHue', defaultValue: 400) as int;
   int downFilename =
       Hive.box('settings').get('downFilename', defaultValue: 0) as int;
-  // List<String> languages = [
-  //   'Hindi',
-  //   'English',
-  //   'Punjabi',
-  //   'Tamil',
-  //   'Telugu',
-  //   'Marathi',
-  //   'Gujarati',
-  //   'Bengali',
-  //   'Kannada',
-  //   'Bhojpuri',
-  //   'Malayalam',
-  //   'Urdu',
-  //   'Haryanvi',
-  //   'Rajasthani',
-  //   'Odia',
-  //   'Assamese'
-  // ];
+
   List miniButtonsOrder = Hive.box('settings').get(
     'miniButtonsOrder',
     defaultValue: ['Like', 'Previous', 'Play/Pause', 'Next', 'Download'],
@@ -157,29 +140,6 @@ class _SettingPageState extends State<SettingPage> {
                 color: Colors.white,
               ),
             ),
-            // flexibleSpace: FlexibleSpaceBar(
-            //   centerTitle: true,
-            //   background: ShaderMask(
-            //     shaderCallback: (rect) {
-            //       return const LinearGradient(
-            //         begin: Alignment.topCenter,
-            //         end: Alignment.bottomCenter,
-            //         colors: [Colors.black, Colors.transparent],
-            //       ).createShader(Rect.fromLTRB(0, 0, rect.width, rect.height));
-            //     },
-            //     blendMode: BlendMode.dstIn,
-            //     child: const Center(
-            //       child: Text(
-            //         'Settings',
-            //         textAlign: TextAlign.center,
-            //         style: TextStyle(
-            //           fontSize: 80,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ),
           SliverList(
             delegate: SliverChildListDelegate(
@@ -193,45 +153,45 @@ class _SettingPageState extends State<SettingPage> {
                         const Padding(
                           padding: EdgeInsets.fromLTRB(15, 15, 15, 0),
                           child: Text(
-                            'Theme',
+                            'Theming',
                             style: TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
-                        BoxSwitchTile(
-                          title: const Text(
-                            'Dark Mode',
-                          ),
-                          keyName: 'darkMode',
-                          defaultValue: true,
-                          onChanged: (bool val, Box box) {
-                            box.put(
-                              'useSystemTheme',
-                              false,
-                            );
-                            currentTheme.switchTheme(
-                              isDark: val,
-                              useSystemTheme: false,
-                            );
-                            switchToCustomTheme();
-                          },
-                        ),
+                        // BoxSwitchTile(
+                        //   title: const Text(
+                        //     'Dark Mode',
+                        //   ),
+                        //   keyName: 'darkMode',
+                        //   defaultValue: true,
+                        //   onChanged: (bool val, Box box) {
+                        //     box.put(
+                        //       'useSystemTheme',
+                        //       false,
+                        //     );
+                        //     currentTheme.switchTheme(
+                        //       isDark: val,
+                        //       useSystemTheme: false,
+                        //     );
+                        //     switchToCustomTheme();
+                        //   },
+                        // ),
                         amoledSettings(),
-                        BoxSwitchTile(
-                          title: const Text(
-                            'Use System Theme',
-                          ),
-                          subtitle:
-                              const Text("We prefer using Gem with dark mode"),
-                          keyName: 'useSystemTheme',
-                          defaultValue: true,
-                          onChanged: (bool val, Box box) {
-                            currentTheme.switchTheme(useSystemTheme: val);
-                            switchToCustomTheme();
-                          },
-                        ),
+                        // BoxSwitchTile(
+                        //   title: const Text(
+                        //     'Use System Theme',
+                        //   ),
+                        //   subtitle:
+                        //       const Text("We prefer using Gem with dark mode"),
+                        //   keyName: 'useSystemTheme',
+                        //   defaultValue: true,
+                        //   onChanged: (bool val, Box box) {
+                        //     currentTheme.switchTheme(useSystemTheme: val);
+                        //     switchToCustomTheme();
+                        //   },
+                        // ),
                         ListTile(
                           title: const Text('Accent Colors'),
                           subtitle: Text(themeColor),
@@ -751,6 +711,8 @@ class _SettingPageState extends State<SettingPage> {
                         // ),
                         ListTile(
                           title: const Text('Include/Exclude folders'),
+                          subtitle: const Text(
+                              "Pick folders where you want us to pick your music"),
                           dense: true,
                           onTap: () {
                             final GlobalKey<AnimatedListState> listKey =
@@ -761,9 +723,7 @@ class _SettingPageState extends State<SettingPage> {
                               context: context,
                               builder: (BuildContext context) {
                                 return BottomGradientContainer(
-                                  borderRadius: BorderRadius.circular(
-                                    20.0,
-                                  ),
+                                  borderRadius: BorderRadius.circular(20.0),
                                   child: AnimatedList(
                                     physics: const BouncingScrollPhysics(),
                                     shrinkWrap: true,
@@ -1856,12 +1816,7 @@ class _SettingPageState extends State<SettingPage> {
                             child: ReorderableListView(
                               physics: const BouncingScrollPhysics(),
                               shrinkWrap: true,
-                              padding: const EdgeInsets.fromLTRB(
-                                0,
-                                10,
-                                0,
-                                10,
-                              ),
+                              padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
                               onReorder: (int oldIndex, int newIndex) {
                                 if (oldIndex < newIndex) {
                                   newIndex--;

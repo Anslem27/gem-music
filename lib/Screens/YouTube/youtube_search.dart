@@ -315,29 +315,21 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                                           .start,
                                                                   children: [
                                                                     const SizedBox(
-                                                                      height:
-                                                                          5.0,
-                                                                    ),
+                                                                        height:
+                                                                            5.0),
                                                                     Text(
                                                                       '${searchedList[index].author} • ${searchedList[index].engagement.viewCount} Views',
                                                                       overflow:
                                                                           TextOverflow
                                                                               .ellipsis,
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Theme
-                                                                                .of(
-                                                                          context,
-                                                                        )
-                                                                            .textTheme
-                                                                            .caption!
-                                                                            .color,
-                                                                      ),
+                                                                      style: TextStyle(
+                                                                          color: Theme.of(
+                                                                        context,
+                                                                      ).textTheme.caption!.color),
                                                                     ),
                                                                     const SizedBox(
-                                                                      height:
-                                                                          10.0,
-                                                                    ),
+                                                                        height:
+                                                                            10.0),
                                                                     Text(
                                                                       searchedList[
                                                                               index]
@@ -453,9 +445,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                   ),
                                                   strokeWidth: 5,
                                                 ),
-                                                const Text(
-                                                  'Converting media',
-                                                ),
+                                                const Text('Converting media'),
                                               ],
                                             ),
                                           ),

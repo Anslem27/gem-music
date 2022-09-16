@@ -58,24 +58,26 @@ class _BottomGradientContainerState extends State<BottomGradientContainer> {
   MyTheme currentTheme = GetIt.I<MyTheme>();
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: widget.margin ?? const EdgeInsets.fromLTRB(25, 0, 25, 25),
-      padding: widget.padding ?? const EdgeInsets.fromLTRB(10, 15, 10, 15),
-      decoration: BoxDecoration(
-        borderRadius: widget.borderRadius ??
-            const BorderRadius.all(Radius.circular(15.0)),
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: Theme.of(context).brightness == Brightness.dark
-              ? currentTheme.getBottomGradient()
-              : [
-                  Colors.white,
-                  Theme.of(context).canvasColor,
-                ],
+    return SafeArea(
+      child: Container(
+        margin: widget.margin ?? const EdgeInsets.fromLTRB(25, 0, 25, 25),
+        padding: widget.padding ?? const EdgeInsets.fromLTRB(10, 15, 10, 15),
+        decoration: BoxDecoration(
+          borderRadius: widget.borderRadius ??
+              const BorderRadius.all(Radius.circular(15.0)),
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: Theme.of(context).brightness == Brightness.dark
+                ? currentTheme.getBottomGradient()
+                : [
+                    Colors.white,
+                    Theme.of(context).canvasColor,
+                  ],
+          ),
         ),
+        child: widget.child,
       ),
-      child: widget.child,
     );
   }
 }

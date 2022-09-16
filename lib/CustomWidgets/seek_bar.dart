@@ -64,7 +64,6 @@ class _SeekBarState extends State<SeekBar> {
                 Theme.of(context).iconTheme.color!.withOpacity(0.5),
             inactiveTrackColor:
                 Theme.of(context).iconTheme.color!.withOpacity(0.3),
-            // trackShape: RoundedRectSliderTrackShape(),
             trackShape: const RectangularSliderTrackShape(),
           ),
           child: ExcludeSemantics(
@@ -102,38 +101,38 @@ class _SeekBarState extends State<SeekBar> {
             },
           ),
         ),
-        Positioned(
-          right: 25.0,
-          top: widget.height / 30,
-          child: StreamBuilder<double>(
-            stream: widget.audioHandler.speed,
-            builder: (context, snapshot) {
-              final String speedValue =
-                  '${snapshot.data?.toStringAsFixed(1) ?? 1.0}x';
-              return GestureDetector(
-                child: Text(
-                  speedValue,
-                  style: TextStyle(
-                    fontWeight: FontWeight.w500,
-                    color: speedValue == '1.0x'
-                        ? Theme.of(context).disabledColor
-                        : null,
-                  ),
-                ),
-                onTap: () {
-                  showSliderDialog(
-                    context: context,
-                    title: 'Adjust speed',
-                    divisions: 25,
-                    min: 0.5,
-                    max: 3.0,
-                    audioHandler: widget.audioHandler,
-                  );
-                },
-              );
-            },
-          ),
-        ),
+        // Positioned(
+        //   right: 25.0,
+        //   top: widget.height / 30,
+        //   child: StreamBuilder<double>(
+        //     stream: widget.audioHandler.speed,
+        //     builder: (context, snapshot) {
+        //       final String speedValue =
+        //           '${snapshot.data?.toStringAsFixed(1) ?? 1.0}x';
+        //       return GestureDetector(
+        //         child: Text(
+        //           speedValue,
+        //           style: TextStyle(
+        //             fontWeight: FontWeight.w500,
+        //             color: speedValue == '1.0x'
+        //                 ? Theme.of(context).disabledColor
+        //                 : null,
+        //           ),
+        //         ),
+        //         onTap: () {
+        //           showSliderDialog(
+        //             context: context,
+        //             title: 'Adjust speed',
+        //             divisions: 25,
+        //             min: 0.5,
+        //             max: 3.0,
+        //             audioHandler: widget.audioHandler,
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
         Positioned(
           left: 25.0,
           bottom: widget.height / 30,

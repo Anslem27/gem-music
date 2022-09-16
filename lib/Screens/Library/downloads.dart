@@ -853,15 +853,12 @@ Future<Map> editTags(Map song, BuildContext context) async {
             child: Text(
               'Ok',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary == Colors.white
-                    ? Colors.black
-                    : null,
-              ),
+                  color: Theme.of(context).colorScheme.secondary == Colors.white
+                      ? Colors.black
+                      : null),
             ),
           ),
-          const SizedBox(
-            width: 5,
-          ),
+          const SizedBox(width: 5),
         ],
       );
     },

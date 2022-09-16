@@ -30,9 +30,11 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
         MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
             ? MediaQuery.of(context).size.width / 2
             : MediaQuery.of(context).size.height / 2.5;
+
     if (playlistDetails.isEmpty) {
       playlistDetails = widget.playlistDetails;
     }
+
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: Column(
@@ -131,8 +133,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                         clipBehavior: Clip.antiAlias,
                         child: Column(
                           children: [
-                            SizedBox(
-                              child: QueryArtworkWidget(
+                            QueryArtworkWidget(
                                 id: playlistDetails[index].id,
                                 type: ArtworkType.PLAYLIST,
                                 artworkHeight: boxSize - 35,
@@ -148,9 +149,7 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                                         MediaQuery.of(context).size.width / 2.5,
                                     image: const AssetImage('assets/cover.jpg'),
                                   ),
-                                ),
-                              ),
-                            ),
+                                )),
                             Padding(
                               padding: const EdgeInsets.only(left: 6.0),
                               child: Row(

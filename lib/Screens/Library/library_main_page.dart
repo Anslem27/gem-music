@@ -33,12 +33,17 @@ class _LibraryPageState extends State<LibraryPage> {
           physics: const BouncingScrollPhysics(),
           children: [
             Padding(
-              padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
+              padding: const EdgeInsets.only(
+                  left: 8.0, right: 9, top: 20, bottom: 15),
               child: AppBar(
-                leading: Icon(
-                  Iconsax.music,
-                  color: Theme.of(context).iconTheme.color,
-                  size: 40,
+                leading: SizedBox(
+                  height: 25,
+                  width: 25,
+                  child: Image.asset(
+                    "assets/icon-white-trans.png",
+                    height: 20,
+                    width: 20,
+                  ),
                 ),
                 title: Row(
                   children: [
@@ -58,6 +63,7 @@ class _LibraryPageState extends State<LibraryPage> {
                 automaticallyImplyLeading: false,
               ),
             ),
+            const SizedBox(height: 25),
             LibraryTile(
               title: 'Now Playing',
               icon: Iconsax.music,
@@ -109,7 +115,6 @@ class _LibraryPageState extends State<LibraryPage> {
                 Navigator.pushNamed(context, '/downloads');
               },
             ),
-            //IconButton(onPressed: (){Navigator.push(context, CupertinoPageRoute(builder: (_)=>PrefScreen()));}, icon: Icon(Icons.add)),
             LibraryTile(
               title: 'Playlists',
               icon: Iconsax.music_dashboard,
@@ -144,15 +149,9 @@ class LibraryTile extends StatelessWidget {
         title: Text(
           title,
           style: GoogleFonts.roboto(
-            color: Theme.of(context).iconTheme.color,
-          ),
+              color: Theme.of(context).iconTheme.color, fontSize: 18),
         ),
-        leading: Icon(
-          icon,
-          color: Theme.of(
-            context,
-          ).colorScheme.secondary,
-        ),
+        leading: Icon(icon, size: 25),
         onTap: onTap,
       ),
     );

@@ -2,6 +2,7 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/copy_clipboard.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
@@ -46,9 +47,6 @@ class _SearchPageState extends State<SearchPage> {
   bool alertShown = false;
   bool albumFetched = false;
   bool? fromHome;
-  // List search = Hive.box('settings').get('search', defaultValue: [],) as List;
-  // bool showHistory =
-  // Hive.box('settings').get('showHistory', defaultValue: true) as bool;
   bool liveSearch =
       Hive.box('settings').get('liveSearch', defaultValue: true) as bool;
 
@@ -106,15 +104,22 @@ class _SearchPageState extends State<SearchPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset("assets/lamp_error.png", height: 100, width: 100),
+          SvgPicture.asset("assets/svg/music.svg", height: 140, width: 100),
+          const SizedBox(height: 20),
           Text(
-            "Sorry no results\nTry youtube search",
+            "Ooops...",
+            textAlign: TextAlign.center,
+            style: GoogleFonts.roboto(
+                fontSize: 20,
+                color: Theme.of(
+                  context,
+                ).colorScheme.secondary),
+          ),
+          Text(
+            "Try searching on Youtube",
             textAlign: TextAlign.center,
             style: GoogleFonts.roboto(
               fontSize: 20,
-              color: Theme.of(
-                context,
-              ).colorScheme.secondary,
             ),
           ),
         ],
@@ -396,8 +401,7 @@ class _SearchPageState extends State<SearchPage> {
                                                     .toString();
                                                 count > 1
                                                     ? countText = '$count songs'
-                                                    : countText =
-                                                        '$count song';
+                                                    : countText = '$count song';
                                                 return ListTile(
                                                   contentPadding:
                                                       const EdgeInsets.only(

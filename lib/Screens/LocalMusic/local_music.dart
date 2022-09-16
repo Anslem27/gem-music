@@ -1,4 +1,7 @@
 // ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
+import 'dart:convert';
+
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -16,9 +19,12 @@ import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import '../../Helpers/mediaitem_converter.dart';
+import '../Library/downloads.dart';
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -47,7 +53,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
   final List<String> _sortedAlbumKeysList = [];
   final List<String> _sortedArtistKeysList = [];
   final List<String> _sortedGenreKeysList = [];
-  // final List<String> _videos = [];
 
   bool added = false;
   int sortValue = Hive.box('settings').get('sortValue', defaultValue: 1) as int;
@@ -217,16 +222,10 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                   bottom: TabBar(
                     isScrollable: widget.showPlaylists,
                     controller: _tcontroller,
-                    indicator: RectangularIndicator(
-                      topLeftRadius: 15,
-                      topRightRadius: 15,
-                      bottomLeftRadius: 15,
-                      bottomRightRadius: 15,
-                      strokeWidth: 1,
-                      paintingStyle: PaintingStyle.stroke,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary,
+                    indicator: MaterialIndicator(
+                      horizontalPadding: 20,
+                      color: Theme.of(context).focusColor,
+                      height: 6,
                     ),
                     tabs: [
                       const Tab(text: "Songs"),
@@ -335,9 +334,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -401,6 +398,23 @@ class _DownloadedSongsState extends State<DownloadedSongs>
   }
 }
 
+Future<void> addRecentlyPlayed(MediaItem mediaitem) async {
+  List recentList = await Hive.box('cache')
+      .get('recentSongs', defaultValue: [])?.toList() as List;
+
+  final Map item = MediaItemConverter.mediaItemToMap(mediaitem);
+  recentList.insert(0, item);
+
+  final jsonList = recentList.map((item) => jsonEncode(item)).toList();
+  final uniqueJsonList = jsonList.toSet().toList();
+  recentList = uniqueJsonList.map((item) => jsonDecode(item)).toList();
+
+  if (recentList.length > 30) {
+    recentList = recentList.sublist(0, 30);
+  }
+  Hive.box('cache').put('recentSongs', recentList);
+}
+
 class SongsTab extends StatefulWidget {
   final List<SongModel> songs;
   final int? playlistId;
@@ -459,275 +473,182 @@ class _SongsTabState extends State<SongsTab>
               Expanded(
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 10),
                   shrinkWrap: true,
-                  //itemExtent: 70.0,
                   itemCount: widget.songs.length,
                   itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 2.0, right: 5),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(
-                            height: boxSize - 60,
-                            child: Container(
-                              margin: const EdgeInsets.only(right: 20),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  OfflineAudioQuery.offlineArtworkWidget(
-                                    id: widget.songs[index].id,
-                                    type: ArtworkType.AUDIO,
-                                    height: 98,
-                                    width: 98,
-                                    tempPath: widget.tempPath,
-                                    fileName:
-                                        widget.songs[index].displayNameWOExt,
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            //Test putting local songa
+                            //addRecentlyPlayed(widget.songs);
+                            setState(() {});
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder: (_, __, ___) => PlayScreen(
+                                  songsList: widget.songs,
+                                  index: index,
+                                  offline: true,
+                                  fromDownloads: false,
+                                  fromMiniplayer: false,
+                                  recommend: false,
+                                ),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            height: boxSize - 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                OfflineAudioQuery.offlineArtworkWidget(
+                                  id: widget.songs[index].id,
+                                  type: ArtworkType.AUDIO,
+                                  height: 70,
+                                  width: 70,
+                                  tempPath: widget.tempPath,
+                                  fileName:
+                                      widget.songs[index].displayNameWOExt,
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(
+                                      widget.songs[index].title.trim() != ''
+                                          ? widget.songs[index].title
+                                          : widget
+                                              .songs[index].displayNameWOExt,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.roboto(fontSize: 17),
+                                    ),
+                                    subtitle: Text(
+                                      widget.songs[index].album?.replaceAll(
+                                              '<unknown>', 'Unknown') ??
+                                          'Unknown',
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,
+                                      ),
+                                    ),
                                   ),
-                                  const SizedBox(width: 10),
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 3.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8.0,
-                                            right: 20,
-                                            top: 8,
-                                            bottom: 8),
-                                        child: Text(
-                                          widget.songs[index].title.trim() != ''
-                                              ? widget.songs[index].title
-                                              : widget.songs[index]
-                                                  .displayNameWOExt,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          style:
-                                              GoogleFonts.roboto(fontSize: 17),
+                                      PopupMenuButton(
+                                        splashRadius: 24,
+                                        icon: const Icon(
+                                          Icons.more_horiz_rounded,
+                                          color: Colors.grey,
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8.0, right: 20),
-                                        child: Text(
-                                          widget.songs[index].album?.replaceAll(
-                                                  '<unknown>', 'Unknown') ??
-                                              'Unknown',
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.normal,
-                                            fontSize: 15,
-                                          ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)),
                                         ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 8.0, top: 5,right: 20),
-                                        child: Text(
-                                          widget.songs[index].artist
-                                                  ?.replaceAll(
-                                                      '<unknown>', 'Unknown') ??
-                                              'Unknown',
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.start,
-                                          style: const TextStyle(
-                                            fontWeight: FontWeight.w400,
-                                            fontSize: 18,
+                                        onSelected: (int? value) async {
+                                          if (value == 0) {
+                                            AddToOffPlaylist().addToOffPlaylist(
+                                              context,
+                                              widget.songs[index].id,
+                                            );
+                                          }
+                                          if (value == 1) {
+                                            await OfflineAudioQuery()
+                                                .removeFromPlaylist(
+                                              playlistId: widget.playlistId!,
+                                              audioId: widget.songs[index].id,
+                                            );
+                                            ShowSnackBar().showSnackBar(
+                                              context,
+                                              '${'Removed from'} ${widget.playlistName}',
+                                            );
+                                          }
+                                          if (value == 2) {
+                                            widget.songs[index] =
+                                                (await editTags(
+                                              widget.songs[index] as Map,
+                                              context,
+                                            )) as SongModel;
+                                          }
+                                        },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            value: 0,
+                                            child: Row(
+                                              children: const [
+                                                Icon(
+                                                    Icons.playlist_add_rounded),
+                                                SizedBox(width: 10.0),
+                                                Text(
+                                                  'Add to Playlist',
+                                                ),
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                  const Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 3.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        PopupMenuButton(
-                                          splashRadius: 24,
-                                          icon: const Icon(
-                                            Icons.more_horiz_rounded,
-                                            color: Colors.grey,
-                                          ),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
-                                          ),
-                                          onSelected: (int? value) async {
-                                            if (value == 0) {
-                                              AddToOffPlaylist()
-                                                  .addToOffPlaylist(
-                                                context,
-                                                widget.songs[index].id,
-                                              );
-                                            }
-                                            if (value == 1) {
-                                              await OfflineAudioQuery()
-                                                  .removeFromPlaylist(
-                                                playlistId: widget.playlistId!,
-                                                audioId: widget.songs[index].id,
-                                              );
-                                              ShowSnackBar().showSnackBar(
-                                                context,
-                                                '${'Removed from'} ${widget.playlistName}',
-                                              );
-                                            }
-                                          },
-                                          itemBuilder: (context) => [
+                                          if (widget.playlistId != null)
                                             PopupMenuItem(
-                                              value: 0,
+                                              value: 1,
                                               child: Row(
                                                 children: const [
-                                                  Icon(Icons
-                                                      .playlist_add_rounded),
+                                                  Icon(Iconsax.trash),
                                                   SizedBox(width: 10.0),
-                                                  Text(
-                                                    'Add to Playlist',
-                                                  ),
+                                                  Text('Remove'),
                                                 ],
                                               ),
                                             ),
-                                            if (widget.playlistId != null)
-                                              PopupMenuItem(
-                                                value: 1,
-                                                child: Row(
-                                                  children: const [
-                                                    Icon(Iconsax.trash),
-                                                    SizedBox(width: 10.0),
-                                                    Text('Remove'),
-                                                  ],
+                                          PopupMenuItem(
+                                            value: 2,
+                                            child: Row(
+                                              children: const [
+                                                Icon(Iconsax.edit),
+                                                SizedBox(width: 10.0),
+                                                Text(
+                                                  'Edit Tag',
                                                 ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        splashRadius: 24,
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              opaque: false,
+                                              pageBuilder: (_, __, ___) =>
+                                                  PlayScreen(
+                                                songsList: widget.songs,
+                                                index: index,
+                                                offline: true,
+                                                fromDownloads: false,
+                                                fromMiniplayer: false,
+                                                recommend: false,
                                               ),
-                                          ],
-                                        ),
-                                        IconButton(
-                                          onPressed: () {
-                                            Navigator.of(context).push(
-                                              PageRouteBuilder(
-                                                opaque: false,
-                                                pageBuilder: (_, __, ___) =>
-                                                    PlayScreen(
-                                                  songsList: widget.songs,
-                                                  index: index,
-                                                  offline: true,
-                                                  fromDownloads: false,
-                                                  fromMiniplayer: false,
-                                                  recommend: false,
-                                                ),
-                                              ),
-                                            );
-                                          },
-                                          icon: const Icon(Iconsax.play),
-                                        )
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ); /* ListTile(
-                      leading: OfflineAudioQuery.offlineArtworkWidget(
-                        id: widget.songs[index].id,
-                        type: ArtworkType.AUDIO,
-                        tempPath: widget.tempPath,
-                        fileName: widget.songs[index].displayNameWOExt,
-                      ),
-                      title: Text(
-                        widget.songs[index].title.trim() != ''
-                            ? widget.songs[index].title
-                            : widget.songs[index].displayNameWOExt,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                          fontSize: 17,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '${widget.songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'} - ${widget.songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                      trailing: PopupMenuButton(
-                        splashRadius: 24,
-                        icon: const Icon(
-                          Icons.more_horiz_rounded,
-                          color: Colors.grey,
-                        ),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        ),
-                        onSelected: (int? value) async {
-                          if (value == 0) {
-                            AddToOffPlaylist().addToOffPlaylist(
-                              context,
-                              widget.songs[index].id,
-                            );
-                          }
-                          if (value == 1) {
-                            await OfflineAudioQuery().removeFromPlaylist(
-                              playlistId: widget.playlistId!,
-                              audioId: widget.songs[index].id,
-                            );
-                            ShowSnackBar().showSnackBar(
-                              context,
-                              '${'Removed from'} ${widget.playlistName}',
-                            );
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 0,
-                            child: Row(
-                              children: const [
-                                Icon(Icons.playlist_add_rounded),
-                                SizedBox(width: 10.0),
-                                Text(
-                                  'Add to Playlist',
-                                ),
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                            MdiIcons.playCircleOutline),
+                                      )
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
-                          if (widget.playlistId != null)
-                            PopupMenuItem(
-                              value: 1,
-                              child: Row(
-                                children: const [
-                                  Icon(Iconsax.trash),
-                                  SizedBox(width: 10.0),
-                                  Text('Remove'),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => PlayScreen(
-                              songsList: widget.songs,
-                              index: index,
-                              offline: true,
-                              fromDownloads: false,
-                              fromMiniplayer: false,
-                              recommend: false,
-                            ),
-                          ),
-                        );
-                      },
-                    ); */
+                        ),
+                      ],
+                    );
                   },
                 ),
               ),
@@ -815,71 +736,31 @@ class _AlbumsTabState extends State<AlbumsTab>
                         tempPath: widget.tempPath,
                         fileName: widget.albums[widget.albumsList[index]]![0]
                             .displayNameWOExt,
-                      ) /*  QueryArtworkWidget(
-                          id: widget.albums[widget.albumsList[index]]![0].id,
-                          type: ArtworkType.ALBUM,
-                          artworkHeight: boxSize - 35,
-                          artworkWidth: MediaQuery.of(context).size.width / 2.5,
-                          artworkBorder: BorderRadius.circular(7.0),
-                          nullArtworkWidget: ClipRRect(
-                            borderRadius: BorderRadius.circular(7.0),
-                            child: Image(
-                              fit: BoxFit.cover,
-                              height: boxSize - 35,
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              image: const AssetImage('assets/cover.jpg'),
+                      )),
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            widget.albumsList[index],
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
                             ),
                           ),
-                        ), */
-                          ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 6.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Text(
-                                      widget.albumsList[index],
-                                      textAlign: TextAlign.center,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.roboto(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                  ),
-                                  /* Subtitle */
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        left: 5.0, right: 5),
-                                    child: Text(
-                                      widget.albums[widget.albumsList[index]]!
-                                                  .length >
-                                              1
-                                          ? '${widget.albums[widget.albumsList[index]]!.length} Songs'
-                                          : '${widget.albums[widget.albumsList[index]]!.length} Song',
-                                      textAlign: TextAlign.start,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: GoogleFonts.roboto(
-                                        fontSize: 14,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  )
-                                ],
-                              ),
+                          subtitle: Text(
+                            widget.albums[widget.albumsList[index]]!.length > 1
+                                ? '${widget.albums[widget.albumsList[index]]!.length} Songs'
+                                : '${widget.albums[widget.albumsList[index]]!.length} Song',
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: 14,
+                              color: Colors.grey,
                             ),
-                          ],
+                          ),
                         ),
                       ),
                     ],

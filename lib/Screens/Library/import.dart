@@ -126,7 +126,7 @@ Future<void> importYt(
 ) async {
   await showTextInputDialog(
     context: context,
-    title: 'Enter playlist link',
+    title: 'Paste Link Url',
     initialText: '',
     keyboardType: TextInputType.url,
     onSubmitted: (value) async {

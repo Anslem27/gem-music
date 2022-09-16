@@ -9,7 +9,7 @@ Flutter music App project.
 - Song, Album, Artist and Playlist Search
 - Trending Songs
 - Artist and Genre
-- Add Songs to Favorite
+- Add Songs to Favorite  
 - Playlists support
 - Import Playlists from YouTube
 - Import/Export Playlists as JSON File
@@ -34,16 +34,25 @@ Flutter music App project.
 
 - Add visualizer support option
 - Fix local music widget [images]
-- Add suitablw music search API
+- Add suitable music search API
 - Clean Out unneccesary code
 - Add daily shuffle to home
 - Artist, plylist detail page customed pages
+- Add spotify playlists url under youtube search [Spotify design nature]
+- Add Box Grid like design for library
+
+## Add to home elements
+
+- SnapShot(Cards for elements ie local,playlists,recently played etc.)
+- Local Artists
+- Local Genres
+- Recently Added
+- Downloads
 
 ## Building from Source
 
 1. If you don't have Flutter SDK installed, please visit official [Flutter](https://flutter.dev/) site.
 2. Fetch latest source code from master branch.
-
 3. Run the app with Android Studio or VS Code. Or the command line:
 
 ```

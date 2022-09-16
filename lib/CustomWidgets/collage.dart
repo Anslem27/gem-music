@@ -81,10 +81,12 @@ class Collage extends StatelessWidget {
 class OfflineCollage extends StatelessWidget {
   final List imageList;
   final String placeholderImage;
+  final double borderRadius;
   final bool showGrid;
   const OfflineCollage({
     Key? key,
     required this.showGrid,
+    this.borderRadius = 10,
     required this.imageList,
     required this.placeholderImage,
   }) : super(key: key);
@@ -95,9 +97,7 @@ class OfflineCollage extends StatelessWidget {
       elevation: 5,
       margin: const EdgeInsets.symmetric(horizontal: 8.0),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(
-          7.0,
-        ),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       clipBehavior: Clip.antiAlias,
       child: SizedBox.square(

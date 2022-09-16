@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 Future<void> showTextInputDialog({
   required BuildContext context,
@@ -22,9 +23,9 @@ Future<void> showTextInputDialog({
               children: [
                 Text(
                   title,
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
+                  style: GoogleFonts.roboto(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontSize: 20),
                 ),
               ],
             ),
