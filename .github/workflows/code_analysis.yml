@@ -1,0 +1,35 @@
+name: Code Analysis
+on:
+  # Trigger the workflow on push or pull request,
+  # but only for the main branch
+  pull_request:
+    branches:
+      - main
+
+concurrency: 
+  group: ${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  code-analysis-and-testing:
+    name: Code Analysis and Testing
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v1.5.3
+      with:
+        channel: 'stable' # 'dev', 'alpha', 'master', default to: 'stable'
+        # flutter-version: '1.22.x' # you can also specify exact version of flutter
+
+    - name: Get pub dependencies
+      run: flutter pub get
+
+    - name: Flutter analyze
+      run: flutter analyze
+
+    # - name: Flutter test TBD Create automated tests
+    #   run: flutter test
