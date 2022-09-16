@@ -445,7 +445,7 @@ class _SettingPageState extends State<SettingPage> {
                           //subtitle: Text(downloadPath),
                           trailing: TextButton(
                             style: TextButton.styleFrom(
-                              primary: Theme.of(context).brightness ==
+                              foregroundColor: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? Colors.white
                                   : Colors.grey[700],
@@ -1290,9 +1290,10 @@ class _SettingPageState extends State<SettingPage> {
                                             children: [
                                               TextButton(
                                                 style: TextButton.styleFrom(
-                                                  primary: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
+                                                  foregroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
                                                 ),
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -1303,9 +1304,10 @@ class _SettingPageState extends State<SettingPage> {
                                               ),
                                               TextButton(
                                                 style: TextButton.styleFrom(
-                                                  primary: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
+                                                  foregroundColor:
+                                                      Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary,
                                                 ),
                                                 onPressed: () {
                                                   createBackup(
@@ -1360,7 +1362,7 @@ class _SettingPageState extends State<SettingPage> {
                           subtitle: Text(autoBackPath),
                           trailing: TextButton(
                             style: TextButton.styleFrom(
-                              primary: Theme.of(context).brightness ==
+                              foregroundColor: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? Colors.white
                                   : Colors.grey[700],
@@ -1861,7 +1863,7 @@ class _SettingPageState extends State<SettingPage> {
                           actions: [
                             TextButton(
                               style: TextButton.styleFrom(
-                                primary: Theme.of(context).brightness ==
+                                foregroundColor: Theme.of(context).brightness ==
                                         Brightness.dark
                                     ? Colors.white
                                     : Colors.grey[700],
@@ -1873,7 +1875,7 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                             TextButton(
                               style: TextButton.styleFrom(
-                                primary:
+                                foregroundColor:
                                     Theme.of(context).colorScheme.secondary ==
                                             Colors.white
                                         ? Colors.black
@@ -2254,7 +2256,7 @@ class _SettingPageState extends State<SettingPage> {
                               ),
                               TextButton(
                                 style: TextButton.styleFrom(
-                                  primary:
+                                  foregroundColor:
                                       Theme.of(context).colorScheme.secondary ==
                                               Colors.white
                                           ? Colors.black

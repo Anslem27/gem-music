@@ -20,7 +20,6 @@ import 'package:gem/Screens/Search/artists.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../Helpers/local_music_functions.dart';
 import '../../Services/spotify_playlist_downloader.dart';
@@ -88,6 +87,12 @@ class _HomeViewPageState extends State<HomeViewPage>
 
     setState(() {});
   }
+
+  List<String> playlistImages = [
+    "assets/elements/loc_play.png",
+    "assets/elements/onl.png"
+  ];
+  List<Function()?> playlistOntaps = [() {}, () {}];
 
   String getSubTitle(Map item) {
     final type = item['type'];
@@ -207,17 +212,72 @@ class _HomeViewPageState extends State<HomeViewPage>
                     /* Local Playlists */
                     : Column(
                         children: [
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                youtubeImportCard(context),
-                                spotifyImportCard(context)
-                              ],
-                            ),
+                          Row(
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 10, 0, 0),
+                                child: Text(
+                                  'Playlist libarary',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          /* Local playlists */
+                          SizedBox(
+                            height: boxSize + 10,
+                            child: Expanded(
+                                child: ListView.builder(
+                                    physics: const BouncingScrollPhysics(),
+                                    itemBuilder: (_, index) {
+                                      return GestureDetector(
+                                        onTap: () {},
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(5.0),
+                                          child: SizedBox(
+                                              height: boxSize + 5,
+                                              child: Image.asset(
+                                                playlistImages[index],
+                                                height: boxSize,
+                                              ) /* Container(
+                                            decoration: BoxDecoration(
+                                              borderRadius:
+                                                  BorderRadius.circular(15),
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    playlistImages[index]),
+                                              ),
+                                            ),
+                                          ), */
+                                              ),
+                                        ),
+                                      );
+                                    })),
+                          ),
+                          Row(
+                            children: const [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(15, 10, 0, 0),
+                                child: Text(
+                                  'Import Tracks',
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              youtubeImportCard(context, boxSize),
+                              spotifyImportCard(context, boxSize)
+                            ],
+                          ),
+                          /* Local playlists List */
                           offlinePlaylists.isNotEmpty
                               ? Column(
                                   children: [
@@ -661,7 +721,7 @@ class _HomeViewPageState extends State<HomeViewPage>
           );
   }
 
-  youtubeImportCard(BuildContext context) {
+  youtubeImportCard(BuildContext context, double boxSize) {
     return Expanded(
       child: InkWell(
         onTap: () {
@@ -671,38 +731,16 @@ class _HomeViewPageState extends State<HomeViewPage>
             fetchBox,
           );
         },
-        child: Card(
-          // color: Colors.grey[900],
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Icon(
-                    MdiIcons.youtube,
-                    size: 35,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 2.0, right: 5),
-                  child: Text(
-                    "Import Youtube\nPlaylist",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: SizedBox(
+            height: boxSize + 5,
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                image: const DecorationImage(
+                    image: AssetImage("assets/elements/imp_you.png")),
+              ),
             ),
           ),
         ),
@@ -710,7 +748,7 @@ class _HomeViewPageState extends State<HomeViewPage>
     );
   }
 
-  spotifyImportCard(BuildContext context) {
+  spotifyImportCard(BuildContext context, double boxSize) {
     return Expanded(
       child: InkWell(
         onTap: () {
@@ -721,38 +759,11 @@ class _HomeViewPageState extends State<HomeViewPage>
             ),
           );
         },
-        child: Card(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 50,
-                  width: 50,
-                  child: Icon(
-                    Iconsax.music,
-                    size: 35,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 2.0, right: 5),
-                  child: Text(
-                    "Import Spotify\nPlaylist",
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-              ],
-            ),
+        child: Padding(
+          padding: const EdgeInsets.all(5.0),
+          child: SizedBox(
+            height: boxSize + 10,
+            child: Image.asset("assets/elements/imp_spo.png"),
           ),
         ),
       ),

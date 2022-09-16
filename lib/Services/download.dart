@@ -175,7 +175,7 @@ class Download with ChangeNotifier {
                         children: [
                           TextButton(
                             style: TextButton.styleFrom(
-                              primary: Theme.of(context).brightness ==
+                              foregroundColor: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? Colors.white
                                   : Colors.grey[700],
@@ -192,7 +192,7 @@ class Download with ChangeNotifier {
                           ),
                           TextButton(
                             style: TextButton.styleFrom(
-                              primary: Theme.of(context).brightness ==
+                              foregroundColor: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? Colors.white
                                   : Colors.grey[700],
@@ -208,8 +208,7 @@ class Download with ChangeNotifier {
                           const SizedBox(width: 5.0),
                           TextButton(
                             style: TextButton.styleFrom(
-                              primary: Colors.white,
-                              backgroundColor:
+                              foregroundColor: Colors.white, backgroundColor:
                                   Theme.of(context).colorScheme.secondary,
                             ),
                             onPressed: () async {
