@@ -386,7 +386,7 @@ class _PlayScreenState extends State<PlayScreen> {
                               ),
                             ]);
                           }
-                          //song info dialog 
+                          //song info dialog
                           PopupDialog().showPopup(
                             context: context,
                             child: SingleChildScrollView(
@@ -406,7 +406,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                             ),
                                             style: TextStyle(
                                               fontWeight: FontWeight.w600,
-                                              fontSize:17,
+                                              fontSize: 17,
                                               color: Theme.of(context)
                                                   .textTheme
                                                   .bodyText1!
@@ -1024,6 +1024,7 @@ class ControlButtons extends StatelessWidget {
                         Center(
                           child: playing
                               ? IconButton(
+                                  splashRadius: 24,
                                   tooltip: 'Pause',
                                   onPressed: audioHandler.pause,
                                   icon: const Icon(
@@ -1299,7 +1300,15 @@ class NowPlayingStream extends StatelessWidget {
                                         fit: BoxFit.cover,
                                         image: FileImage(
                                           File(
-                                            queue[index].artUri!.toFilePath(),
+                                            //TODO: Catch error when file image fails to load
+                                            queue[index]
+                                                    .artUri!
+                                                    .toFilePath()
+                                                    .isEmpty
+                                                ? "assets/cover.jpg"
+                                                : queue[index]
+                                                    .artUri!
+                                                    .toFilePath(),
                                           ),
                                         ),
                                       )
@@ -1510,25 +1519,23 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          tooltip: 'Copy',
-                          onPressed: () {
-                            Feedback.forLongPress(context);
-                            copyToClipboard(
-                              context: context,
-                              text: lyrics['lyrics'].toString(),
-                            );
-                          },
-                          icon: Icon(
-                            Iconsax.copy,
-                            color: Theme.of(
-                              context,
-                            ).colorScheme.secondary,size:22,
-                          ),
-                          color: Theme.of(context)
-                              .iconTheme
-                              .color!
-                              .withOpacity(0.6),
-                        ),
+                            tooltip: 'Copy',
+                            onPressed: () {
+                              Feedback.forLongPress(context);
+                              copyToClipboard(
+                                context: context,
+                                text: lyrics['lyrics'].toString(),
+                              );
+                            },
+                            icon: Icon(Iconsax.copy,
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.secondary,
+                                size: 22),
+                            color: Theme.of(context)
+                                .iconTheme
+                                .color!
+                                .withOpacity(0.6)),
                         Padding(
                           padding: const EdgeInsets.all(3.0),
                           child: Text(
@@ -1590,31 +1597,31 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               .addToPlaylist(context, widget.mediaItem);
                         }
                       },
-                onVerticalDragStart: !enabled
-                    ? null
-                    : (_) {
-                        dragging.value = true;
-                      },
-                onVerticalDragEnd: !enabled
-                    ? null
-                    : (_) {
-                        dragging.value = false;
-                      },
-                onVerticalDragUpdate: !enabled
-                    ? null
-                    : (DragUpdateDetails details) {
-                        if (details.delta.dy != 0.0) {
-                          double volume = widget.audioHandler.volume.value;
-                          volume -= details.delta.dy / 150;
-                          if (volume < 0) {
-                            volume = 0;
-                          }
-                          if (volume > 1.0) {
-                            volume = 1.0;
-                          }
-                          widget.audioHandler.setVolume(volume);
-                        }
-                      },
+                // onVerticalDragStart: !enabled
+                //     ? null
+                //     : (_) {
+                //         dragging.value = true;
+                //       },
+                // onVerticalDragEnd: !enabled
+                //     ? null
+                //     : (_) {
+                //         dragging.value = false;
+                //       },
+                // onVerticalDragUpdate: !enabled
+                //     ? null
+                //     : (DragUpdateDetails details) {
+                //         if (details.delta.dy != 0.0) {
+                //           double volume = widget.audioHandler.volume.value;
+                //           volume -= details.delta.dy / 150;
+                //           if (volume < 0) {
+                //             volume = 0;
+                //           }
+                //           if (volume > 1.0) {
+                //             volume = 1.0;
+                //           }
+                //           widget.audioHandler.setVolume(volume);
+                //         }
+                //       },
                 child: Stack(
                   alignment: Alignment.center,
                   children: [
@@ -1628,12 +1635,21 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               .toString()
                               .startsWith('file')
                           //TODO: fix issue with local music image image thats low quality
-                          ? Image.file(
-                              File(widget.mediaItem.artUri!.toFilePath()),
-                              fit: BoxFit.contain,
-                              //width: widget.width * 0.85,
-                              gaplessPlayback: true,
-                            )
+
+                          ? widget.mediaItem.artUri!.toFilePath().isEmpty ||
+                                  widget.mediaItem.artUri!.toFilePath() == null
+                              //expression checks for an empty mediaItem file string
+                              //TODO: Add a placeholder image for null string
+                              ? const Image(
+                                  fit: BoxFit.cover,
+                                  image: AssetImage('assets/cover.jpg'),
+                                )
+                              : Image.file(
+                                  File(widget.mediaItem.artUri!.toFilePath()),
+                                  fit: BoxFit.contain,
+                                  //width: widget.width * 0.85,
+                                  gaplessPlayback: true,
+                                )
                           : CachedNetworkImage(
                               fit: BoxFit.contain,
                               errorWidget: (BuildContext context, _, __) =>
@@ -1851,9 +1867,7 @@ class NameNControls extends StatelessWidget {
                               Icons.album_rounded,
                             ),
                             SizedBox(width: 10.0),
-                            Text(
-                              'View Album',
-                            ),
+                            Text('View Album'),
                           ],
                         ),
                       ),
@@ -1926,7 +1940,7 @@ class NameNControls extends StatelessWidget {
                 ),
               ),
 
-              /// Seekbar starts from here
+              // Seekbar
               SizedBox(
                 height: seekBoxHeight,
                 width: width * 0.95,
@@ -2188,9 +2202,7 @@ class NameNControls extends StatelessWidget {
                         ),
                       ),
                     ),
-                    const SizedBox(
-                      height: 5,
-                    ),
+                    const SizedBox(height: 5),
                   ],
                 ),
               ),

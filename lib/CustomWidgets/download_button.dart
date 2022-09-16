@@ -3,6 +3,8 @@ import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Services/download.dart';
 import 'package:hive/hive.dart';
+import 'package:iconsax/iconsax.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DownloadButton extends StatefulWidget {
   final Map data;
@@ -52,7 +54,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                     icon: Icon(
                       widget.icon == 'download'
                           ? Icons.download_rounded
-                          : Icons.save_alt,
+                          : Iconsax.save_2,
                     ),
                     iconSize: widget.size ?? 24.0,
                     color: Theme.of(context).iconTheme.color,
@@ -74,6 +76,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                             valueListenable: showStopButton,
                             child: Center(
                               child: IconButton(
+                                splashRadius: 24,
                                 icon: const Icon(
                                   Icons.close_rounded,
                                 ),
@@ -185,9 +188,7 @@ class _MultiDownloadButtonState extends State<MultiDownloadButton> {
                 ? Center(
                     child: IconButton(
                       splashRadius: 24,
-                      icon: const Icon(
-                        Icons.download,
-                      ),
+                      icon: const Icon(MdiIcons.download),
                       iconSize: 20.0,
                       tooltip: 'Download',
                       onPressed: () async {

@@ -35,6 +35,7 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      splashRadius: 24,
       icon: Icon(
         Icons.more_vert_rounded,
         color: Theme.of(context).iconTheme.color,
@@ -56,9 +57,7 @@ class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
                 SizedBox(
                   width: 10.0,
                 ),
-                Text(
-                  "Remove",
-                ),
+                Text("Remove"),
               ],
             ),
           ),

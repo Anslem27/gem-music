@@ -369,8 +369,7 @@ class _DownloadsState extends State<Downloads>
                         shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.all(Radius.circular(15.0)),
                         ),
-                        onSelected:
-                            (int value) {
+                        onSelected: (int value) {
                           if (value < 5) {
                             sortValue = value;
                             Hive.box('settings').put('sortValue', value);
@@ -380,10 +379,8 @@ class _DownloadsState extends State<Downloads>
                           }
                           sortSongs(sortVal: sortValue, order: orderValue);
                           setState(() {});
-                       
                         },
-                        itemBuilder:
-                            (context) {
+                        itemBuilder: (context) {
                           final List<String> sortTypes = [
                             'Display name',
                             'Date added',
@@ -856,15 +853,12 @@ Future<Map> editTags(Map song, BuildContext context) async {
             child: Text(
               'Ok',
               style: TextStyle(
-                color: Theme.of(context).colorScheme.secondary == Colors.white
-                    ? Colors.black
-                    : null,
-              ),
+                  color: Theme.of(context).colorScheme.secondary == Colors.white
+                      ? Colors.black
+                      : null),
             ),
           ),
-          const SizedBox(
-            width: 5,
-          ),
+          const SizedBox(width: 5),
         ],
       );
     },
@@ -1024,15 +1018,9 @@ class _DownSongsTabState extends State<DownSongsTab>
                                 value: 0,
                                 child: Row(
                                   children: const [
-                                    Icon(
-                                      Icons.edit_rounded,
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      'Edit',
-                                    ),
+                                    Icon(Icons.edit_rounded),
+                                    SizedBox(width: 10.0),
+                                    Text('Edit'),
                                   ],
                                 ),
                               ),
@@ -1040,15 +1028,9 @@ class _DownSongsTabState extends State<DownSongsTab>
                                 value: 1,
                                 child: Row(
                                   children: const [
-                                    Icon(
-                                      Iconsax.trash,
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      'Delete',
-                                    ),
+                                    Icon(Iconsax.trash),
+                                    SizedBox(width: 10.0),
+                                    Text('Delete'),
                                   ],
                                 ),
                               ),

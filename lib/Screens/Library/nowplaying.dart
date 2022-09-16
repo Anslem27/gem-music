@@ -1,11 +1,12 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:get_it/get_it.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class NowPlaying extends StatefulWidget {
   const NowPlaying({Key? key}) : super(key: key);
@@ -41,15 +42,24 @@ class _NowPlayingState extends State<NowPlaying> {
                           elevation: 0,
                         ),
                   body: processingState == AudioProcessingState.idle
-                      ? emptyScreen(
-                          context,
-                          3,
-                          'Nothing is ',
-                          18.0,
-                          'Playling',
-                          60,
-                          'Try playing something',
-                          23.0,
+                      ? Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SvgPicture.asset("assets/svg/meditating.svg",
+                                  height: 140, width: 100),
+                              const SizedBox(height: 20),
+                              Text(
+                                "Playing Queue is empty\ntry playing some music",
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ],
+                          ),
                         )
                       : StreamBuilder<MediaItem?>(
                           stream: audioHandler.mediaItem,
@@ -65,7 +75,10 @@ class _NowPlayingState extends State<NowPlaying> {
                                     imageUrl: mediaItem.artUri!
                                             .toString()
                                             .startsWith('file:')
-                                        ? mediaItem.artUri!.toFilePath()
+                                        //TODO: Add try catch functionality to catch null image
+                                        ? mediaItem.artUri!.toFilePath().isEmpty
+                                            ? "assets/cover.jpg"
+                                            : mediaItem.artUri!.toFilePath()
                                         : mediaItem.artUri!.toString(),
                                     sliverList: SliverList(
                                       delegate: SliverChildListDelegate(

@@ -1,11 +1,9 @@
-// ignore_for_file: avoid_redundant_argument_values, use_super_parameters, use_decorated_box
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-// import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/download_button.dart';
@@ -69,12 +67,6 @@ class _LikedSongsState extends State<LikedSongs>
         _showShuffle.value = true;
       }
     });
-    // if (tempPath == null) {
-    //   getTemporaryDirectory().then((value) {
-    //     Hive.box('settings').put('tempDirPath', value.path);
-    //   });
-    // }
-    // _tcontroller!.addListener(changeTitle);
     getLiked();
     super.initState();
   }
@@ -85,12 +77,6 @@ class _LikedSongsState extends State<LikedSongs>
     _tcontroller!.dispose();
     _scrollController.dispose();
   }
-
-  // void changeTitle() {
-  //   setState(() {
-  //     currentIndex = _tcontroller!.index;
-  //   });
-  // }
 
   void getLiked() {
     likedBox = Hive.box(widget.playlistName);
@@ -308,6 +294,7 @@ class _LikedSongsState extends State<LikedSongs>
                             widget.showName!.substring(1),
                     textAlign: TextAlign.center,
                     overflow: TextOverflow.ellipsis,
+                    style: GoogleFonts.roboto(fontSize: 20),
                   ),
                   centerTitle: true,
                   backgroundColor:
@@ -318,7 +305,7 @@ class _LikedSongsState extends State<LikedSongs>
                   bottom: TabBar(
                     controller: _tcontroller,
                     indicator: MaterialIndicator(
-                      horizontalPadding: 10,
+                      horizontalPadding: 20,
                       color: Theme.of(context).focusColor,
                       height: 6,
                     ),
@@ -358,15 +345,6 @@ class _LikedSongsState extends State<LikedSongs>
                     ],
                   ),
                   actions: [
-                    if (_songs.isNotEmpty)
-                      MultiDownloadButton(
-                        data: _songs,
-                        playlistName: widget.showName == null
-                            ? widget.playlistName[0].toUpperCase() +
-                                widget.playlistName.substring(1)
-                            : widget.showName![0].toUpperCase() +
-                                widget.showName!.substring(1),
-                      ),
                     IconButton(
                       splashRadius: 24,
                       icon: const Icon(CupertinoIcons.search),
@@ -378,15 +356,22 @@ class _LikedSongsState extends State<LikedSongs>
                         );
                       },
                     ),
+                    /* if (_songs.isNotEmpty)
+                      MultiDownloadButton(
+                        data: _songs,
+                        playlistName: widget.showName == null
+                            ? widget.playlistName[0].toUpperCase() +
+                                widget.playlistName.substring(1)
+                            : widget.showName![0].toUpperCase() +
+                                widget.showName!.substring(1),
+                      ), */
                     PopupMenuButton(
                       splashRadius: 24,
                       icon: const Icon(Iconsax.sort),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(Radius.circular(15.0)),
                       ),
-                      onSelected:
-                          // (currentIndex == 0) ?
-                          (int value) {
+                      onSelected: (int value) {
                         if (value < 5) {
                           sortValue = value;
                           Hive.box('settings').put('sortValue', value);
@@ -397,16 +382,7 @@ class _LikedSongsState extends State<LikedSongs>
                         sortSongs(sortVal: sortValue, order: orderValue);
                         setState(() {});
                       },
-                      // : (int value) {
-                      //     albumSortValue = value;
-                      //     Hive.box('settings').put('albumSortValue', value);
-                      //     sortAlbums();
-                      //     setState(() {});
-                      //   },
-                      itemBuilder:
-                          // (currentIndex == 0)
-                          // ?
-                          (context) {
+                      itemBuilder: (context) {
                         final List<String> sortTypes = [
                           'Display Name',
                           'Date Added',
@@ -438,9 +414,7 @@ class _LikedSongsState extends State<LikedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -448,9 +422,7 @@ class _LikedSongsState extends State<LikedSongs>
                               .toList(),
                         );
                         menuList.add(
-                          const PopupMenuDivider(
-                            height: 10,
-                          ),
+                          const PopupMenuDivider(height: 10),
                         );
                         menuList.addAll(
                           orderTypes
@@ -624,6 +596,10 @@ class _SongsTabState extends State<SongsTab>
 
   @override
   Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
     super.build(context);
     return (widget.songs.isEmpty)
         ? Center(
@@ -667,9 +643,98 @@ class _SongsTabState extends State<SongsTab>
                   padding: const EdgeInsets.only(bottom: 10),
                   shrinkWrap: true,
                   itemCount: widget.songs.length,
-                  itemExtent: 70.0,
                   itemBuilder: (context, index) {
-                    return ListTile(
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder: (_, __, ___) => PlayScreen(
+                                  songsList: widget.songs,
+                                  index: index,
+                                  offline: false,
+                                  fromMiniplayer: false,
+                                  fromDownloads: false,
+                                  recommend: false,
+                                ),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            height: boxSize - 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CachedNetworkImage(
+                                  fit: BoxFit.cover,
+                                  errorWidget: (context, _, __) => const Image(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage('assets/cover.jpg'),
+                                    height: 70,
+                                    width: 70,
+                                  ),
+                                  height: 70,
+                                  width: 70,
+                                  imageUrl: widget.songs[index]['image']
+                                      .toString()
+                                      .replaceAll('http:', 'https:'),
+                                  placeholder: (context, url) => const Image(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage(
+                                      'assets/cover.jpg',
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(
+                                      '${widget.songs[index]['title']}',
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.roboto(fontSize: 17),
+                                    ),
+                                    subtitle: Text(
+                                      '${widget.songs[index]['artist'] ?? 'Unknown'} - ${widget.songs[index]['album'] ?? 'Unknown'}',
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 3.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Row(children: [
+                                        DownloadButton(
+                                          data: widget.songs[index] as Map,
+                                          icon: 'download',
+                                        ),
+                                        SongTileTrailingMenu(
+                                          data: widget.songs[index] as Map,
+                                          isPlaylist: true,
+                                          deleteLiked: widget.onDelete,
+                                        ),
+                                      ]),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ); /* ListTile(
                       leading: Card(
                         elevation: 5,
                         shape: RoundedRectangleBorder(
@@ -682,9 +747,7 @@ class _SongsTabState extends State<SongsTab>
                             fit: BoxFit.cover,
                             errorWidget: (context, _, __) => const Image(
                               fit: BoxFit.cover,
-                              image: AssetImage(
-                                'assets/cover.jpg',
-                              ),
+                              image: AssetImage('assets/cover.jpg'),
                             ),
                             imageUrl: widget.songs[index]['image']
                                 .toString()
@@ -735,7 +798,7 @@ class _SongsTabState extends State<SongsTab>
                           ),
                         ],
                       ),
-                    );
+                    ); */
                   },
                 ),
               ),
@@ -799,63 +862,117 @@ class _AlbumsTabState extends State<AlbumsTab>
               ],
             ),
           )
-        : ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            padding: const EdgeInsets.only(bottom: 10.0),
-            shrinkWrap: true,
-            itemExtent: 70.0,
-            itemCount: widget.sortedAlbumKeysList.length,
-            itemBuilder: (context, index) {
-              final List imageList = widget
-                          .albums[widget.sortedAlbumKeysList[index]]!.length >=
-                      4
-                  ? widget.albums[widget.sortedAlbumKeysList[index]]!
-                      .sublist(0, 4)
-                  : widget.albums[widget.sortedAlbumKeysList[index]]!.sublist(
-                      0,
-                      widget.albums[widget.sortedAlbumKeysList[index]]!.length,
+        : Padding(
+            padding: const EdgeInsets.only(top: 8.0),
+            child: StaggeredGridView.countBuilder(
+              shrinkWrap: true,
+              crossAxisCount: 2,
+              mainAxisSpacing: 0,
+              itemCount: widget.sortedAlbumKeysList.length,
+              physics: const BouncingScrollPhysics(),
+              staggeredTileBuilder: (int index) {
+                return const StaggeredTile.count(1, 1.2);
+              },
+              itemBuilder: (BuildContext context, int index) {
+                double boxSize = MediaQuery.of(context).size.height >
+                        MediaQuery.of(context).size.width
+                    ? MediaQuery.of(context).size.width / 2
+                    : MediaQuery.of(context).size.height / 2.5;
+                final List imageList = widget
+                            .albums[widget.sortedAlbumKeysList[index]]!
+                            .length >=
+                        4
+                    ? widget.albums[widget.sortedAlbumKeysList[index]]!
+                        .sublist(0, 4)
+                    : widget.albums[widget.sortedAlbumKeysList[index]]!.sublist(
+                        0,
+                        widget
+                            .albums[widget.sortedAlbumKeysList[index]]!.length,
+                      );
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      PageRouteBuilder(
+                        opaque: false,
+                        pageBuilder: (_, __, ___) => SongsList(
+                          data:
+                              widget.albums[widget.sortedAlbumKeysList[index]]!,
+                          offline: widget.offline,
+                        ),
+                      ),
                     );
-              return ListTile(
-                leading: (widget.offline)
-                    ? OfflineCollage(
-                        imageList: imageList,
-                        showGrid: widget.type == 'genre',
-                        placeholderImage: widget.type == 'artist'
-                            ? 'assets/artist.png'
-                            : 'assets/album.png',
-                      )
-                    : Collage(
-                        imageList: imageList,
-                        showGrid: widget.type == 'genre',
-                        placeholderImage: widget.type == 'artist'
-                            ? 'assets/artist.png'
-                            : 'assets/album.png',
+                  },
+                  child: Stack(
+                    children: [
+                      Card(
+                        color: Colors.transparent,
+                        elevation: 0,
+                        margin: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          children: [
+                            SizedBox(
+                              height: boxSize - 35,
+                              width: MediaQuery.of(context).size.width / 2.5,
+                              child: (widget.offline)
+                                  ? OfflineCollage(
+                                      borderRadius: 10,
+                                      imageList: imageList,
+                                      showGrid: widget.type == 'genre',
+                                      placeholderImage: widget.type == 'artist'
+                                          ? 'assets/artist.png'
+                                          : 'assets/album.png',
+                                    )
+                                  : Collage(
+                                      borderRadius: 10,
+                                      imageList: imageList,
+                                      showGrid: widget.type == 'genre',
+                                      placeholderImage: widget.type == 'artist'
+                                          ? 'assets/artist.png'
+                                          : 'assets/album.png',
+                                    ),
+                            ),
+                            Expanded(
+                              child: ListTile(
+                                title: Text(
+                                  '${widget.sortedAlbumKeysList[index]}',
+                                  textAlign: TextAlign.center,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.montserrat(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  widget
+                                              .albums[widget
+                                                  .sortedAlbumKeysList[index]]!
+                                              .length ==
+                                          1
+                                      ? '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} song'
+                                      : '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} songs',
+                                  textAlign: TextAlign.center,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: GoogleFonts.roboto(
+                                    fontSize: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                title: Text(
-                  '${widget.sortedAlbumKeysList[index]}',
-                  overflow: TextOverflow.ellipsis,
-                ),
-                subtitle: Text(
-                  widget.albums[widget.sortedAlbumKeysList[index]]!.length == 1
-                      ? '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} song'
-                      : '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} songs',
-                  style: TextStyle(
-                    color: Theme.of(context).textTheme.caption!.color,
+                    ],
                   ),
-                ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    PageRouteBuilder(
-                      opaque: false,
-                      pageBuilder: (_, __, ___) => SongsList(
-                        data: widget.albums[widget.sortedAlbumKeysList[index]]!,
-                        offline: widget.offline,
-                      ),
-                    ),
-                  );
-                },
-              );
-            },
+                );
+              },
+            ),
           );
   }
 }

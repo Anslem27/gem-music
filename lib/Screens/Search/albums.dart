@@ -126,7 +126,7 @@ class _AlbumSearchPageState extends State<AlbumSearchPage> {
                           0,
                           ':( ',
                           100,
-                          'Bummer',
+                          'Oops!',
                           60,
                           'No results ',
                           20,

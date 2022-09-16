@@ -1,4 +1,3 @@
-
 // ignore_for_file: no_leading_underscores_for_local_identifiers
 
 import 'dart:async';
@@ -142,8 +141,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
             if (item == mediaItem.value) {
               final List value = await SaavnAPI().getReco(item.id);
               value.shuffle();
-              // final List value = await SaavnAPI().getRadioSongs(
-              //     stationId: stationId!, count: queueLength - index - 20);
 
               for (int i = 0; i < value.length; i++) {
                 final element = MediaItemConverter.mapToMediaItem(
@@ -203,12 +200,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
       final List lastQueueList = await Hive.box('cache')
           .get('lastQueue', defaultValue: [])?.toList() as List;
 
-      // final int lastIndex =
-      //     await Hive.box('cache').get('lastIndex', defaultValue: 0) as int;
-
-      // final int lastPos =
-      //     await Hive.box('cache').get('lastPos', defaultValue: 0) as int;
-
       final List<MediaItem> lastQueue = lastQueueList
           .map((e) => MediaItemConverter.mapToMediaItem(e as Map))
           .toList();
@@ -218,10 +209,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
         await _playlist.addAll(_itemsToSources(lastQueue));
         await _player!.setAudioSource(
           _playlist,
-          // commented out due to some bug in audio_service which causes app to freeze
-
-          // initialIndex: lastIndex,
-          // initialPosition: Duration(seconds: lastPos),
         );
       }
     } else {
@@ -242,16 +229,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
           ),
         );
       } else {
-        // if (cacheSong) {
-        //   _audioSource = LockCachingAudioSource(
-        //     Uri.parse(
-        //       mediaItem.extras!['url'].toString().replaceAll(
-        //             '_96.',
-        //             "_${preferredQuality.replaceAll(' kbps', '')}.",
-        //           ),
-        //     ),
-        //   );
-        // } else {
         _audioSource = AudioSource.uri(
           Uri.parse(
             mediaItem.extras!['url'].toString().replaceAll(
@@ -330,6 +307,7 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     }
   }
 
+//TODO: Add to recently played
   Future<void> addRecentlyPlayed(MediaItem mediaitem) async {
     List recentList = await Hive.box('cache')
         .get('recentSongs', defaultValue: [])?.toList() as List;
@@ -373,25 +351,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     await _playlist.clear();
     await _playlist.addAll(_itemsToSources(newQueue));
     addLastQueue(newQueue);
-    // stationId = '';
-    // stationNames = newQueue.map((e) => e.id).toList();
-    // SaavnAPI()
-    //     .createRadio(names: stationNames, stationType: stationType)
-    //     .then((value) async {
-    //   stationId = value;
-    //   final List songsList = await SaavnAPI()
-    //       .getRadioSongs(stationId: stationId!, count: 20 - newQueue.length);
-
-    //   for (int i = 0; i < songsList.length; i++) {
-    //     final element = MediaItemConverter.mapToMediaItem(
-    //       songsList[i] as Map,
-    //       addedByAutoplay: true,
-    //     );
-    //     if (!queue.value.contains(element)) {
-    //       addQueueItem(element);
-    //     }
-    //   }
-    // });
   }
 
   @override

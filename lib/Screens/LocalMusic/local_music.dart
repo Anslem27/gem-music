@@ -1,7 +1,10 @@
 // ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
+import 'dart:convert';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
@@ -16,9 +19,12 @@ import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import '../../Helpers/mediaitem_converter.dart';
+import '../Library/downloads.dart';
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -47,7 +53,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
   final List<String> _sortedAlbumKeysList = [];
   final List<String> _sortedArtistKeysList = [];
   final List<String> _sortedGenreKeysList = [];
-  // final List<String> _videos = [];
 
   bool added = false;
   int sortValue = Hive.box('settings').get('sortValue', defaultValue: 1) as int;
@@ -218,28 +223,16 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                     isScrollable: widget.showPlaylists,
                     controller: _tcontroller,
                     indicator: MaterialIndicator(
-                      horizontalPadding: 10,
+                      horizontalPadding: 20,
                       color: Theme.of(context).focusColor,
                       height: 6,
                     ),
-                    // indicatorSize: TabBarIndicatorSize.label,
                     tabs: [
-                      const Tab(
-                        text: "Songs",
-                      ),
-                      const Tab(
-                        text: "Albums",
-                      ),
-                      const Tab(
-                        text: "Artists",
-                      ),
-                      const Tab(
-                        text: "Genres",
-                      ),
-                      if (widget.showPlaylists)
-                        const Tab(
-                          text: "Playlists",
-                        ),
+                      const Tab(text: "Songs"),
+                      const Tab(text: "Albums"),
+                      const Tab(text: "Artists"),
+                      const Tab(text: "Genres"),
+                      if (widget.showPlaylists) const Tab(text: "Playlists"),
                     ],
                   ),
                   actions: [
@@ -309,9 +302,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -343,9 +334,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                       else
                                         const SizedBox(),
                                       const SizedBox(width: 10),
-                                      Text(
-                                        e,
-                                      ),
+                                      Text(e),
                                     ],
                                   ),
                                 ),
@@ -397,7 +386,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                               playlistDetails: playlistDetails,
                               offlineAudioQuery: offlineAudioQuery,
                             ),
-                          // videosTab(),
                         ],
                       ),
               ),
@@ -408,6 +396,23 @@ class _DownloadedSongsState extends State<DownloadedSongs>
       ),
     );
   }
+}
+
+Future<void> addRecentlyPlayed(MediaItem mediaitem) async {
+  List recentList = await Hive.box('cache')
+      .get('recentSongs', defaultValue: [])?.toList() as List;
+
+  final Map item = MediaItemConverter.mediaItemToMap(mediaitem);
+  recentList.insert(0, item);
+
+  final jsonList = recentList.map((item) => jsonEncode(item)).toList();
+  final uniqueJsonList = jsonList.toSet().toList();
+  recentList = uniqueJsonList.map((item) => jsonDecode(item)).toList();
+
+  if (recentList.length > 30) {
+    recentList = recentList.sublist(0, 30);
+  }
+  Hive.box('cache').put('recentSongs', recentList);
 }
 
 class SongsTab extends StatefulWidget {
@@ -434,6 +439,10 @@ class _SongsTabState extends State<SongsTab>
 
   @override
   Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
     super.build(context);
     return widget.songs.isEmpty
         ? Center(
@@ -464,100 +473,181 @@ class _SongsTabState extends State<SongsTab>
               Expanded(
                 child: ListView.builder(
                   physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.only(bottom: 10),
                   shrinkWrap: true,
-                  itemExtent: 70.0,
                   itemCount: widget.songs.length,
                   itemBuilder: (context, index) {
-                    return ListTile(
-                      leading: OfflineAudioQuery.offlineArtworkWidget(
-                        id: widget.songs[index].id,
-                        type: ArtworkType.AUDIO,
-                        tempPath: widget.tempPath,
-                        fileName: widget.songs[index].displayNameWOExt,
-                      ),
-                      title: Text(
-                        widget.songs[index].title.trim() != ''
-                            ? widget.songs[index].title
-                            : widget.songs[index].displayNameWOExt,
-                        overflow: TextOverflow.ellipsis,
-                        style: GoogleFonts.roboto(
-                          fontSize: 17,
-                        ),
-                      ),
-                      subtitle: Text(
-                        '${widget.songs[index].artist?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'} - ${widget.songs[index].album?.replaceAll('<unknown>', 'Unknown') ?? 'Unknown'}',
-                        overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.normal),
-                      ),
-                      trailing: PopupMenuButton(
-                        splashRadius: 24,
-                        icon: const Icon(
-                          Icons.more_horiz_rounded,
-                          color: Colors.grey,
-                        ),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        ),
-                        onSelected: (int? value) async {
-                          if (value == 0) {
-                            AddToOffPlaylist().addToOffPlaylist(
-                              context,
-                              widget.songs[index].id,
-                            );
-                          }
-                          if (value == 1) {
-                            await OfflineAudioQuery().removeFromPlaylist(
-                              playlistId: widget.playlistId!,
-                              audioId: widget.songs[index].id,
-                            );
-                            ShowSnackBar().showSnackBar(
-                              context,
-                              '${'Removed from'} ${widget.playlistName}',
-                            );
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 0,
-                            child: Row(
-                              children: const [
-                                Icon(Icons.playlist_add_rounded),
-                                SizedBox(width: 10.0),
-                                Text(
-                                  'Add to Playlist',
+                    return Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            //Test putting local songa
+                            //addRecentlyPlayed(widget.songs);
+                            setState(() {});
+                            Navigator.of(context).push(
+                              PageRouteBuilder(
+                                opaque: false,
+                                pageBuilder: (_, __, ___) => PlayScreen(
+                                  songsList: widget.songs,
+                                  index: index,
+                                  offline: true,
+                                  fromDownloads: false,
+                                  fromMiniplayer: false,
+                                  recommend: false,
                                 ),
+                              ),
+                            );
+                          },
+                          child: SizedBox(
+                            height: boxSize - 100,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                OfflineAudioQuery.offlineArtworkWidget(
+                                  id: widget.songs[index].id,
+                                  type: ArtworkType.AUDIO,
+                                  height: 70,
+                                  width: 70,
+                                  tempPath: widget.tempPath,
+                                  fileName:
+                                      widget.songs[index].displayNameWOExt,
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(
+                                      widget.songs[index].title.trim() != ''
+                                          ? widget.songs[index].title
+                                          : widget
+                                              .songs[index].displayNameWOExt,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: GoogleFonts.roboto(fontSize: 17),
+                                    ),
+                                    subtitle: Text(
+                                      widget.songs[index].album?.replaceAll(
+                                              '<unknown>', 'Unknown') ??
+                                          'Unknown',
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.start,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 15,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 3.0),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      PopupMenuButton(
+                                        splashRadius: 24,
+                                        icon: const Icon(
+                                          Icons.more_horiz_rounded,
+                                          color: Colors.grey,
+                                        ),
+                                        shape: const RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.all(
+                                              Radius.circular(15.0)),
+                                        ),
+                                        onSelected: (int? value) async {
+                                          if (value == 0) {
+                                            AddToOffPlaylist().addToOffPlaylist(
+                                              context,
+                                              widget.songs[index].id,
+                                            );
+                                          }
+                                          if (value == 1) {
+                                            await OfflineAudioQuery()
+                                                .removeFromPlaylist(
+                                              playlistId: widget.playlistId!,
+                                              audioId: widget.songs[index].id,
+                                            );
+                                            ShowSnackBar().showSnackBar(
+                                              context,
+                                              '${'Removed from'} ${widget.playlistName}',
+                                            );
+                                          }
+                                          if (value == 2) {
+                                            widget.songs[index] =
+                                                (await editTags(
+                                              widget.songs[index] as Map,
+                                              context,
+                                            )) as SongModel;
+                                          }
+                                        },
+                                        itemBuilder: (context) => [
+                                          PopupMenuItem(
+                                            value: 0,
+                                            child: Row(
+                                              children: const [
+                                                Icon(
+                                                    Icons.playlist_add_rounded),
+                                                SizedBox(width: 10.0),
+                                                Text(
+                                                  'Add to Playlist',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          if (widget.playlistId != null)
+                                            PopupMenuItem(
+                                              value: 1,
+                                              child: Row(
+                                                children: const [
+                                                  Icon(Iconsax.trash),
+                                                  SizedBox(width: 10.0),
+                                                  Text('Remove'),
+                                                ],
+                                              ),
+                                            ),
+                                          PopupMenuItem(
+                                            value: 2,
+                                            child: Row(
+                                              children: const [
+                                                Icon(Iconsax.edit),
+                                                SizedBox(width: 10.0),
+                                                Text(
+                                                  'Edit Tag',
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      IconButton(
+                                        splashRadius: 24,
+                                        onPressed: () {
+                                          Navigator.of(context).push(
+                                            PageRouteBuilder(
+                                              opaque: false,
+                                              pageBuilder: (_, __, ___) =>
+                                                  PlayScreen(
+                                                songsList: widget.songs,
+                                                index: index,
+                                                offline: true,
+                                                fromDownloads: false,
+                                                fromMiniplayer: false,
+                                                recommend: false,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                        icon: const Icon(
+                                            MdiIcons.playCircleOutline),
+                                      )
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ),
-                          if (widget.playlistId != null)
-                            PopupMenuItem(
-                              value: 1,
-                              child: Row(
-                                children: const [
-                                  Icon(Iconsax.trash),
-                                  SizedBox(width: 10.0),
-                                  Text('Remove'),
-                                ],
-                              ),
-                            ),
-                        ],
-                      ),
-                      onTap: () {
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => PlayScreen(
-                              songsList: widget.songs,
-                              index: index,
-                              offline: true,
-                              fromDownloads: false,
-                              fromMiniplayer: false,
-                              recommend: false,
-                            ),
-                          ),
-                        );
-                      },
+                        ),
+                      ],
                     );
                   },
                 ),
@@ -590,41 +680,97 @@ class _AlbumsTabState extends State<AlbumsTab>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return ListView.builder(
-      physics: const BouncingScrollPhysics(),
-      padding: const EdgeInsets.only(top: 20, bottom: 10),
-      shrinkWrap: true,
-      itemExtent: 70.0,
-      itemCount: widget.albumsList.length,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: OfflineAudioQuery.offlineArtworkWidget(
-            id: widget.albums[widget.albumsList[index]]![0].id,
-            type: ArtworkType.AUDIO,
-            tempPath: widget.tempPath,
-            fileName:
-                widget.albums[widget.albumsList[index]]![0].displayNameWOExt,
-          ),
-          title: Text(
-            widget.albumsList[index],
-            overflow: TextOverflow.ellipsis,
-          ),
-          subtitle: Text(
-            '${widget.albums[widget.albumsList[index]]!.length} Songs',
-          ),
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DownloadedSongs(
-                  title: widget.albumsList[index],
-                  cachedSongs: widget.albums[widget.albumsList[index]],
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    // return ListView.builder(
+    //   physics: const BouncingScrollPhysics(),
+    //   padding: const EdgeInsets.only(top: 20, bottom: 10),
+    //   shrinkWrap: true,
+    //   itemExtent: 70.0,
+    //   itemCount: widget.albumsList.length,
+    //   itemBuilder: (context, index) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: StaggeredGridView.countBuilder(
+        shrinkWrap: true,
+        crossAxisCount: 2,
+        mainAxisSpacing: 0,
+        itemCount: widget.albumsList.length,
+        physics: const BouncingScrollPhysics(),
+        staggeredTileBuilder: (int index) {
+          return const StaggeredTile.count(1, 1.2);
+        },
+        itemBuilder: (BuildContext context, int index) {
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => DownloadedSongs(
+                    title: widget.albumsList[index],
+                    cachedSongs: widget.albums[widget.albumsList[index]],
+                  ),
                 ),
-              ),
-            );
-          },
-        );
-      },
+              );
+            },
+            child: Stack(
+              children: [
+                Card(
+                  color: Colors.transparent,
+                  elevation: 0,
+                  margin: EdgeInsets.zero,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  child: Column(
+                    children: [
+                      SizedBox(
+                          child: OfflineAudioQuery.offlineArtworkWidget(
+                        id: widget.albums[widget.albumsList[index]]![0].id,
+                        type: ArtworkType.ALBUM,
+                        height: boxSize - 35,
+                        width: MediaQuery.of(context).size.width / 2.5,
+                        tempPath: widget.tempPath,
+                        fileName: widget.albums[widget.albumsList[index]]![0]
+                            .displayNameWOExt,
+                      )),
+                      Expanded(
+                        child: ListTile(
+                          title: Text(
+                            widget.albumsList[index],
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.montserrat(
+                              fontSize: 18,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                          subtitle: Text(
+                            widget.albums[widget.albumsList[index]]!.length > 1
+                                ? '${widget.albums[widget.albumsList[index]]!.length} Songs'
+                                : '${widget.albums[widget.albumsList[index]]!.length} Song',
+                            textAlign: TextAlign.center,
+                            softWrap: false,
+                            overflow: TextOverflow.ellipsis,
+                            style: GoogleFonts.roboto(
+                              fontSize: 14,
+                              color: Colors.grey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

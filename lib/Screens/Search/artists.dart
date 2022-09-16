@@ -530,11 +530,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                         if (entry.key != 'Top Songs')
                                           Padding(
                                             padding: const EdgeInsets.fromLTRB(
-                                              5,
-                                              10,
-                                              5,
-                                              0,
-                                            ),
+                                                5, 10, 5, 0),
                                             child: HorizontalAlbumsList(
                                               songsList: entry.value,
                                               onTap: (int idx) {

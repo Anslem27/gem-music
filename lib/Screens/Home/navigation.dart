@@ -329,7 +329,7 @@ class _HomePageState extends State<HomePage> {
                   background: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: <Widget>[
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 40),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -338,8 +338,8 @@ class _HomePageState extends State<HomePage> {
                               left: 15.0,
                             ),
                             child: Text(
-                              "Gem",
-                              style: GoogleFonts.robotoCondensed(
+                              "Gem Music",
+                              style: GoogleFonts.roboto(
                                 letterSpacing: 2,
                                 color: Theme.of(
                                   context,
@@ -384,7 +384,6 @@ class _HomePageState extends State<HomePage> {
             backgroundColor: Colors.transparent,
             elevation: 0,
             stretch: true,
-            toolbarHeight: 65,
             title: Align(
               alignment: Alignment.centerRight,
               child: AnimatedBuilder(
@@ -392,16 +391,12 @@ class _HomePageState extends State<HomePage> {
                 builder: (context, child) {
                   return GestureDetector(
                     child: AnimatedContainer(
-                      height: 52.0,
-                      duration: const Duration(
-                        milliseconds: 150,
-                      ),
+                      height: 50.0,
+                      duration: const Duration(milliseconds: 150),
                       padding: const EdgeInsets.all(2.0),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(
-                          12.0,
-                        ),
-                        color: Theme.of(context).cardColor,
+                        borderRadius: BorderRadius.circular(12.0),
+                         color: Theme.of(context).cardColor,
                         boxShadow: const [
                           BoxShadow(
                             color: Colors.black26,
@@ -412,9 +407,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                       child: Row(
                         children: [
-                          const SizedBox(
-                            width: 10.0,
-                          ),
+                          const SizedBox(width: 10.0),
                           Icon(
                             CupertinoIcons.search,
                             color: Theme.of(context).colorScheme.secondary,
@@ -423,7 +416,7 @@ class _HomePageState extends State<HomePage> {
                             width: 10.0,
                           ),
                           Text(
-                            'Songs,albums or artists',
+                            'What do you want to play?',
                             style: TextStyle(
                               fontSize: 16.0,
                               color: Theme.of(context).textTheme.caption!.color,
