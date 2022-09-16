@@ -71,4 +71,5 @@ flutter:
     # Add assets to the application.
     - assets/
     - assets/svg/
+    - assets/elements/
 

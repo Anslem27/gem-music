@@ -232,7 +232,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                 actions: [
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                      primary: Theme.of(context).brightness ==
+                                      foregroundColor: Theme.of(context).brightness ==
                                               Brightness.dark
                                           ? Colors.white
                                           : Colors.grey[700],
@@ -244,13 +244,12 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                   ),
                                   TextButton(
                                     style: TextButton.styleFrom(
-                                      primary: Theme.of(context)
+                                      foregroundColor: Theme.of(context)
                                                   .colorScheme
                                                   .secondary ==
                                               Colors.white
                                           ? Colors.black
-                                          : null,
-                                      backgroundColor: Theme.of(context)
+                                          : null, backgroundColor: Theme.of(context)
                                           .colorScheme
                                           .secondary,
                                     ),
@@ -510,7 +509,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                       actions: [
                                         TextButton(
                                           style: TextButton.styleFrom(
-                                            primary: Theme.of(context)
+                                            foregroundColor: Theme.of(context)
                                                 .iconTheme
                                                 .color,
                                           ),
@@ -523,8 +522,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                         ),
                                         TextButton(
                                           style: TextButton.styleFrom(
-                                            primary: Colors.white,
-                                            backgroundColor: Theme.of(context)
+                                            foregroundColor: Colors.white, backgroundColor: Theme.of(context)
                                                 .colorScheme
                                                 .secondary,
                                           ),

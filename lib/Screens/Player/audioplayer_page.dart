@@ -846,7 +846,7 @@ class _PlayScreenState extends State<PlayScreen> {
               children: [
                 TextButton(
                   style: TextButton.styleFrom(
-                    primary: Theme.of(context).colorScheme.secondary,
+                    foregroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
                     sleepTimer(0);
@@ -859,11 +859,9 @@ class _PlayScreenState extends State<PlayScreen> {
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    primary:
-                        Theme.of(context).colorScheme.secondary == Colors.white
+                    foregroundColor: Theme.of(context).colorScheme.secondary == Colors.white
                             ? Colors.black
-                            : Colors.white,
+                            : Colors.white, backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
                     sleepTimer(_time.inMinutes);
@@ -1636,8 +1634,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               .startsWith('file')
                           //TODO: fix issue with local music image image thats low quality
 
-                          ? widget.mediaItem.artUri!.toFilePath().isEmpty ||
-                                  widget.mediaItem.artUri!.toFilePath() == null
+                          ? widget.mediaItem.artUri!.toFilePath().isEmpty
                               //expression checks for an empty mediaItem file string
                               //TODO: Add a placeholder image for null string
                               ? const Image(
