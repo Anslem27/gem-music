@@ -197,13 +197,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
-  expandable_page_view:
-    dependency: "direct main"
-    description:
-      name: expandable_page_view
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.17"
   fading_edge_scrollview:
     dependency: transitive
     description:

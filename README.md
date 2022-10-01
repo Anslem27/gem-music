@@ -33,6 +33,7 @@ Flutter music App project.
 ## TODO
 
 - Add visualizer support option
+- Add a daily shuffle from local or online music
 - Fix local music widget [images]
 - Add suitable music search API
 - Clean Out unneccesary code
