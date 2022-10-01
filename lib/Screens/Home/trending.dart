@@ -113,9 +113,9 @@ class _TrendingListState extends State<TrendingList>
       return const SizedBox();
     } else {
       return SizedBox(
-        height: boxSize + 30,
+        height: boxSize + 60,
         child: ListView.builder(
-          itemCount: showList.length,
+          itemCount: showList.take(20).length,
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
           itemBuilder: (context, index) {
@@ -163,34 +163,30 @@ class _TrendingListState extends State<TrendingList>
                             crossAxisAlignment: CrossAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Flexible(
-                                child: Text(
-                                  "${showList[index]["name"]}",
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                              Text(
+                                "${showList[index]["name"]}",
+                                textAlign: TextAlign.center,
+                                overflow: TextOverflow.ellipsis,
+                                style: GoogleFonts.roboto(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               Padding(
                                 padding:
                                     const EdgeInsets.only(left: 5.0, right: 5),
-                                child: Flexible(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      (showList[index]['artists'] as List)
-                                          .map((e) => e['name'])
-                                          .toList()
-                                          .join(',\n '),
-                                      textAlign: TextAlign.center,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.normal,
-                                        fontSize: 13,
-                                      ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    (showList[index]['artists'] as List)
+                                        .map((e) => e['name'])
+                                        .toList()
+                                        .join(',\n '),
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 13,
                                     ),
                                   ),
                                 ),

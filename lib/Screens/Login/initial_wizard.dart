@@ -7,6 +7,8 @@ import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../Helpers/local_music_functions.dart';
+
 class AuthScreen extends StatefulWidget {
   const AuthScreen({Key? key}) : super(key: key);
 
@@ -17,6 +19,7 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   TextEditingController controller = TextEditingController();
   Uuid uuid = const Uuid();
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
 
   @override
   void dispose() {
@@ -97,6 +100,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       ),
                       TextButton(
                         onPressed: () async {
+                          await offlineAudioQuery.requestPermission();
+                          setState(() {});
                           await _addUserData(
                             'Guest',
                           );
@@ -232,6 +237,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                     //     controller.text.trim(),
                                     //   );
                                     // }
+                                    await offlineAudioQuery.requestPermission();
+                                    setState(() {});
                                     await _addUserData(
                                       'Guest',
                                     );

@@ -37,7 +37,7 @@ class _BouncyPageState extends State<BouncyPage> {
 
                       //page body
 
-                      Expanded(child: widget.body),
+                      widget.body,
                     ],
                   ),
                 ),
