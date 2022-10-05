@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -19,16 +18,16 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        Positioned(
-          left: MediaQuery.of(context).size.width / 1.85,
-          child: SizedBox(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.width,
-              child: SvgPicture.asset(
-                "assets/svg/buds.svg",
-                fit: BoxFit.contain,
-              )),
-        ),
+        // Positioned(
+        //   left: MediaQuery.of(context).size.width / 1.85,
+        //   child: SizedBox(
+        //       width: MediaQuery.of(context).size.width,
+        //       height: MediaQuery.of(context).size.width,
+        //       child: SvgPicture.asset(
+        //         "assets/svg/buds.svg",
+        //         fit: BoxFit.contain,
+        //       )),
+        // ),
         ListView(
           physics: const BouncingScrollPhysics(),
           children: [

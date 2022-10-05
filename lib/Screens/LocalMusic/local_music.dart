@@ -744,7 +744,7 @@ class _AlbumsTabState extends State<AlbumsTab>
                             textAlign: TextAlign.center,
                             softWrap: false,
                             overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.montserrat(
+                            style: GoogleFonts.lato(
                               fontSize: 18,
                               fontWeight: FontWeight.w400,
                             ),
