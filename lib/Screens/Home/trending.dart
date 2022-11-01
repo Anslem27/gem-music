@@ -125,7 +125,8 @@ class _TrendingListState extends State<TrendingList>
                   context,
                   MaterialPageRoute(
                     builder: (context) => YouTubeSearchPage(
-                      query: showList[index]['name'].toString(),
+                      query:
+                          "${showList[index]['name'].toString()} ${(showList[index]['artists'] as List).map((e) => e['name']).toList().join(',\n ')}",
                     ),
                   ),
                 );

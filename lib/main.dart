@@ -8,8 +8,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:gem/Helpers/app_config.dart';
-import 'package:gem/Helpers/handle_native.dart';
-import 'package:gem/Helpers/route_handler.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
@@ -23,7 +21,6 @@ import 'package:gem/theme/app_theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'Screens/Library/playlist_view.dart';
 
@@ -128,23 +125,6 @@ class _MyAppState extends State<MyApp> {
     AppTheme.currentTheme.addListener(() {
       setState(() {});
     });
-
-    // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
-      (String value) {
-        handleSharedText(value, navigatorKey);
-      },
-      onError: (err) {
-        // print("ERROR in getTextStream: $err");
-      },
-    );
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then(
-      (String? value) {
-        if (value != null) handleSharedText(value, navigatorKey);
-      },
-    );
   }
 
   void setLocale(Locale value) {
@@ -204,9 +184,6 @@ class _MyAppState extends State<MyApp> {
         '/downloads': (context) => const Downloads(),
       },
       navigatorKey: navigatorKey,
-      onGenerateRoute: (RouteSettings settings) {
-        return HandleRoute.handleRoute(settings.name);
-      },
     );
   }
 }

@@ -1,10 +1,7 @@
 // ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
-import 'dart:convert';
 
-import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/add_playlist.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
@@ -14,6 +11,9 @@ import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
+import 'package:gem/Screens/LocalMusic/pages/albums_page.dart';
+import 'package:gem/Screens/LocalMusic/pages/local_artists.dart';
+import 'package:gem/Screens/LocalMusic/pages/local_genres.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
 import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -23,7 +23,6 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-import '../../Helpers/mediaitem_converter.dart';
 import '../Library/downloads.dart';
 
 class DownloadedSongs extends StatefulWidget {
@@ -46,13 +45,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
     with TickerProviderStateMixin {
   List<SongModel> _songs = [];
   String? tempPath = Hive.box('settings').get('tempDirPath')?.toString();
-  final Map<String, List<SongModel>> _albums = {};
-  final Map<String, List<SongModel>> _artists = {};
-  final Map<String, List<SongModel>> _genres = {};
-
-  final List<String> _sortedAlbumKeysList = [];
-  final List<String> _sortedArtistKeysList = [];
-  final List<String> _sortedGenreKeysList = [];
 
   bool added = false;
   int sortValue = Hive.box('settings').get('sortValue', defaultValue: 1) as int;
@@ -130,34 +122,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
     }
     added = true;
     setState(() {});
-    for (int i = 0; i < _songs.length; i++) {
-      if (_albums.containsKey(_songs[i].album)) {
-        _albums[_songs[i].album]!.add(_songs[i]);
-      } else {
-        _albums.addEntries([
-          MapEntry(_songs[i].album!, [_songs[i]])
-        ]);
-        _sortedAlbumKeysList.add(_songs[i].album!);
-      }
-
-      if (_artists.containsKey(_songs[i].artist)) {
-        _artists[_songs[i].artist]!.add(_songs[i]);
-      } else {
-        _artists.addEntries([
-          MapEntry(_songs[i].artist!, [_songs[i]])
-        ]);
-        _sortedArtistKeysList.add(_songs[i].artist!);
-      }
-
-      if (_genres.containsKey(_songs[i].genre)) {
-        _genres[_songs[i].genre]!.add(_songs[i]);
-      } else {
-        _genres.addEntries([
-          MapEntry(_songs[i].genre!, [_songs[i]])
-        ]);
-        _sortedGenreKeysList.add(_songs[i].genre!);
-      }
-    }
   }
 
   Future<void> sortSongs(int sortVal, int order) async {
@@ -366,21 +330,9 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                             playlistName: widget.title,
                             tempPath: tempPath!,
                           ),
-                          AlbumsTab(
-                            albums: _albums,
-                            albumsList: _sortedAlbumKeysList,
-                            tempPath: tempPath!,
-                          ),
-                          AlbumsTab(
-                            albums: _artists,
-                            albumsList: _sortedArtistKeysList,
-                            tempPath: tempPath!,
-                          ),
-                          AlbumsTab(
-                            albums: _genres,
-                            albumsList: _sortedGenreKeysList,
-                            tempPath: tempPath!,
-                          ),
+                          const LocalAlbumsPage(),
+                          const LocalArtistsPage(),
+                          const LocalGenresPage(),
                           if (widget.showPlaylists)
                             LocalPlaylists(
                               playlistDetails: playlistDetails,
@@ -396,23 +348,6 @@ class _DownloadedSongsState extends State<DownloadedSongs>
       ),
     );
   }
-}
-
-Future<void> addRecentlyPlayed(MediaItem mediaitem) async {
-  List recentList = await Hive.box('cache')
-      .get('recentSongs', defaultValue: [])?.toList() as List;
-
-  final Map item = MediaItemConverter.mediaItemToMap(mediaitem);
-  recentList.insert(0, item);
-
-  final jsonList = recentList.map((item) => jsonEncode(item)).toList();
-  final uniqueJsonList = jsonList.toSet().toList();
-  recentList = uniqueJsonList.map((item) => jsonDecode(item)).toList();
-
-  if (recentList.length > 30) {
-    recentList = recentList.sublist(0, 30);
-  }
-  Hive.box('cache').put('recentSongs', recentList);
 }
 
 class SongsTab extends StatefulWidget {
@@ -654,123 +589,5 @@ class _SongsTabState extends State<SongsTab>
               ),
             ],
           );
-  }
-}
-
-class AlbumsTab extends StatefulWidget {
-  final Map<String, List<SongModel>> albums;
-  final List<String> albumsList;
-  final String tempPath;
-  const AlbumsTab({
-    super.key,
-    required this.albums,
-    required this.albumsList,
-    required this.tempPath,
-  });
-
-  @override
-  State<AlbumsTab> createState() => _AlbumsTabState();
-}
-
-class _AlbumsTabState extends State<AlbumsTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    double boxSize =
-        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
-            ? MediaQuery.of(context).size.width / 2
-            : MediaQuery.of(context).size.height / 2.5;
-    // return ListView.builder(
-    //   physics: const BouncingScrollPhysics(),
-    //   padding: const EdgeInsets.only(top: 20, bottom: 10),
-    //   shrinkWrap: true,
-    //   itemExtent: 70.0,
-    //   itemCount: widget.albumsList.length,
-    //   itemBuilder: (context, index) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8.0),
-      child: StaggeredGridView.countBuilder(
-        shrinkWrap: true,
-        crossAxisCount: 2,
-        mainAxisSpacing: 0,
-        itemCount: widget.albumsList.length,
-        physics: const BouncingScrollPhysics(),
-        staggeredTileBuilder: (int index) {
-          return const StaggeredTile.count(1, 1.2);
-        },
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DownloadedSongs(
-                    title: widget.albumsList[index],
-                    cachedSongs: widget.albums[widget.albumsList[index]],
-                  ),
-                ),
-              );
-            },
-            child: Stack(
-              children: [
-                Card(
-                  color: Colors.transparent,
-                  elevation: 0,
-                  margin: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Column(
-                    children: [
-                      SizedBox(
-                          child: OfflineAudioQuery.offlineArtworkWidget(
-                        id: widget.albums[widget.albumsList[index]]![0].id,
-                        type: ArtworkType.ALBUM,
-                        height: boxSize - 35,
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        tempPath: widget.tempPath,
-                        fileName: widget.albums[widget.albumsList[index]]![0]
-                            .displayNameWOExt,
-                      )),
-                      Expanded(
-                        child: ListTile(
-                          title: Text(
-                            widget.albumsList[index],
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.lato(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          subtitle: Text(
-                            widget.albums[widget.albumsList[index]]!.length > 1
-                                ? '${widget.albums[widget.albumsList[index]]!.length} Songs'
-                                : '${widget.albums[widget.albumsList[index]]!.length} Song',
-                            textAlign: TextAlign.center,
-                            softWrap: false,
-                            overflow: TextOverflow.ellipsis,
-                            style: GoogleFonts.roboto(
-                              fontSize: 14,
-                              color: Colors.grey,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
   }
 }

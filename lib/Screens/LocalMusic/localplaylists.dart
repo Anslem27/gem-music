@@ -209,7 +209,17 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                                             Text('Delete'),
                                           ],
                                         ),
-                                      )
+                                      ),
+                                      // PopupMenuItem(
+                                      //   value: 1,
+                                      //   child: Row(
+                                      //     children: const [
+                                      //       Icon(Icons.edit),
+                                      //       SizedBox(width: 10.0),
+                                      //       Text('Rename'),
+                                      //     ],
+                                      //   ),
+                                      // )
                                     ],
                                     onSelected: (int? value) async {
                                       if (value == 0) {
@@ -230,7 +240,27 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                                           );
                                         }
                                       }
-                                      setState(() {});
+                                      // if (value == 1) {
+                                      //   await showTextInputDialog(
+                                      //     context: context,
+                                      //     title: 'Add new playlist name',
+                                      //     initialText: '',
+                                      //     keyboardType: TextInputType.text,
+                                      //     onSubmitted: (name) async {
+                                      //       Navigator.pop(context);
+                                      //       await widget.offlineAudioQuery
+                                      //           .renamePlaylist(
+                                      //         playlistId:
+                                      //             playlistDetails[index].id,
+                                      //         newName: name,
+                                      //       );
+
+                                      //       setState(() {});
+                                      //     },
+                                      //   );
+
+                                      //   setState(() {});
+                                      // }
                                     },
                                   ),
                                 ],

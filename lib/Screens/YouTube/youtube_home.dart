@@ -100,7 +100,7 @@ class _YouTubeState extends State<YouTube>
                   height: 140, width: 100),
               const SizedBox(height: 20),
               Text(
-                "Try seraching\nsome music",
+                "Try searching\nsome music",
                 textAlign: TextAlign.center,
                 style: GoogleFonts.lato(
                   fontSize: 22,

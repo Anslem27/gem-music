@@ -55,7 +55,7 @@ Future<void> sharePlaylist(
 
   await Share.shareFiles(
     [file.path],
-    text: 'Hey there, try this paylist out',
+    text: 'Hey there, try this playlist out',
   );
   await Future.delayed(const Duration(seconds: 10), () {});
   if (await file.exists()) {

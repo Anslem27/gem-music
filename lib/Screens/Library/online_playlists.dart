@@ -73,6 +73,7 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                       playlistNames.add(value);
                       settingsBox.put('playlistNames', playlistNames);
                       Navigator.pop(context);
+                      setState(() {});
                     },
                   );
                 },
