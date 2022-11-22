@@ -1,3 +1,4 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/collage.dart';
@@ -6,10 +7,7 @@ import 'package:gem/CustomWidgets/on_hover.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/widgets/bouncy_page.dart';
 import 'package:gem/Screens/Player/audioplayer_page.dart';
-import 'package:gem/Screens/Search/artists.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../Helpers/local_music_functions.dart';
 import '../../Services/spotify_playlist_downloader.dart';
@@ -17,7 +15,7 @@ import '../Library/import.dart';
 import '../Library/online_playlists.dart';
 import '../LocalMusic/local_music.dart';
 import '../LocalMusic/localplaylists.dart';
-import 'trending.dart';
+import 'components/home_components.dart';
 
 bool fetched = false;
 List likedRadio =
@@ -161,20 +159,7 @@ class _HomeViewPageState extends State<HomeViewPage>
               /* Last Session */
               : Column(
                   children: [
-                    Row(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                          child: Text(
-                            'Last Session',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    _homeTitleComponent("LAST SESSION"),
                     HorizontalAlbumsList(
                       songsList: recentList,
                       onTap: (int idx) {
@@ -210,20 +195,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: Text(
-                              'Music library',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      _homeTitleComponent("MUSIC LIBRARY"),
                       SizedBox(
                         height: boxSize + 50,
                         child: ListView.builder(
@@ -242,7 +214,10 @@ class _HomeViewPageState extends State<HomeViewPage>
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      Icon(Iconsax.paperclip,
+                                      Icon(
+                                          val == 0
+                                              ? EvaIcons.music
+                                              : EvaIcons.recording,
                                           color: Theme.of(context)
                                               .colorScheme
                                               .secondary),
@@ -254,8 +229,8 @@ class _HomeViewPageState extends State<HomeViewPage>
                                   Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: SizedBox(
-                                      height: boxSize + 5,
-                                      width: boxSize - 10,
+                                      height: boxSize - 20,
+                                      width: boxSize - 30,
                                       child: Image.asset(
                                         musicLibImages[val],
                                         height: boxSize,
@@ -268,27 +243,20 @@ class _HomeViewPageState extends State<HomeViewPage>
                           },
                         ),
                       ),
-                      Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: Text(
-                              'Trending on Streaming Platforms',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      const TrendingList(type: 'top'),
+                      _homeTitleComponent("RECENTLY ADDED"),
+                      const RecentlyAddedSongs(),
+                      _homeTitleComponent("ALBUMS"),
+                      const HomeAlbums(),
+                      _homeTitleComponent("GENRES"),
+                      const HomeGenres(),
+                      _homeTitleComponent("ARTISTS"),
+                      const ArtistsAtAGlance(),
                       // Row(
                       //   children: const [
                       //     Padding(
                       //       padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                       //       child: Text(
-                      //         'Top UK',
+                      //         'Trending on Streaming Platforms',
                       //         style: TextStyle(
                       //           fontSize: 25,
                       //           fontWeight: FontWeight.w500,
@@ -297,15 +265,15 @@ class _HomeViewPageState extends State<HomeViewPage>
                       //     ),
                       //   ],
                       // ),
-                      // const TopUk(),
+                      //const TrendingList(type: 'top'),
                       Row(
                         children: const [
                           Padding(
                             padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                             child: Text(
-                              'Playlist library',
+                              'PLAYLIST LIBRARY',
                               style: TextStyle(
-                                fontSize: 25,
+                                fontSize: 17,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -349,8 +317,8 @@ class _HomeViewPageState extends State<HomeViewPage>
                                   Padding(
                                     padding: const EdgeInsets.all(5.0),
                                     child: SizedBox(
-                                      height: boxSize + 5,
-                                      width: boxSize - 10,
+                                      height: boxSize - 20,
+                                      width: boxSize - 30,
                                       child: Image.asset(
                                         playlistImages[val],
                                         height: boxSize,
@@ -363,42 +331,6 @@ class _HomeViewPageState extends State<HomeViewPage>
                           },
                         ),
                       ),
-                      Row(
-                        children: const [
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
-                            child: Text(
-                              'Import Playlists',
-                              style: TextStyle(
-                                fontSize: 25,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          importElement(context, boxSize, () {
-                            importYt(
-                              context,
-                              getPlaylists,
-                              fetchBox,
-                            );
-                          }, "Import from\nYoutube", "assets/album.png"),
-                          importElement(context, boxSize, () {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (_) => const SpotifyPlaylistGetter(),
-                              ),
-                            );
-                          }, "Import from\nSpotify", "assets/album.png"),
-                        ],
-                      ),
                       /* Local playlists List */
                       offlinePlaylists.isNotEmpty
                           ? Column(
@@ -409,9 +341,9 @@ class _HomeViewPageState extends State<HomeViewPage>
                                       padding:
                                           EdgeInsets.fromLTRB(0, 10, 0, 10),
                                       child: Text(
-                                        'Local Playlists',
+                                        'LOCAL PLAYLISTS',
                                         style: TextStyle(
-                                          fontSize: 25,
+                                          fontSize: 17,
                                           fontWeight: FontWeight.w500,
                                         ),
                                       ),
@@ -539,8 +471,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                                                       TextOverflow
                                                                           .ellipsis,
                                                                   style:
-                                                                      GoogleFonts
-                                                                          .roboto(
+                                                                      const TextStyle(
                                                                     fontSize:
                                                                         16,
                                                                     fontWeight:
@@ -572,8 +503,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                                                       TextOverflow
                                                                           .ellipsis,
                                                                   style:
-                                                                      GoogleFonts
-                                                                          .roboto(
+                                                                      const TextStyle(
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -605,9 +535,9 @@ class _HomeViewPageState extends State<HomeViewPage>
                           Padding(
                             padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
                             child: Text(
-                              'Online Playlists',
+                              'ONLINE PLAYLISTS',
                               style: TextStyle(
-                                fontSize: 25,
+                                fontSize: 17,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -681,7 +611,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                       margin: EdgeInsets.zero,
                                       shape: RoundedRectangleBorder(
                                         borderRadius:
-                                            BorderRadius.circular(10.0),
+                                            BorderRadius.circular(1.0),
                                       ),
                                       clipBehavior: Clip.antiAlias,
                                       child: Column(
@@ -773,52 +703,67 @@ class _HomeViewPageState extends State<HomeViewPage>
                             );
                           },
                         ),
-                      )
+                      ),
+                      Row(
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.fromLTRB(0, 10, 0, 10),
+                            child: Text(
+                              'IMPORT PLAYLIST',
+                              style: TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          importElement(context, boxSize, () {
+                            importYt(
+                              context,
+                              getPlaylists,
+                              fetchBox,
+                            );
+                          }, "Import from\nYoutube", "assets/album.png"),
+                          importElement(context, boxSize, () {
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (_) => const SpotifyPlaylistGetter(),
+                              ),
+                            );
+                          }, "Import from\nSpotify", "assets/album.png"),
+                        ],
+                      ),
                     ],
                   ),
                 );
         }
 
-        /* Liked Artitsts */
-        if (lists[idx] == 'likedArtists') {
-          final List likedArtistsList = likedArtists.values.toList();
-          return likedArtists.isEmpty
-              ? const SizedBox()
-              : Column(
-                  children: [
-                    Row(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                          child: Text(
-                            'Liked Artist',
-                            style: TextStyle(
-                              fontSize: 25,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    HorizontalAlbumsList(
-                      songsList: likedArtistsList,
-                      onTap: (int idx) {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => ArtistSearchPage(
-                              data: likedArtistsList[idx] as Map,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-        }
         return const SizedBox();
       },
+    );
+  }
+
+  Row _homeTitleComponent(String title) {
+    return Row(
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
+          child: Text(
+            title,
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -850,7 +795,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                 child: Text(
                   title,
                   textAlign: TextAlign.start,
-                  style: GoogleFonts.roboto(
+                  style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.w500,
                   ),

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -18,16 +17,6 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // Positioned(
-        //   left: MediaQuery.of(context).size.width / 1.85,
-        //   child: SizedBox(
-        //       width: MediaQuery.of(context).size.width,
-        //       height: MediaQuery.of(context).size.width,
-        //       child: SvgPicture.asset(
-        //         "assets/svg/buds.svg",
-        //         fit: BoxFit.contain,
-        //       )),
-        // ),
         ListView(
           physics: const BouncingScrollPhysics(),
           children: [
@@ -49,7 +38,7 @@ class _LibraryPageState extends State<LibraryPage> {
                     const SizedBox(width: 10),
                     Text(
                       "Your Library",
-                      style: GoogleFonts.roboto(
+                      style: TextStyle(
                         color: Theme.of(context).iconTheme.color,
                         fontSize: 28,
                       ),
@@ -147,8 +136,8 @@ class LibraryTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style: GoogleFonts.roboto(
-              color: Theme.of(context).iconTheme.color, fontSize: 18),
+          style:
+              TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 18),
         ),
         leading: Icon(icon, size: 25),
         onTap: onTap,
