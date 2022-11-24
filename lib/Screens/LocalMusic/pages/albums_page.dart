@@ -99,7 +99,7 @@ class _LocalAlbumsPageState extends State<LocalAlbumsPage> {
                           QueryArtworkWidget(
                               id: local_albums[index].id,
                               type: ArtworkType.ALBUM,
-                              artworkHeight: boxSize - 35,
+                              artworkHeight: boxSize - 15,
                               artworkWidth:
                                   MediaQuery.of(context).size.width / 2.5,
                               artworkBorder: BorderRadius.circular(7.0),
@@ -147,7 +147,7 @@ class _LocalAlbumsPageState extends State<LocalAlbumsPage> {
               );
             },
             staggeredTileBuilder: (int index) {
-              return const StaggeredTile.count(1, 1.2);
+              return const StaggeredTile.count(1, 1.25);
             },
           ),
         )

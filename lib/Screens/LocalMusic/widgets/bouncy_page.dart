@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/Screens/LocalMusic/widgets/preview_page.dart';
 import '../../../CustomWidgets/miniplayer.dart';
 
 class BouncyPage extends StatefulWidget {
@@ -22,29 +22,37 @@ class _BouncyPageState extends State<BouncyPage> {
   @override
   Widget build(BuildContext context) {
     return GradientContainer(
-      child: Column(
+      child: Stack(
         children: [
-          Expanded(
-            child: Scaffold(
-              backgroundColor: Colors.transparent,
-              body: BouncyImageSliverScrollView(
-                imageUrl: widget.imageUrl,
-                placeholderImage: widget.imageUrl,
-                sliverList: SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      const MiniPlayer(),
+          Column(
+            children: [
+              Expanded(
+                child: Scaffold(
+                  backgroundColor: Colors.transparent,
+                  body: PreviewPage(
+                    //localImage: true,
+                    isSong: false,
+                    imageUrl: widget.imageUrl,
+                    placeholderImage: widget.imageUrl,
+                    sliverList: SliverList(
+                      delegate: SliverChildListDelegate(
+                        [
+                          //page body
 
-                      //page body
-
-                      widget.body,
-                    ],
+                          widget.body,
+                        ],
+                      ),
+                    ),
+                    title: widget.title,
+                    shrinkWrap: true,
                   ),
                 ),
-                title: widget.title,
-                shrinkWrap: true,
-              ),
-            ),
+              )
+            ],
+          ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: MiniPlayer(),
           )
         ],
       ),

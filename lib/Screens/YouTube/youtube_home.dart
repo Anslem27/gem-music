@@ -1,11 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:glassmorphism/glassmorphism.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:gem/Services/youtube_services.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
+import 'logic/suggestions.dart';
 
 bool status = false;
 List searchedList = Hive.box('cache').get('ytHome', defaultValue: []) as List;
@@ -91,23 +92,161 @@ class _YouTubeState extends State<YouTube>
           );
           _controller.text = '';
         },
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SvgPicture.asset("assets/svg/yt_search.svg",
-                  height: 140, width: 100),
-              const SizedBox(height: 20),
-              Text(
-                "Try searching\nsome music",
-                textAlign: TextAlign.center,
-                style: GoogleFonts.lato(
-                  fontSize: 22,
-                  color: Theme.of(context).colorScheme.secondary,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 68.0),
+          child: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(8, 15, 0, 15),
+                      child: Text(
+                        'IDEAS FOR YOU', //popular on Gem
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+                StaggeredGridView.countBuilder(
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  itemCount: ytSuggestions.length,
+                  itemBuilder: (_, index) {
+                    return GestureDetector(
+                      onTap: () async {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            opaque: false,
+                            pageBuilder: (_, __, ___) => YouTubeSearchPage(
+                              query: "${ytSuggestions[index]} music",
+                            ),
+                          ),
+                        );
+                      },
+                      child: Stack(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: GlassmorphicContainer(
+                              width: boxSize - 0,
+                              height: boxSize - 100,
+                              borderRadius: 8,
+                              blur: 20,
+                              alignment: Alignment.bottomCenter,
+                              border: 2,
+                              linearGradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    const Color(0xFFffffff).withOpacity(0.1),
+                                    const Color(0xFFFFFFFF).withOpacity(0.05),
+                                  ],
+                                  stops: const [
+                                    0.1,
+                                    1,
+                                  ]),
+                              borderGradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.transparent
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  ytSuggestions[index],
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                  staggeredTileBuilder: (int index) {
+                    return const StaggeredTile.count(1, 0.5);
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: const [
+                    Padding(
+                      padding: EdgeInsets.fromLTRB(8, 15, 0, 15),
+                      child: Text(
+                        'CHARTS AND MORE', //popular on Gem
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.start,
+                //   children: [_chartCard(boxSize), _popularCard(boxSize)],
+                // ),
+                StaggeredGridView.countBuilder(
+                  physics: const BouncingScrollPhysics(),
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  itemCount: chartsMore.length,
+                  itemBuilder: (_, index) {
+                    return GestureDetector(
+                      onTap: () async {},
+                      child: Padding(
+                        padding: const EdgeInsets.all(5.0),
+                        child: SizedBox(
+                          height: boxSize + 10,
+                          width: boxSize - 40,
+                          child: GestureDetector(
+                            onTap: () {},
+                            child: Column(
+                              children: [
+                                Image.asset(
+                                  chartImg[index],
+                                  height: boxSize - 20,
+                                ),
+                                Expanded(
+                                  child: ListTile(
+                                    title: Text(
+                                      chartsMore[index],
+                                      textAlign: TextAlign.center,
+                                      softWrap: false,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                  staggeredTileBuilder: (int index) {
+                    return const StaggeredTile.count(1, 1.2);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -7,6 +7,7 @@ import 'dart:ui' as ui;
 
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -859,9 +860,11 @@ class _PlayScreenState extends State<PlayScreen> {
                 ),
                 TextButton(
                   style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.secondary == Colors.white
+                    foregroundColor:
+                        Theme.of(context).colorScheme.secondary == Colors.white
                             ? Colors.black
-                            : Colors.white, backgroundColor: Theme.of(context).colorScheme.secondary,
+                            : Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
                   ),
                   onPressed: () {
                     sleepTimer(_time.inMinutes);
@@ -982,7 +985,7 @@ class ControlButtons extends StatelessWidget {
                 final queueState = snapshot.data;
                 return IconButton(
                   icon: const Icon(Icons.skip_previous_rounded),
-                  iconSize: miniplayer ? 24.0 : 45.0,
+                  iconSize: miniplayer ? 35.0 : 45.0,
                   tooltip: "Skip previous",
                   color: dominantColor ?? Theme.of(context).iconTheme.color,
                   onPressed: queueState?.hasPrevious ?? true
@@ -993,8 +996,8 @@ class ControlButtons extends StatelessWidget {
             );
           case 'Play/Pause':
             return SizedBox(
-              height: miniplayer ? 40.0 : 65.0,
-              width: miniplayer ? 40.0 : 65.0,
+              height: miniplayer ? 55.0 : 65.0,
+              width: miniplayer ? 55.0 : 65.0,
               child: StreamBuilder<PlaybackState>(
                 stream: audioHandler.playbackState,
                 builder: (context, snapshot) {
@@ -1028,19 +1031,16 @@ class ControlButtons extends StatelessWidget {
                                   icon: const Icon(
                                     Icons.pause_rounded,
                                   ),
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
+                                  color: Colors.white,
                                 )
                               : IconButton(
                                   tooltip: 'Play',
                                   onPressed: audioHandler.play,
                                   icon: const Icon(
                                     Icons.play_arrow_rounded,
+                                    size: 35,
                                   ),
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary,
+                                  color: Colors.white,
                                 ),
                         )
                       else
@@ -1067,9 +1067,7 @@ class ControlButtons extends StatelessWidget {
                                   : FloatingActionButton(
                                       elevation: 10,
                                       tooltip: "Play",
-                                      backgroundColor: Theme.of(
-                                        context,
-                                      ).colorScheme.secondary,
+                                      backgroundColor: Colors.white,
                                       onPressed: audioHandler.play,
                                       child: const Icon(
                                         Icons.play_arrow_rounded,
@@ -1092,7 +1090,7 @@ class ControlButtons extends StatelessWidget {
                 final queueState = snapshot.data;
                 return IconButton(
                   icon: const Icon(Icons.skip_next_rounded),
-                  iconSize: miniplayer ? 24.0 : 45.0,
+                  iconSize: miniplayer ? 35.0 : 45.0,
                   tooltip: 'Skip to next',
                   color: dominantColor ?? Theme.of(context).iconTheme.color,
                   onPressed: queueState?.hasNext ?? true
@@ -1691,19 +1689,20 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                                           child: SliderTheme(
                                             data: SliderTheme.of(context)
                                                 .copyWith(
-                                              thumbShape:
-                                                  HiddenThumbComponentShape(),
-                                              activeTrackColor:
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
+                                              activeTrackColor: Colors.white,
                                               inactiveTrackColor:
-                                                  Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary
-                                                      .withOpacity(0.4),
-                                              trackShape:
-                                                  const RoundedRectSliderTrackShape(),
+                                                  Colors.transparent,
+                                              trackHeight: 0,
+                                              thumbColor: Colors.white,
+                                              thumbShape:
+                                                  const RoundSliderThumbShape(
+                                                enabledThumbRadius: 1.0,
+                                              ),
+                                              overlayColor: Colors.transparent,
+                                              overlayShape:
+                                                  const RoundSliderOverlayShape(
+                                                overlayRadius: 0,
+                                              ),
                                             ),
                                             child: ExcludeSemantics(
                                               child: Slider(
@@ -1874,7 +1873,7 @@ class NameNControls extends StatelessWidget {
                         child: Row(
                           children: const [
                             Icon(
-                              Icons.person_rounded,
+                              EvaIcons.person,
                             ),
                             SizedBox(width: 10.0),
                             Text(
@@ -1888,6 +1887,8 @@ class NameNControls extends StatelessWidget {
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: width * 0.1),
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SizedBox(
@@ -1899,14 +1900,15 @@ class NameNControls extends StatelessWidget {
                             text: mediaItem.title
                                 .split(' (')[0]
                                 .split('|')[0]
-                                .trim(),
+                                .trim()
+                                .toUpperCase(),
                             pauseAfterRound: const Duration(seconds: 3),
                             showFadingOnlyWhenScrolling: false,
                             fadingEdgeEndFraction: 0.1,
                             fadingEdgeStartFraction: 0.1,
                             startAfter: const Duration(seconds: 2),
-                            style: TextStyle(
-                              fontSize: titleBoxHeight / 2.75,
+                            style: const TextStyle(
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                               // color: Theme.of(context).accentColor,
                             ),
@@ -1995,10 +1997,10 @@ class NameNControls extends StatelessWidget {
                                   return IconButton(
                                     icon: shuffleModeEnabled
                                         ? const Icon(
-                                            Icons.shuffle_rounded,
+                                            EvaIcons.shuffle2,
                                           )
                                         : Icon(
-                                            Icons.shuffle_rounded,
+                                            EvaIcons.shuffle2,
                                             color:
                                                 Theme.of(context).disabledColor,
                                           ),
@@ -2035,11 +2037,11 @@ class NameNControls extends StatelessWidget {
                                   const texts = ['None', 'All', 'One'];
                                   final icons = [
                                     Icon(
-                                      Icons.repeat_rounded,
+                                      EvaIcons.repeat,
                                       color: Theme.of(context).disabledColor,
                                     ),
                                     const Icon(
-                                      Icons.repeat_rounded,
+                                      EvaIcons.repeat,
                                     ),
                                     const Icon(
                                       Icons.repeat_one_rounded,

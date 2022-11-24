@@ -19,6 +19,7 @@ import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'components/drawer.dart';
+import 'components/home_logic.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -317,17 +318,17 @@ class _HomePageState extends State<HomePage> {
                   size: 25,
                 ),
                 selectedIcon: const Icon(
-                  EvaIcons.search,
+                  CupertinoIcons.search,
                   size: 25,
                 ),
               ),
               CustomNavigationBarItem(
                 icon: const Icon(
-                  EvaIcons.musicOutline,
+                  EvaIcons.speakerOutline,
                   size: 25,
                 ),
                 selectedIcon: const Icon(
-                  EvaIcons.music,
+                  EvaIcons.speaker,
                   size: 25,
                 ),
               ),
@@ -353,73 +354,6 @@ class _HomePageState extends State<HomePage> {
         bool innerBoxScrolled,
       ) {
         return <Widget>[
-          // SliverAppBar(
-          //   //expandedHeight: 135,
-          //   backgroundColor: Colors.transparent,
-          //   elevation: 0,
-          //   //pinned: true,
-          //   toolbarHeight: 65,
-          //   // floating: true,
-          //   automaticallyImplyLeading: false,
-          //   flexibleSpace: LayoutBuilder(
-          //     builder: (
-          //       context,
-          //       constraints,
-          //     ) {
-          //       return FlexibleSpaceBar(
-          //         background: Column(
-          //           mainAxisSize: MainAxisSize.min,
-          //           children: <Widget>[
-          //             //const SizedBox(height: 40),
-          //             // Row(
-          //             //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          //             //   children: [
-          //             //     Padding(
-          //             //       padding: const EdgeInsets.only(
-          //             //         left: 15.0,
-          //             //       ),
-          //             //       child: Text(
-          //             //         "Gem Music",
-          //             //         style: GoogleFonts.ubuntu(
-          //             //           letterSpacing: 2,
-          //             //           color: Theme.of(
-          //             //             context,
-          //             //           ).colorScheme.secondary,
-          //             //           fontSize: 40,
-          //             //           fontWeight: FontWeight.w400,
-          //             //         ),
-          //             //       ),
-          //             //     ),
-          //             //     const Spacer(),
-          //             //     IconButton(
-          //             //       splashRadius: 24,
-          //             //       onPressed: () {
-          //             //         Navigator.pushNamed(
-          //             //           context,
-          //             //           '/recent',
-          //             //         );
-          //             //       },
-          //             //       icon: const Icon(
-          //             //         Icons.history_rounded,
-          //             //         size: 25,
-          //             //       ),
-          //             //     ),
-          //             //     IconButton(
-          //             //       splashRadius: 24,
-          //             //       onPressed: () {
-          //             //         Scaffold.of(context).openDrawer();
-          //             //       },
-          //             //       icon: const Icon(Iconsax.setting, size: 25),
-          //             //     ),
-          //             //   ],
-          //             // ),
-          //           ],
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
-          //const SizedBox(height: 20),
           SliverAppBar(
             automaticallyImplyLeading: false,
             expandedHeight: 100,
@@ -437,17 +371,22 @@ class _HomePageState extends State<HomePage> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        const Padding(
-                          padding: EdgeInsets.fromLTRB(0, 15, 0, 15),
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                           child: Text(
-                            'GOOD EVENING',
-                            style: TextStyle(
+                            greeting().toUpperCase(),
+                            style: const TextStyle(
                               fontSize: 18.5,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                         const Spacer(),
+                        IconButton(
+                          onPressed: () {},
+                          splashRadius: 24,
+                          icon: const Icon(EvaIcons.speakerOutline),
+                        ),
                         IconButton(
                           splashRadius: 24,
                           onPressed: () {

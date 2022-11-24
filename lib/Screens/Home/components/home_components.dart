@@ -1,10 +1,12 @@
 // ignore_for_file: non_constant_identifier_names
 
+import 'package:audio_service/audio_service.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
+import 'package:gem/Screens/LocalMusic/widgets/preview_page.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../../Helpers/local_music_functions.dart';
-
-//recently added songs
 
 class RecentlyAddedSongs extends StatefulWidget {
   const RecentlyAddedSongs({super.key});
@@ -44,9 +46,9 @@ class _RecentlyAddedSongsState extends State<RecentlyAddedSongs> {
     return SizedBox(
       height: boxSize + 40,
       child: ListView.builder(
-        itemCount: recntly_added.length,
+        itemCount: recntly_added.take(10).length,
         scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (_, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -118,6 +120,7 @@ class _HomeAlbumsState extends State<HomeAlbums> {
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
   List<AlbumModel> home_albums = [];
   bool loading = false;
+  late final MediaItem mediaItem;
 
   Future<void> fetchSongs() async {
     await offlineAudioQuery.requestPermission();
@@ -146,9 +149,9 @@ class _HomeAlbumsState extends State<HomeAlbums> {
     return SizedBox(
       height: boxSize + 40,
       child: ListView.builder(
-        itemCount: home_albums.length,
+        itemCount: home_albums.take(10).length,
         scrollDirection: Axis.horizontal,
-        physics: const ClampingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         itemBuilder: (_, index) {
           return Padding(
             padding: const EdgeInsets.all(8.0),
@@ -157,19 +160,44 @@ class _HomeAlbumsState extends State<HomeAlbums> {
               width: boxSize - 40,
               child: Column(
                 children: [
-                  QueryArtworkWidget(
-                    id: home_albums[index].id,
-                    type: ArtworkType.ALBUM,
-                    artworkHeight: boxSize - 35,
-                    artworkWidth: boxSize - 40,
-                    artworkBorder: BorderRadius.circular(7.0),
-                    nullArtworkWidget: ClipRRect(
-                      borderRadius: BorderRadius.circular(7.0),
-                      child: Image(
-                        fit: BoxFit.cover,
-                        height: boxSize - 35,
-                        width: MediaQuery.of(context).size.width / 2.5,
-                        image: const AssetImage('assets/album.png'),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (_) => PreviewPage(
+                            imageUrl: "assets/album.png",
+                            sliverList: const SizedBox(),
+                            title: home_albums[index].album,
+                            isSong: true,
+                            actions: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: IconButton(
+                                  splashRadius: 24,
+                                  onPressed: () {},
+                                  icon: const Icon(EvaIcons.shuffle2),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                    child: QueryArtworkWidget(
+                      id: home_albums[index].id,
+                      type: ArtworkType.ALBUM,
+                      artworkHeight: boxSize - 35,
+                      artworkWidth: boxSize - 40,
+                      artworkBorder: BorderRadius.circular(7.0),
+                      nullArtworkWidget: ClipRRect(
+                        borderRadius: BorderRadius.circular(7.0),
+                        child: Image(
+                          fit: BoxFit.cover,
+                          height: boxSize - 35,
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          image: const AssetImage('assets/album.png'),
+                        ),
                       ),
                     ),
                   ),
@@ -247,7 +275,7 @@ class _HomeGenresState extends State<HomeGenres> {
     return SizedBox(
       height: boxSize + 20,
       child: ListView.builder(
-        itemCount: home_genres.length,
+        itemCount: home_genres.take(10).length,
         scrollDirection: Axis.horizontal,
         physics: const ClampingScrollPhysics(),
         itemBuilder: (_, index) {
@@ -348,7 +376,7 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
     return SizedBox(
       height: boxSize + 40,
       child: ListView.builder(
-        itemCount: a_glance.length,
+        itemCount: a_glance.take(10).length,
         scrollDirection: Axis.horizontal,
         physics: const ClampingScrollPhysics(),
         itemBuilder: (_, index) {
@@ -364,7 +392,6 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
                     type: ArtworkType.AUDIO,
                     artworkHeight: boxSize - 35,
                     artworkWidth: boxSize - 40,
-                    
                     artworkBorder: BorderRadius.circular(7.0),
                     nullArtworkWidget: ClipRRect(
                       borderRadius: BorderRadius.circular(100.0),

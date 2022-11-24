@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -57,20 +58,27 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
     return GradientContainer(
         child: Scaffold(
       backgroundColor: Colors.transparent,
-      body: CustomScrollView(
-        shrinkWrap: true,
-        physics: const BouncingScrollPhysics(),
-        slivers: [
-          _sliverTopBar(expandedHeight, rotated),
-          SliverList(
-            delegate: SliverChildListDelegate(
-              [
-                const MiniPlayer(),
-                // page body
-                _songWidget(boxSize),
-              ],
-            ),
+      body: Stack(
+        children: [
+          CustomScrollView(
+            shrinkWrap: true,
+            physics: const BouncingScrollPhysics(),
+            slivers: [
+              _sliverTopBar(expandedHeight, rotated, boxSize),
+              SliverList(
+                delegate: SliverChildListDelegate(
+                  [
+                    // page body
+                    _songWidget(boxSize),
+                  ],
+                ),
+              ),
+            ],
           ),
+          const Align(
+            alignment: Alignment.bottomCenter,
+            child: MiniPlayer(),
+          )
         ],
       ),
     ));
@@ -212,18 +220,22 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
     );
   }
 
-  _sliverTopBar(double expandedHeight, bool rotated) {
+  _sliverTopBar(double expandedHeight, bool rotated, double boxSize) {
     return SliverAppBar(
       elevation: 0,
       stretch: true,
       pinned: true,
       centerTitle: true,
-      expandedHeight: 250,
+      expandedHeight: expandedHeight,
       actions: widget.actions,
       // title: Opacity(
       //   opacity: 1 - _opacity.value,
       //   child: Text(
-      //     widget.title,
+      //     title.toUpperCase(),
+      //     style: const TextStyle(
+      //       fontSize: 17,
+      //       fontWeight: FontWeight.w500,
+      //     ),
       //   ),
       // ),
       flexibleSpace: LayoutBuilder(
@@ -232,6 +244,7 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
           if (top > expandedHeight) {
             top = expandedHeight;
           }
+
           _opacity.value = (top - 80) / (expandedHeight - 80);
 
           return FlexibleSpaceBar(
@@ -239,89 +252,138 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
               opacity: max(0, _opacity.value),
               child: Text(
                 widget.title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
                 textAlign: TextAlign.center,
                 overflow: TextOverflow.ellipsis,
               ),
             ),
             centerTitle: true,
-            background: Stack(
-              children: [
-                SizedBox.expand(
-                  child: ShaderMask(
-                    shaderCallback: (rect) {
-                      return const LinearGradient(
-                        begin: Alignment.center,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.black,
-                          Colors.transparent,
+            background: GlassmorphicContainer(
+              width: double.maxFinite,
+              height: double.maxFinite,
+              borderRadius: 0,
+              blur: 20,
+              alignment: Alignment.bottomCenter,
+              border: 2,
+              linearGradient: const LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: [
+                    Colors.black,
+                    Colors.transparent,
+                  ],
+                  stops: [
+                    0.1,
+                    1,
+                  ]),
+              borderGradient: const LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [Colors.transparent, Colors.transparent],
+              ),
+              child: Stack(
+                children: [
+                  if (!rotated)
+                    Align(
+                      alignment: Alignment.center,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            child: SizedBox(
+                              height: boxSize + 20,
+                              width: boxSize + 20,
+                              child: QueryArtworkWidget(
+                                id: widget.id,
+                                artworkBorder: BorderRadius.circular(0),
+                                type: widget.certainCase == "album"
+                                    ? ArtworkType.ALBUM
+                                    : widget.certainCase == "artist"
+                                        ? ArtworkType.ARTIST
+                                        : ArtworkType.GENRE,
+                                artworkWidth:
+                                    MediaQuery.of(context).size.width / 2.5,
+                                nullArtworkWidget: const ClipRRect(
+                                  child: Image(
+                                    fit: BoxFit.cover,
+                                    image: AssetImage('assets/artist.png'),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
-                      ).createShader(
-                        Rect.fromLTRB(
-                          0,
-                          0,
-                          rect.width,
-                          rect.height,
-                        ),
-                      );
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: QueryArtworkWidget(
-                      id: widget.id,
-                      type: widget.certainCase == "album"
-                          ? ArtworkType.ALBUM
-                          : widget.certainCase == "artist"
-                              ? ArtworkType.ARTIST
-                              : ArtworkType.GENRE,
-                      artworkWidth: MediaQuery.of(context).size.width / 2.5,
-                      nullArtworkWidget: const ClipRRect(
-                        child: Image(
-                          fit: BoxFit.cover,
-                          image: AssetImage('assets/artist.png'),
-                        ),
                       ),
                     ),
-                  ),
-                ),
-                if (rotated)
-                  Align(
-                    alignment: const Alignment(-0.85, 0.5),
-                    child: Card(
-                      elevation: 5,
-                      color: Colors.transparent,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(7.0),
-                      ),
-                      clipBehavior: Clip.antiAlias,
-                      child: SizedBox(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        child: QueryArtworkWidget(
-                          id: widget.id,
-                          type: widget.certainCase == "album"
-                              ? ArtworkType.ALBUM
-                              : widget.certainCase == "artist"
-                                  ? ArtworkType.ARTIST
-                                  : ArtworkType.GENRE,
-                          artworkWidth: MediaQuery.of(context).size.width / 2.5,
-                          artworkBorder: BorderRadius.circular(90),
-                          nullArtworkWidget: ClipRRect(
-                            borderRadius: BorderRadius.circular(90),
-                            child: Image(
-                              fit: BoxFit.cover,
-                              image: AssetImage(
-                                widget.certainCase == "artist"
-                                    ? 'assets/artist.png'
-                                    : widget.certainCase == "album"
-                                        ? 'assets/album.png'
-                                        : 'assets/genre.png',
+                  // SizedBox.expand(
+                  //   child: ShaderMask(
+                  //     shaderCallback: (rect) {
+                  //       return const LinearGradient(
+                  //         begin: Alignment.center,
+                  //         end: Alignment.bottomCenter,
+                  //         colors: [
+                  //           Colors.black,
+                  //           Colors.transparent,
+                  //         ],
+                  //       ).createShader(
+                  //         Rect.fromLTRB(
+                  //           0,
+                  //           0,
+                  //           rect.width,
+                  //           rect.height,
+                  //         ),
+                  //       );
+                  //     },
+                  //     blendMode: BlendMode.dstIn,
+                  //     child: image,
+                  //   ),
+                  // ),
+                  if (rotated)
+                    Align(
+                      alignment: const Alignment(-0.85, 0.5),
+                      child: Card(
+                        elevation: 5,
+                        color: Colors.transparent,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(7.0),
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.3,
+                          child: QueryArtworkWidget(
+                            id: widget.id,
+                            type: widget.certainCase == "album"
+                                ? ArtworkType.ALBUM
+                                : widget.certainCase == "artist"
+                                    ? ArtworkType.ARTIST
+                                    : ArtworkType.GENRE,
+                            artworkWidth:
+                                MediaQuery.of(context).size.width / 2.5,
+                            artworkBorder: BorderRadius.circular(90),
+                            nullArtworkWidget: ClipRRect(
+                              borderRadius: BorderRadius.circular(90),
+                              child: Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage(
+                                  widget.certainCase == "artist"
+                                      ? 'assets/artist.png'
+                                      : widget.certainCase == "album"
+                                          ? 'assets/album.png'
+                                          : 'assets/genre.png',
+                                ),
                               ),
                             ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-              ],
+                ],
+              ),
             ),
           );
         },
