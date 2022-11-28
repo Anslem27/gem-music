@@ -6,7 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:hive/hive.dart';
 
 class SongsList extends StatefulWidget {

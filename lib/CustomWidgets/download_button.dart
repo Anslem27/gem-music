@@ -1,9 +1,9 @@
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Services/download.dart';
 import 'package:hive/hive.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class DownloadButton extends StatefulWidget {
@@ -41,6 +41,7 @@ class _DownloadButtonState extends State<DownloadButton> {
       child: Center(
         child: (downloadsBox.containsKey(widget.data['id']))
             ? IconButton(
+                splashRadius: 24,
                 icon: const Icon(Icons.download_done_rounded),
                 tooltip: 'Download Done',
                 color: Theme.of(context).colorScheme.secondary,
@@ -54,7 +55,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                     icon: Icon(
                       widget.icon == 'download'
                           ? Icons.download_rounded
-                          : Iconsax.save_2,
+                          : EvaIcons.save,
                     ),
                     iconSize: widget.size ?? 24.0,
                     color: Theme.of(context).iconTheme.color,
@@ -88,11 +89,8 @@ class _DownloadButtonState extends State<DownloadButton> {
                                 },
                               ),
                             ),
-                            builder: (
-                              BuildContext context,
-                              bool showValue,
-                              Widget? child,
-                            ) {
+                            builder: (BuildContext context, bool showValue,
+                                Widget? child) {
                               return AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 child: Column(

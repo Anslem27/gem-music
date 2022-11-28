@@ -7,7 +7,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
 

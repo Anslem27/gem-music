@@ -16,7 +16,7 @@ import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';

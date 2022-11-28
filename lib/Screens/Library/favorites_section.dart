@@ -13,7 +13,7 @@ import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/songs_count.dart' as songs_count;
 import 'package:gem/Screens/Library/show_songs.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/animations/custom_physics.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';

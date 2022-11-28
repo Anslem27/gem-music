@@ -3,6 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -245,7 +246,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
-        drawer: appDrawer(context),
+        drawer: gemDrawer(context),
         body: WillPopScope(
           onWillPop: () => handleWillPop(context),
           child: SafeArea(
@@ -292,10 +293,11 @@ class _HomePageState extends State<HomePage> {
         valueListenable: _selectedIndex,
         builder: (BuildContext context, int indexValue, Widget? child) {
           return CustomNavigationBar(
-            opacity: 0.5,
+            opacity: 0.9,
+            blurEffect: true,
             backgroundColor: Theme.of(
               context,
-            ).scaffoldBackgroundColor.withOpacity(0.5),
+            ).scaffoldBackgroundColor.withOpacity(0.2),
             iconSize: 30.0,
             selectedColor: Theme.of(
               context,
@@ -324,11 +326,11 @@ class _HomePageState extends State<HomePage> {
               ),
               CustomNavigationBarItem(
                 icon: const Icon(
-                  EvaIcons.speakerOutline,
+                  FontAwesomeIcons.itunesNote,
                   size: 25,
                 ),
                 selectedIcon: const Icon(
-                  EvaIcons.speaker,
+                  FontAwesomeIcons.itunesNote,
                   size: 25,
                 ),
               ),

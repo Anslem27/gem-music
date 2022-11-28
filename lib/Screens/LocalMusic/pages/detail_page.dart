@@ -10,7 +10,7 @@ import '../../../CustomWidgets/add_playlist.dart';
 import '../../../CustomWidgets/gradient_containers.dart';
 import '../../../CustomWidgets/miniplayer.dart';
 import '../../../Helpers/local_music_functions.dart';
-import '../../Player/audioplayer_page.dart';
+import '../../Player/music_player.dart';
 
 class LocalMusicsDetail extends StatefulWidget {
   final List<Widget>? actions;

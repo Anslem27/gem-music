@@ -13,7 +13,7 @@ import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/Screens/Search/artists.dart';
 import 'package:google_fonts/google_fonts.dart';

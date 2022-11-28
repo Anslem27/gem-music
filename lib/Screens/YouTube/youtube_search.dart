@@ -8,7 +8,7 @@ import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:hive/hive.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';

@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Helpers/playlist.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:get_it/get_it.dart';
 import 'package:iconsax/iconsax.dart';
 

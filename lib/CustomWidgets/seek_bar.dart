@@ -2,7 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 
 class SeekBar extends StatefulWidget {
   final AudioPlayerHandler audioHandler;
@@ -82,6 +82,7 @@ class _SeekBarState extends State<SeekBar> {
             inactiveTrackColor: Colors.transparent,
             activeTrackColor: Theme.of(context).iconTheme.color,
             thumbColor: Theme.of(context).iconTheme.color,
+            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 2),
           ),
           child: Slider(
             max: widget.duration.inMilliseconds.toDouble(),

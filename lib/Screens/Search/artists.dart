@@ -16,7 +16,7 @@ import 'package:gem/CustomWidgets/playlist_popupmenu.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:share_plus/share_plus.dart';
 
 class ArtistSearchPage extends StatefulWidget {

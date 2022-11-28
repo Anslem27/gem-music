@@ -4,7 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';
 

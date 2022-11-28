@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/local_music.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -21,26 +24,22 @@ class _LibraryPageState extends State<LibraryPage> {
           physics: const BouncingScrollPhysics(),
           children: [
             Padding(
-              padding: const EdgeInsets.only(
-                  left: 8.0, right: 9, top: 20, bottom: 15),
+              padding: const EdgeInsets.only(left: 8.0, right: 9, top: 20),
               child: AppBar(
-                leading: SizedBox(
-                  height: 25,
-                  width: 25,
+                leading: CircleAvatar(
+                  radius: 15,
                   child: Image.asset(
                     "assets/icon-white-trans.png",
-                    height: 20,
-                    width: 20,
                   ),
                 ),
                 title: Row(
                   children: [
                     const SizedBox(width: 10),
                     Text(
-                      "Your Library",
+                      "Your Library".toUpperCase(),
                       style: TextStyle(
                         color: Theme.of(context).iconTheme.color,
-                        fontSize: 28,
+                        fontSize: 18.5,
                       ),
                     ),
                   ],
@@ -54,7 +53,7 @@ class _LibraryPageState extends State<LibraryPage> {
             const SizedBox(height: 25),
             LibraryTile(
               title: 'Now Playing',
-              icon: Iconsax.music,
+              icon: EvaIcons.musicOutline,
               onTap: () {
                 Navigator.pushNamed(context, '/nowplaying');
               },
@@ -68,7 +67,7 @@ class _LibraryPageState extends State<LibraryPage> {
             ),
             LibraryTile(
               title: 'Favorites',
-              icon: Iconsax.heart,
+              icon: EvaIcons.heartOutline,
               onTap: () {
                 Navigator.push(
                   context,
@@ -98,7 +97,7 @@ class _LibraryPageState extends State<LibraryPage> {
               ),
             LibraryTile(
               title: 'Downloads',
-              icon: Icons.download_done_rounded,
+              icon: EvaIcons.downloadOutline,
               onTap: () {
                 Navigator.pushNamed(context, '/downloads');
               },
@@ -136,10 +135,11 @@ class LibraryTile extends StatelessWidget {
       child: ListTile(
         title: Text(
           title,
-          style:
-              TextStyle(color: Theme.of(context).iconTheme.color, fontSize: 18),
+          style: GoogleFonts.ubuntu(
+              color: Theme.of(context).iconTheme.color, fontSize: 18),
         ),
         leading: Icon(icon, size: 25),
+        trailing: const Icon(CupertinoIcons.chevron_forward, size: 20),
         onTap: onTap,
       ),
     );

@@ -35,6 +35,7 @@ import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
@@ -85,6 +86,8 @@ class _PlayScreenState extends State<PlayScreen> {
   final MyTheme currentTheme = GetIt.I<MyTheme>();
   final ValueNotifier<List<Color?>?> gradientColor =
       ValueNotifier<List<Color?>?>(GetIt.I<MyTheme>().playGradientColor);
+
+  final List<Color?>? getGradient = GetIt.I<MyTheme>().playGradientColor;
   final PanelController _panelController = PanelController();
   final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
   GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
@@ -283,6 +286,14 @@ class _PlayScreenState extends State<PlayScreen> {
     return;
   }
 
+  //get dorminant color from image rendered
+  Future<Color> getdominantColor(ImageProvider imageProvider) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+
+    return paletteGenerator.dominantColor!.color;
+  }
+
   String format(String msg) {
     return '${msg[0].toUpperCase()}${msg.substring(1)}: '.replaceAll('_', ' ');
   }
@@ -316,485 +327,551 @@ class _PlayScreenState extends State<PlayScreen> {
                     mediaItem.artUri.toString(),
                   ),
                 ).then((value) => updateBackgroundColors(value));
-          return ValueListenableBuilder(
-            valueListenable: gradientColor,
-            child: SafeArea(
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  elevation: 0,
-                  backgroundColor: Colors.transparent,
-                  centerTitle: true,
-                  leading: IconButton(
-                    splashRadius: 24,
-                    icon: const Icon(Icons.expand_more_rounded),
-                    tooltip: 'Back',
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  actions: [
-                    IconButton(
-                      icon: const Icon(Iconsax.microphone),
-                      tooltip: "Lyrics",
-                      onPressed: () => cardKey.currentState!.toggleCard(),
-                    ),
-                    if (!offline)
-                      IconButton(
-                        splashRadius: 24,
-                        icon: const Icon(MdiIcons.share),
-                        tooltip: "Share",
-                        onPressed: () {
-                          Share.share(
-                            mediaItem.extras!['perma_url'].toString(),
-                          );
-                        },
-                      ),
-                    //now playing song options
-                    PopupMenuButton(
-                      splashRadius: 24,
-                      icon: const Icon(
-                        Icons.more_vert_rounded,
-                      ),
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10.0),
+          return FutureBuilder(
+              future: getdominantColor(
+                (mediaItem.artUri.toString().startsWith('file:'))
+                    ? FileImage(
+                        File(
+                          mediaItem.artUri!.toFilePath(),
+                        ),
+                      )
+                    : NetworkImage(mediaItem.artUri.toString())
+                        as ImageProvider,
+              ),
+              builder: (context, AsyncSnapshot<Color> colorsSnapshot) {
+                return ValueListenableBuilder(
+                  valueListenable: gradientColor,
+                  child: SafeArea(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            colorsSnapshot.data!.withOpacity(0.5),
+                            colorsSnapshot.data!.withOpacity(0.2),
+                            // colorsSnapshot.data!.withOpacity(0.3),
+                          ],
                         ),
                       ),
-                      onSelected: (int? value) {
-                        if (value == 10) {
-                          final Map details =
-                              MediaItemConverter.mediaItemToMap(mediaItem);
-                          details['duration'] =
-                              '${int.parse(details["duration"].toString()) ~/ 60}:${int.parse(details["duration"].toString()) % 60}';
-                          // style: Theme.of(context).textTheme.caption,
-                          if (mediaItem.extras?['size'] != null) {
-                            details.addEntries([
-                              MapEntry(
-                                'date_modified',
-                                DateTime.fromMillisecondsSinceEpoch(
-                                  int.parse(
-                                        mediaItem.extras!['date_modified']
-                                            .toString(),
-                                      ) *
-                                      1000,
-                                ).toString().split('.').first,
-                              ),
-                              MapEntry(
-                                'size',
-                                '${((mediaItem.extras!['size'] as int) / (1024 * 1024)).toStringAsFixed(2)} MB',
-                              ),
-                            ]);
-                          }
-                          //song info dialog
-                          PopupDialog().showPopup(
-                            context: context,
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              padding: const EdgeInsets.all(25.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: details.keys.map((e) {
-                                  return Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: SelectableText.rich(
-                                      TextSpan(
-                                        children: <TextSpan>[
-                                          TextSpan(
-                                            text: format(
-                                              e.toString(),
-                                            ),
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 17,
-                                              color: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyText1!
-                                                  .color,
-                                            ),
-                                          ),
-                                          TextSpan(
-                                            text: details[e].toString(),
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.normal,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      showCursor: true,
-                                      cursorColor: Colors.black,
-                                      cursorRadius: const Radius.circular(5),
-                                    ),
-                                  );
-                                }).toList(),
-                              ),
+                      child: Scaffold(
+                        resizeToAvoidBottomInset: false,
+                        backgroundColor: Colors.transparent,
+                        appBar: AppBar(
+                          elevation: 0,
+                          backgroundColor: Colors.transparent,
+                          centerTitle: true,
+                          title: Text(
+                            "Playing Album\n${(mediaItem.album.toString().toUpperCase())}",
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              fontSize: 15,
                             ),
-                          );
-                        }
-                        if (value == 5) {
-                          Navigator.push(
-                            context,
-                            PageRouteBuilder(
-                              opaque: false,
-                              pageBuilder: (_, __, ___) => SongsListPage(
-                                listItem: {
-                                  'type': 'album',
-                                  'id': mediaItem.extras?['album_id'],
-                                  'title': mediaItem.album,
-                                  'image': mediaItem.artUri,
+                          ),
+                          leading: IconButton(
+                            splashRadius: 24,
+                            icon: const Icon(Icons.expand_more_rounded),
+                            tooltip: 'Back',
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                          ),
+                          actions: [
+                            IconButton(
+                              icon: const Icon(Iconsax.microphone),
+                              tooltip: "Lyrics",
+                              onPressed: () =>
+                                  cardKey.currentState!.toggleCard(),
+                            ),
+                            if (!offline)
+                              IconButton(
+                                splashRadius: 24,
+                                icon: const Icon(MdiIcons.share),
+                                tooltip: "Share",
+                                onPressed: () {
+                                  Share.share(
+                                    mediaItem.extras!['perma_url'].toString(),
+                                  );
                                 },
                               ),
-                            ),
-                          );
-                        }
-                        if (value == 4) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return const Equalizer();
-                            },
-                          );
-                        }
-                        if (value == 3) {
-                          launchUrl(
-                            Uri.parse(
-                              mediaItem.genre == 'YouTube'
-                                  ? 'https://youtube.com/watch?v=${mediaItem.id}'
-                                  : 'https://www.youtube.com/results?search_query=${mediaItem.title} by ${mediaItem.artist}',
-                            ),
-                            mode: LaunchMode.externalApplication,
-                          );
-                        }
-                        if (value == 1) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return SimpleDialog(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(15.0),
+                            //now playing song options
+                            PopupMenuButton(
+                              splashRadius: 24,
+                              icon: const Icon(
+                                Icons.more_vert_rounded,
+                              ),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(10.0),
                                 ),
-                                title: Text(
-                                  'Sleep timer',
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                  ),
-                                ),
-                                contentPadding: const EdgeInsets.all(10.0),
-                                children: [
-                                  ListTile(
-                                    title: const Text(
-                                      'Sleep Duration',
+                              ),
+                              onSelected: (int? value) {
+                                if (value == 10) {
+                                  final Map details =
+                                      MediaItemConverter.mediaItemToMap(
+                                          mediaItem);
+                                  details['duration'] =
+                                      '${int.parse(details["duration"].toString()) ~/ 60}:${int.parse(details["duration"].toString()) % 60}';
+                                  // style: Theme.of(context).textTheme.caption,
+                                  if (mediaItem.extras?['size'] != null) {
+                                    details.addEntries([
+                                      MapEntry(
+                                        'date_modified',
+                                        DateTime.fromMillisecondsSinceEpoch(
+                                          int.parse(
+                                                mediaItem
+                                                    .extras!['date_modified']
+                                                    .toString(),
+                                              ) *
+                                              1000,
+                                        ).toString().split('.').first,
+                                      ),
+                                      MapEntry(
+                                        'size',
+                                        '${((mediaItem.extras!['size'] as int) / (1024 * 1024)).toStringAsFixed(2)} MB',
+                                      ),
+                                    ]);
+                                  }
+                                  //song info dialog
+                                  PopupDialog().showPopup(
+                                    context: context,
+                                    child: SingleChildScrollView(
+                                      physics: const BouncingScrollPhysics(),
+                                      padding: const EdgeInsets.all(25.0),
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: details.keys.map((e) {
+                                          return Padding(
+                                            padding: const EdgeInsets.all(5.0),
+                                            child: SelectableText.rich(
+                                              TextSpan(
+                                                children: <TextSpan>[
+                                                  TextSpan(
+                                                    text: format(
+                                                      e.toString(),
+                                                    ),
+                                                    style: TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 17,
+                                                      color: Theme.of(context)
+                                                          .textTheme
+                                                          .bodyText1!
+                                                          .color,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: details[e].toString(),
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.normal,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              showCursor: true,
+                                              cursorColor: Colors.black,
+                                              cursorRadius:
+                                                  const Radius.circular(5),
+                                            ),
+                                          );
+                                        }).toList(),
+                                      ),
                                     ),
-                                    dense: true,
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      setTimer(
-                                        context,
-                                        scaffoldContext,
+                                  );
+                                }
+                                if (value == 5) {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      opaque: false,
+                                      pageBuilder: (_, __, ___) =>
+                                          SongsListPage(
+                                        listItem: {
+                                          'type': 'album',
+                                          'id': mediaItem.extras?['album_id'],
+                                          'title': mediaItem.album,
+                                          'image': mediaItem.artUri,
+                                        },
+                                      ),
+                                    ),
+                                  );
+                                }
+                                if (value == 4) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return const Equalizer();
+                                    },
+                                  );
+                                }
+                                if (value == 3) {
+                                  launchUrl(
+                                    Uri.parse(
+                                      mediaItem.genre == 'YouTube'
+                                          ? 'https://youtube.com/watch?v=${mediaItem.id}'
+                                          : 'https://www.youtube.com/results?search_query=${mediaItem.title} by ${mediaItem.artist}',
+                                    ),
+                                    mode: LaunchMode.externalApplication,
+                                  );
+                                }
+                                if (value == 1) {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return SimpleDialog(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(15.0),
+                                        ),
+                                        title: Text(
+                                          'Sleep timer',
+                                          style: TextStyle(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary,
+                                          ),
+                                        ),
+                                        contentPadding:
+                                            const EdgeInsets.all(10.0),
+                                        children: [
+                                          ListTile(
+                                            title: const Text(
+                                              'Sleep Duration',
+                                            ),
+                                            dense: true,
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              setTimer(
+                                                context,
+                                                scaffoldContext,
+                                              );
+                                            },
+                                          ),
+                                          ListTile(
+                                            title: const Text(
+                                              'Sleep After',
+                                            ),
+                                            dense: true,
+                                            isThreeLine: true,
+                                            onTap: () {
+                                              Navigator.pop(context);
+                                              setCounter();
+                                            },
+                                          ),
+                                        ],
                                       );
                                     },
-                                  ),
-                                  ListTile(
-                                    title: const Text(
-                                      'Sleep After',
+                                  );
+                                }
+                                if (value == 0) {
+                                  AddToPlaylist()
+                                      .addToPlaylist(context, mediaItem);
+                                }
+                              },
+                              itemBuilder: (context) => offline
+                                  ? [
+                                      if (mediaItem.extras?['album_id'] != null)
+                                        PopupMenuItem(
+                                          value: 5,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.album_rounded,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color,
+                                              ),
+                                              const SizedBox(width: 10.0),
+                                              const Text(
+                                                'View Album',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      PopupMenuItem(
+                                        value: 1,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              CupertinoIcons.timer,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            const Text(
+                                              'Sleep timer',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (Hive.box('settings').get(
+                                        'supportEq',
+                                        defaultValue: false,
+                                      ) as bool)
+                                        PopupMenuItem(
+                                          value: 4,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.equalizer_rounded,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color,
+                                              ),
+                                              const SizedBox(width: 10.0),
+                                              const Text(
+                                                'Equalizer',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      PopupMenuItem(
+                                        value: 10,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.info_outline_rounded,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            const Text(
+                                              'Track Info',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ]
+                                  : [
+                                      if (mediaItem.extras?['album_id'] != null)
+                                        PopupMenuItem(
+                                          value: 5,
+                                          child: Row(
+                                            children: const [
+                                              Icon(
+                                                Icons.album_rounded,
+                                              ),
+                                              SizedBox(width: 10.0),
+                                              Text(
+                                                'View Album',
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      PopupMenuItem(
+                                        value: 0,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Iconsax.music_playlist,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            const Text(
+                                              "Add to Playlist",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 1,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              CupertinoIcons.timer,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            const Text(
+                                              "Sleep Timer",
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      if (Hive.box('settings').get(
+                                        'supportEq',
+                                        defaultValue: false,
+                                      ) as bool)
+                                        PopupMenuItem(
+                                          value: 4,
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.equalizer_rounded,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color,
+                                              ),
+                                              const SizedBox(width: 10.0),
+                                              const Text("Equalizer"),
+                                            ],
+                                          ),
+                                        ),
+                                      PopupMenuItem(
+                                        value: 3,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              MdiIcons.youtube,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            Text(mediaItem.genre == 'YouTube'
+                                                ? 'Watch Video'
+                                                : 'Search Video'),
+                                          ],
+                                        ),
+                                      ),
+                                      PopupMenuItem(
+                                        value: 10,
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.info_outline_rounded,
+                                              color: Theme.of(context)
+                                                  .iconTheme
+                                                  .color,
+                                            ),
+                                            const SizedBox(width: 10.0),
+                                            const Text(
+                                              'Song Info',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                            )
+                          ],
+                        ),
+                        body: LayoutBuilder(
+                          builder: (
+                            BuildContext context,
+                            BoxConstraints constraints,
+                          ) {
+                            if (constraints.maxWidth > constraints.maxHeight) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  // Artwork
+                                  ArtWorkWidget(
+                                    cardKey: cardKey,
+                                    mediaItem: mediaItem,
+                                    width: min(
+                                      constraints.maxHeight / 0.9,
+                                      constraints.maxWidth / 1.8,
                                     ),
-                                    dense: true,
-                                    isThreeLine: true,
-                                    onTap: () {
-                                      Navigator.pop(context);
-                                      setCounter();
-                                    },
+                                    audioHandler: audioHandler,
+                                    offline: offline,
+                                    getLyricsOnline: getLyricsOnline,
+                                  ),
+
+                                  // title and controls
+                                  NameNControls(
+                                    mediaItem: mediaItem,
+                                    offline: offline,
+                                    width: constraints.maxWidth / 2,
+                                    height: constraints.maxHeight,
+                                    panelController: _panelController,
+                                    audioHandler: audioHandler,
                                   ),
                                 ],
                               );
-                            },
-                          );
-                        }
-                        if (value == 0) {
-                          AddToPlaylist().addToPlaylist(context, mediaItem);
-                        }
-                      },
-                      itemBuilder: (context) => offline
-                          ? [
-                              if (mediaItem.extras?['album_id'] != null)
-                                PopupMenuItem(
-                                  value: 5,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.album_rounded,
-                                        color:
-                                            Theme.of(context).iconTheme.color,
+                            }
+                            return Column(
+                              children: [
+                                // Artwork
+                                colorsSnapshot.connectionState ==
+                                        ConnectionState.waiting
+                                    ? SizedBox(
+                                        height: constraints.maxWidth * 0.85,
+                                        width: constraints.maxWidth * 0.85,
+                                        child: const Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      )
+                                    : ArtWorkWidget(
+                                        cardKey: cardKey,
+                                        mediaItem: mediaItem,
+                                        width: constraints.maxWidth,
+                                        audioHandler: audioHandler,
+                                        offline: offline,
+                                        getLyricsOnline: getLyricsOnline,
                                       ),
-                                      const SizedBox(width: 10.0),
-                                      const Text(
-                                        'View Album',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              PopupMenuItem(
-                                value: 1,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.timer,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      'Sleep timer',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (Hive.box('settings').get(
-                                'supportEq',
-                                defaultValue: false,
-                              ) as bool)
-                                PopupMenuItem(
-                                  value: 4,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.equalizer_rounded,
-                                        color:
-                                            Theme.of(context).iconTheme.color,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      const Text(
-                                        'Equalizer',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              PopupMenuItem(
-                                value: 10,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info_outline_rounded,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      'Track Info',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ]
-                          : [
-                              if (mediaItem.extras?['album_id'] != null)
-                                PopupMenuItem(
-                                  value: 5,
-                                  child: Row(
-                                    children: const [
-                                      Icon(
-                                        Icons.album_rounded,
-                                      ),
-                                      SizedBox(width: 10.0),
-                                      Text(
-                                        'View Album',
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              PopupMenuItem(
-                                value: 0,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Iconsax.music_playlist,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      "Add to Playlist",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 1,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      CupertinoIcons.timer,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      "Sleep Timer",
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              if (Hive.box('settings').get(
-                                'supportEq',
-                                defaultValue: false,
-                              ) as bool)
-                                PopupMenuItem(
-                                  value: 4,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.equalizer_rounded,
-                                        color:
-                                            Theme.of(context).iconTheme.color,
-                                      ),
-                                      const SizedBox(width: 10.0),
-                                      const Text(
-                                        "Equalizer",
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              PopupMenuItem(
-                                value: 3,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      MdiIcons.youtube,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    Text(
-                                      mediaItem.genre == 'YouTube'
-                                          ? 'Watch Video'
-                                          : 'Search Video',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              PopupMenuItem(
-                                value: 10,
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.info_outline_rounded,
-                                      color: Theme.of(context).iconTheme.color,
-                                    ),
-                                    const SizedBox(width: 10.0),
-                                    const Text(
-                                      'Song Info',
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                    )
-                  ],
-                ),
-                body: LayoutBuilder(
-                  builder: (
-                    BuildContext context,
-                    BoxConstraints constraints,
-                  ) {
-                    if (constraints.maxWidth > constraints.maxHeight) {
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          // Artwork
-                          ArtWorkWidget(
-                            cardKey: cardKey,
-                            mediaItem: mediaItem,
-                            width: min(
-                              constraints.maxHeight / 0.9,
-                              constraints.maxWidth / 1.8,
-                            ),
-                            audioHandler: audioHandler,
-                            offline: offline,
-                            getLyricsOnline: getLyricsOnline,
-                          ),
 
-                          // title and controls
-                          NameNControls(
-                            mediaItem: mediaItem,
-                            offline: offline,
-                            width: constraints.maxWidth / 2,
-                            height: constraints.maxHeight,
-                            panelController: _panelController,
-                            audioHandler: audioHandler,
-                          ),
-                        ],
-                      );
-                    }
-                    return Column(
-                      children: [
-                        // Artwork
-                        ArtWorkWidget(
-                          cardKey: cardKey,
-                          mediaItem: mediaItem,
-                          width: constraints.maxWidth,
-                          audioHandler: audioHandler,
-                          offline: offline,
-                          getLyricsOnline: getLyricsOnline,
+                                // title and controls
+                                NameNControls(
+                                  mediaItem: mediaItem,
+                                  offline: offline,
+                                  width: constraints.maxWidth,
+                                  height: constraints.maxHeight -
+                                      (constraints.maxWidth * 0.85),
+                                  panelController: _panelController,
+                                  audioHandler: audioHandler,
+                                ),
+                              ],
+                            );
+                          },
                         ),
-
-                        // title and controls
-                        NameNControls(
-                          mediaItem: mediaItem,
-                          offline: offline,
-                          width: constraints.maxWidth,
-                          height: constraints.maxHeight -
-                              (constraints.maxWidth * 0.85),
-                          panelController: _panelController,
-                          audioHandler: audioHandler,
+                        // }
+                      ),
+                    ),
+                  ),
+                  builder: (BuildContext context, List<Color?>? value,
+                      Widget? child) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 600),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: gradientType == 'simple'
+                              ? Alignment.topLeft
+                              : Alignment.topCenter,
+                          end: gradientType == 'simple'
+                              ? Alignment.bottomRight
+                              : (gradientType == 'halfLight' ||
+                                      gradientType == 'halfDark')
+                                  ? Alignment.center
+                                  : Alignment.bottomCenter,
+                          colors: gradientType == 'simple'
+                              ? Theme.of(context).brightness == Brightness.dark
+                                  ? currentTheme.getBackGradient()
+                                  : [
+                                      const Color(0xfff5f9ff),
+                                      Colors.white,
+                                    ]
+                              : Theme.of(context).brightness == Brightness.dark
+                                  ? [
+                                      if (gradientType == 'halfDark' ||
+                                          gradientType == 'fullDark')
+                                        value?[1] ?? Colors.grey[900]!
+                                      else
+                                        value?[0] ?? Colors.grey[900]!,
+                                      if (gradientType == 'fullMix')
+                                        value?[1] ?? Colors.black
+                                      else
+                                        Colors.black
+                                    ]
+                                  : [
+                                      value?[0] ?? const Color(0xfff5f9ff),
+                                      Colors.white,
+                                    ],
                         ),
-                      ],
+                      ),
+                      child: child,
                     );
                   },
-                ),
-                // }
-              ),
-            ),
-            builder:
-                (BuildContext context, List<Color?>? value, Widget? child) {
-              return AnimatedContainer(
-                duration: const Duration(milliseconds: 600),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: gradientType == 'simple'
-                        ? Alignment.topLeft
-                        : Alignment.topCenter,
-                    end: gradientType == 'simple'
-                        ? Alignment.bottomRight
-                        : (gradientType == 'halfLight' ||
-                                gradientType == 'halfDark')
-                            ? Alignment.center
-                            : Alignment.bottomCenter,
-                    colors: gradientType == 'simple'
-                        ? Theme.of(context).brightness == Brightness.dark
-                            ? currentTheme.getBackGradient()
-                            : [
-                                const Color(0xfff5f9ff),
-                                Colors.white,
-                              ]
-                        : Theme.of(context).brightness == Brightness.dark
-                            ? [
-                                if (gradientType == 'halfDark' ||
-                                    gradientType == 'fullDark')
-                                  value?[1] ?? Colors.grey[900]!
-                                else
-                                  value?[0] ?? Colors.grey[900]!,
-                                if (gradientType == 'fullMix')
-                                  value?[1] ?? Colors.black
-                                else
-                                  Colors.black
-                              ]
-                            : [
-                                value?[0] ?? const Color(0xfff5f9ff),
-                                Colors.white,
-                              ],
-                  ),
-                ),
-                child: child,
-              );
-            },
-          );
+                );
+              });
           // );
         },
       ),
@@ -1920,8 +1997,8 @@ class NameNControls extends StatelessWidget {
 
                           /// Subtitle container
                           AnimatedText(
-                            text:
-                                '${mediaItem.artist ?? "Unknown"} • ${mediaItem.album ?? "Unknown"}',
+                            // •${mediaItem.album ?? "Unknown"}
+                            text: mediaItem.artist ?? "Unknown",
                             pauseAfterRound: const Duration(seconds: 3),
                             showFadingOnlyWhenScrolling: false,
                             fadingEdgeEndFraction: 0.1,

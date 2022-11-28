@@ -14,7 +14,7 @@ import 'package:gem/Screens/Library/nowplaying.dart';
 import 'package:gem/Screens/Library/recent.dart';
 import 'package:gem/Screens/Login/initial_wizard.dart';
 import 'package:gem/Screens/Login/pref.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Screens/Settings/setting.dart';
 import 'package:gem/Services/audio_service.dart';
 import 'package:gem/theme/app_theme.dart';
@@ -182,6 +182,7 @@ class _MyAppState extends State<MyApp> {
         '/nowplaying': (context) => const NowPlaying(),
         '/recent': (context) => const RecentlyPlayed(),
         '/downloads': (context) => const Downloads(),
+        '/navigation': (_) => const HomePage()
       },
       navigatorKey: navigatorKey,
     );

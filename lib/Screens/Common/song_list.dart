@@ -12,7 +12,7 @@ import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_popupmenu.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:share_plus/share_plus.dart';
 

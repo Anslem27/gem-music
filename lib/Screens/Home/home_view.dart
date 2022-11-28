@@ -6,7 +6,7 @@ import 'package:gem/CustomWidgets/horizontal_albumlist.dart';
 import 'package:gem/CustomWidgets/on_hover.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/LocalMusic/widgets/bouncy_page.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:hive/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../Helpers/local_music_functions.dart';
@@ -15,6 +15,7 @@ import '../Library/import.dart';
 import '../Library/online_playlists.dart';
 import '../LocalMusic/local_music.dart';
 import '../LocalMusic/localplaylists.dart';
+import '../LocalMusic/widgets/preview_page.dart';
 import 'components/home_components.dart';
 
 bool fetched = false;
@@ -103,14 +104,17 @@ class _HomeViewPageState extends State<HomeViewPage>
         Navigator.push(
           context,
           CupertinoPageRoute(
-              builder: (_) => BouncyPage(
-                    title: "Local Playlists",
-                    imageUrl: "assets/elements/loc_play.png",
-                    body: LocalPlaylists(
-                      playlistDetails: offlinePlaylists,
-                      offlineAudioQuery: offlineAudioQuery,
-                    ),
-                  )),
+            builder: (_) => PreviewPage(
+              title: "Local Playlists",
+              imageUrl: "assets/elements/loc_play.png",
+              sliverList: LocalPlaylists(
+                playlistDetails: offlinePlaylists,
+                offlineAudioQuery: offlineAudioQuery,
+              ),
+              isSong: false,
+              localImage: true,
+            ),
+          ),
         );
       },
       () {
@@ -385,6 +389,8 @@ class _HomeViewPageState extends State<HomeViewPage>
                                               ),
                                             );
                                           },
+
+                                          //TODO: Add a grid like mechanism
                                           child: Stack(
                                             children: [
                                               Card(

@@ -169,7 +169,7 @@ class _HomeAlbumsState extends State<HomeAlbums> {
                             imageUrl: "assets/album.png",
                             sliverList: const SizedBox(),
                             title: home_albums[index].album,
-                            isSong: true,
+                            isSong: false,
                             actions: [
                               Padding(
                                 padding: const EdgeInsets.all(8.0),

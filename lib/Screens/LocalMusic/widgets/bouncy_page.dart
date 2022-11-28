@@ -30,8 +30,8 @@ class _BouncyPageState extends State<BouncyPage> {
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
                   body: PreviewPage(
-                    //localImage: true,
-                    isSong: false,
+                    localImage: true,
+                    isSong: true,
                     imageUrl: widget.imageUrl,
                     placeholderImage: widget.imageUrl,
                     sliverList: SliverList(
