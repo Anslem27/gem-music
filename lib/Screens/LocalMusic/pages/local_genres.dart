@@ -1,8 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
-
+import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:gem/Screens/LocalMusic/pages/detail_page.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -55,12 +54,10 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
   genreBody(double boxSize, BuildContext context) {
     return Column(
       children: [
-        const SizedBox(height: 20),
         Expanded(
-          child: StaggeredGridView.countBuilder(
+          child: ListView.builder(
             physics: const BouncingScrollPhysics(),
             shrinkWrap: true,
-            crossAxisCount: 2,
             itemCount: local_genres.length,
             itemBuilder: (_, index) {
               return GestureDetector(
@@ -80,68 +77,67 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                     ),
                   );
                 },
-                child: Card(
-                  color: Colors.transparent,
-                  elevation: 0,
-                  margin: EdgeInsets.zero,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                child: GlassmorphicContainer(
+                  margin: const EdgeInsets.all(5),
+                  width: double.maxFinite,
+                  height: boxSize - 20,
+                  borderRadius: 8,
+                  blur: 20,
+                  alignment: Alignment.bottomCenter,
+                  border: 2,
+                  linearGradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        const Color(0xFFffffff).withOpacity(0.1),
+                        const Color(0xFFFFFFFF).withOpacity(0.05),
+                      ],
+                      stops: const [
+                        0.1,
+                        1,
+                      ]),
+                  borderGradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [Colors.transparent, Colors.transparent],
                   ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Stack(
+                  child: Row(
                     children: [
-                      Opacity(
-                        opacity: 0.5,
-                        child: GlassmorphicContainer(
-                          height: boxSize + 20,
-                          width: MediaQuery.of(context).size.width / 2.5,
-                          borderRadius: 8,
-                          blur: 20,
-                          alignment: Alignment.bottomCenter,
-                          border: 2,
-                          linearGradient: LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                const Color(0xFFffffff).withOpacity(0.1),
-                                const Color(0xFFFFFFFF).withOpacity(0.05),
-                              ],
-                              stops: const [
-                                0.1,
-                                1,
-                              ]),
-                          borderGradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Colors.transparent,
-                              Colors.transparent
-                            ],
+                      Stack(
+                        children: [
+                          Transform.rotate(
+                            angle: -math.pi / 9,
+                            child: SizedBox(
+                              height: boxSize - 10,
+                              child: Image.asset("assets/cover.jpg"),
+                            ),
                           ),
-                          child: QueryArtworkWidget(
-                            id: local_genres[index].id,
-                            type: ArtworkType.GENRE,
-                            artworkHeight: boxSize + 20,
-                            artworkWidth:
-                                MediaQuery.of(context).size.width / 2.5,
-                            artworkBorder: BorderRadius.circular(7.0),
-                            nullArtworkWidget: ClipRRect(
-                              borderRadius: BorderRadius.circular(7.0),
-                              child: Image(
-                                fit: BoxFit.cover,
-                                height: boxSize - 35,
-                                width:
-                                    MediaQuery.of(context).size.width / 2.5,
-                                image: const AssetImage('assets/cover.jpg'),
+                          Transform.rotate(
+                            angle: -math.pi / 9,
+                            child: QueryArtworkWidget(
+                              id: local_genres[index].id,
+                              type: ArtworkType.GENRE,
+                              artworkHeight: boxSize - 20,
+                              artworkWidth:
+                                  MediaQuery.of(context).size.width / 2.5,
+                              artworkBorder: BorderRadius.circular(7.0),
+                              nullArtworkWidget: ClipRRect(
+                                borderRadius: BorderRadius.circular(7.0),
+                                child: Image(
+                                  fit: BoxFit.cover,
+                                  height: boxSize - 35,
+                                  width:
+                                      MediaQuery.of(context).size.width / 2.5,
+                                  image: const AssetImage('assets/cover.jpg'),
+                                ),
                               ),
                             ),
                           ),
-                        ),
+                        ],
                       ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal:8.0),
-                        child: Align(
-                          alignment: Alignment.center,
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
                           child: ListTile(
                             title: Text(
                               local_genres[index].genre.toUpperCase(),
@@ -152,18 +148,6 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                                 fontWeight: FontWeight.w400,
                               ),
                             ),
-                            // subtitle: Text(
-                            //   local_genres[index].numOfSongs == 1
-                            //       ? "${local_genres[index].numOfSongs} song"
-                            //       : "${local_genres[index].numOfSongs} songs",
-                            //   textAlign: TextAlign.center,
-                            //   softWrap: false,
-                            //   overflow: TextOverflow.ellipsis,
-                            //   style: GoogleFonts.roboto(
-                            //     fontSize: 14,
-                            //     color: Colors.grey,
-                            //   ),
-                            // ),
                           ),
                         ),
                       )
@@ -171,9 +155,6 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                   ),
                 ),
               );
-            },
-            staggeredTileBuilder: (int index) {
-              return const StaggeredTile.count(1, 1.2);
             },
           ),
         )

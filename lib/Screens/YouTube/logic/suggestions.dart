@@ -15,12 +15,8 @@ Groove your evening suggestions
 
  */
 
-List<String> chartsMore = ["CHARTS", "POPULAR", "TOP"];
-List<String> chartImg = [
-  "assets/elements/prev.png",
-  "assets/elements/popular.png",
-  "assets/elements/top.png"
-];
+List<String> chartsMore = ["CHARTS", "TOP"];
+List<String> chartImg = ["assets/elements/prev.png", "assets/elements/top.png"];
 
 List<String> ytSuggestions = [
   "Pop",

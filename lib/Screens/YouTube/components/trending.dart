@@ -4,9 +4,9 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/YouTube/youtube_search.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 List topSongs = [];
 List viralSongs = [];
@@ -112,38 +112,39 @@ class _TrendingListState extends State<TrendingList>
     if (isListEmpty) {
       return const SizedBox();
     } else {
-      return SizedBox(
-        height: boxSize + 60,
+      return Material(
+        color: Colors.transparent,
         child: ListView.builder(
+          shrinkWrap: true,
           itemCount: showList.take(20).length,
           physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
+          scrollDirection: Axis.vertical,
           itemBuilder: (context, index) {
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => YouTubeSearchPage(
-                      query:
-                          "${showList[index]['name'].toString()} ${(showList[index]['artists'] as List).map((e) => e['name']).toList().join(',\n ')}",
-                    ),
-                  ),
-                );
-              },
-              child: Stack(
-                children: [
-                  Card(
-                    color: Colors.transparent,
-                    elevation: 0,
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => YouTubeSearchPage(
+                          query:
+                              "${showList[index]['name'].toString()} ${(showList[index]['artists'] as List).map((e) => e['name']).toList().join(',\n ')}",
+                        ),
+                      ),
+                    );
+                  },
+                  child: SizedBox(
+                    height: boxSize - 100,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         if (showList[index]['image_url_large'] != '')
                           CachedNetworkImage(
-                            height: 170,
+                            height: 70,
                             fit: BoxFit.cover,
                             imageUrl:
                                 showList[index]['image_url_large'].toString(),
@@ -152,54 +153,55 @@ class _TrendingListState extends State<TrendingList>
                               image: AssetImage('assets/cover.jpg'),
                             ),
                             placeholder: (context, url) => const Image(
-                              height: 100,
+                              height: 70,
                               fit: BoxFit.cover,
                               image: AssetImage('assets/cover.jpg'),
                             ),
                           ),
+                        Expanded(
+                          child: ListTile(
+                            title: Text(
+                              "${showList[index]["name"]}",
+                              textAlign: TextAlign.start,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            subtitle: Text(
+                              (showList[index]['artists'] as List)
+                                  .map((e) => e['name'])
+                                  .toList()
+                                  .join(',\n '),
+                              overflow: TextOverflow.ellipsis,
+                              textAlign: TextAlign.start,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 15,
+                              ),
+                            ),
+                          ),
+                        ),
                         Padding(
-                          padding: const EdgeInsets.all(10.0),
+                          padding: const EdgeInsets.only(right: 3.0),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "${showList[index]["name"]}",
-                                textAlign: TextAlign.center,
-                                overflow: TextOverflow.ellipsis,
-                                style: GoogleFonts.roboto(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(left: 5.0, right: 5),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    (showList[index]['artists'] as List)
-                                        .map((e) => e['name'])
-                                        .toList()
-                                        .join(',\n '),
-                                    textAlign: TextAlign.center,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.normal,
-                                      fontSize: 13,
-                                    ),
-                                  ),
-                                ),
+                              IconButton(
+                                splashRadius: 24,
+                                onPressed: () {},
+                                icon: const Icon(MdiIcons.playCircleOutline),
                               )
                             ],
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             );
           },
         ),

@@ -191,9 +191,10 @@ class _DownloadedSongsState extends State<DownloadedSongs>
         future:
             getdominantColor(const AssetImage("assets/elements/online.png")),
         builder: (context, AsyncSnapshot<Color> snapshot) {
-          return snapshot.connectionState == ConnectionState.waiting
+          return snapshot.connectionState == ConnectionState.waiting &&
+                  snapshot.connectionState == ConnectionState.none
               ? const Center(
-                  child: SizedBox(),
+                  child: CircularProgressIndicator(),
                 )
               : GradientContainer(
                   child: Column(
@@ -415,10 +416,12 @@ class _DownloadedSongsState extends State<DownloadedSongs>
                                                   begin: Alignment.topLeft,
                                                   end: Alignment.bottomRight,
                                                   colors: [
-                                                    snapshot.data!
-                                                        .withOpacity(0.9),
-                                                    snapshot.data!
-                                                        .withOpacity(0.05),
+                                                    snapshot.data
+                                                            ?.withOpacity(0.9)
+                                                        as Color,
+                                                    snapshot.data
+                                                            ?.withOpacity(0.05)
+                                                        as Color,
                                                   ],
                                                   stops: const [
                                                     0.1,
@@ -577,10 +580,10 @@ class _SongsTabState extends State<SongsTab>
                   SvgPicture.asset("assets/svg/add_content.svg",
                       height: 140, width: 100),
                   const SizedBox(height: 20),
-                  Text(
+                  const Text(
                     "No music\nhere",
                     textAlign: TextAlign.center,
-                    style: GoogleFonts.roboto(
+                    style: TextStyle(
                       fontSize: 20,
                     ),
                   ),

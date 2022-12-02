@@ -11,7 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:spotify/spotify.dart' as sp;
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
-import '../CustomWidgets/gradient_containers.dart';
+import 'package:gem/CustomWidgets/gradient_containers.dart';
 
 var yt = YoutubeExplode();
 var video_Id;

@@ -10,7 +10,7 @@ int height = 300;
 
 Future<String> getArtistArtworkUrl(String artistId) async {
   final response =
-      await http.get(Uri.parse('https://music.apple.com/de/artist/$artistId'));
+      await http.get(Uri.parse('https://music.apple.com/en/artist/$artistId'));
   final document = response.body;
 
   RegExp regEx = RegExp("<meta property=\"og:image\" content=\"(.*png)\"");

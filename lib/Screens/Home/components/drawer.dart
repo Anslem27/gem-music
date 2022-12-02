@@ -68,7 +68,7 @@ Drawer gemDrawer(BuildContext context) {
                         elevation: 0,
                         stretch: true,
                         expandedHeight:
-                            MediaQuery.of(context).size.height * 0.2,
+                            MediaQuery.of(context).size.height * 0.3,
                         flexibleSpace: FlexibleSpaceBar(
                           titlePadding: const EdgeInsets.only(bottom: 40.0),
                           centerTitle: true,
@@ -90,7 +90,7 @@ Drawer gemDrawer(BuildContext context) {
                                     .toString()
                                     .startsWith('file:'))
                                 ? SizedBox.square(
-                                    dimension: 45.0,
+                                    dimension: 55.0,
                                     child: Image(
                                       fit: BoxFit.cover,
                                       image: FileImage(
@@ -101,7 +101,7 @@ Drawer gemDrawer(BuildContext context) {
                                     ),
                                   )
                                 : SizedBox.square(
-                                    dimension: 45,
+                                    dimension: 55,
                                     child: CachedNetworkImage(
                                       fit: BoxFit.cover,
                                       errorWidget: (

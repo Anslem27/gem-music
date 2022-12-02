@@ -320,29 +320,6 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                         ],
                       ),
                     ),
-                  // SizedBox.expand(
-                  //   child: ShaderMask(
-                  //     shaderCallback: (rect) {
-                  //       return const LinearGradient(
-                  //         begin: Alignment.center,
-                  //         end: Alignment.bottomCenter,
-                  //         colors: [
-                  //           Colors.black,
-                  //           Colors.transparent,
-                  //         ],
-                  //       ).createShader(
-                  //         Rect.fromLTRB(
-                  //           0,
-                  //           0,
-                  //           rect.width,
-                  //           rect.height,
-                  //         ),
-                  //       );
-                  //     },
-                  //     blendMode: BlendMode.dstIn,
-                  //     child: image,
-                  //   ),
-                  // ),
                   if (rotated)
                     Align(
                       alignment: const Alignment(-0.85, 0.5),
@@ -354,7 +331,8 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                         ),
                         clipBehavior: Clip.antiAlias,
                         child: SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.3,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          width: 200,
                           child: QueryArtworkWidget(
                             id: widget.id,
                             type: widget.certainCase == "album"
@@ -364,9 +342,9 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                                     : ArtworkType.GENRE,
                             artworkWidth:
                                 MediaQuery.of(context).size.width / 2.5,
-                            artworkBorder: BorderRadius.circular(90),
+                            artworkBorder: BorderRadius.circular(8),
                             nullArtworkWidget: ClipRRect(
-                              borderRadius: BorderRadius.circular(90),
+                              borderRadius: BorderRadius.circular(8),
                               child: Image(
                                 fit: BoxFit.cover,
                                 image: AssetImage(

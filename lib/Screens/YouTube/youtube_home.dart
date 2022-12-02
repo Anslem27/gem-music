@@ -6,6 +6,8 @@ import 'package:gem/CustomWidgets/search_bar.dart';
 import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:hive/hive.dart';
+import '../LocalMusic/widgets/preview_page.dart';
+import 'components/trending.dart';
 import 'logic/suggestions.dart';
 
 bool status = false;
@@ -136,8 +138,8 @@ class _YouTubeState extends State<YouTube>
                           Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: GlassmorphicContainer(
-                              width: boxSize - 0,
-                              height: boxSize - 100,
+                              width: boxSize - 20,
+                              height: boxSize - 150,
                               borderRadius: 8,
                               blur: 20,
                               alignment: Alignment.bottomCenter,
@@ -177,7 +179,7 @@ class _YouTubeState extends State<YouTube>
                     );
                   },
                   staggeredTileBuilder: (int index) {
-                    return const StaggeredTile.count(1, 0.5);
+                    return const StaggeredTile.count(1, 0.25);
                   },
                 ),
                 Row(
@@ -195,10 +197,6 @@ class _YouTubeState extends State<YouTube>
                     ),
                   ],
                 ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.start,
-                //   children: [_chartCard(boxSize), _popularCard(boxSize)],
-                // ),
                 StaggeredGridView.countBuilder(
                   physics: const BouncingScrollPhysics(),
                   shrinkWrap: true,
@@ -213,12 +211,43 @@ class _YouTubeState extends State<YouTube>
                           height: boxSize + 10,
                           width: boxSize - 40,
                           child: GestureDetector(
-                            onTap: () {},
+                            onTap: () {
+                              if (index == 0) {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (_) => PreviewPage(
+                                      isSong: false,
+                                      localImage: true,
+                                      title: "CHARTS\nTop 20 Tracks",
+                                      imageUrl: chartImg[0],
+                                      sliverList: const TrendingList(
+                                        type: 'top',
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              }
+                              if (index == 1) {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (_) => PreviewPage(
+                                        isSong: false,
+                                        localImage: true,
+                                        title:
+                                            "TOP\nTop Tracks around the globe",
+                                        imageUrl: chartImg[1],
+                                        sliverList: const SizedBox()),
+                                  ),
+                                );
+                              }
+                            },
                             child: Column(
                               children: [
                                 Image.asset(
                                   chartImg[index],
-                                  height: boxSize - 20,
+                                  height: boxSize - 30,
                                 ),
                                 Expanded(
                                   child: ListTile(

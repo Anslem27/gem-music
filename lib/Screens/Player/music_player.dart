@@ -30,6 +30,7 @@ import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/animations/animated_text.dart';
 import 'package:get_it/get_it.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
@@ -144,6 +145,14 @@ class _PlayScreenState extends State<PlayScreen> {
         updateNplay();
       }
     }
+  }
+
+  //get dorminant color from image rendered
+  Future<Color> getdominantColor(ImageProvider imageProvider) async {
+    final PaletteGenerator paletteGenerator =
+        await PaletteGenerator.fromImageProvider(imageProvider);
+
+    return paletteGenerator.dominantColor!.color;
   }
 
   Future<MediaItem> setTags(SongModel response, Directory tempDir) async {
@@ -286,14 +295,6 @@ class _PlayScreenState extends State<PlayScreen> {
     return;
   }
 
-  //get dorminant color from image rendered
-  Future<Color> getdominantColor(ImageProvider imageProvider) async {
-    final PaletteGenerator paletteGenerator =
-        await PaletteGenerator.fromImageProvider(imageProvider);
-
-    return paletteGenerator.dominantColor!.color;
-  }
-
   String format(String msg) {
     return '${msg[0].toUpperCase()}${msg.substring(1)}: '.replaceAll('_', ' ');
   }
@@ -348,8 +349,8 @@ class _PlayScreenState extends State<PlayScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            colorsSnapshot.data!.withOpacity(0.5),
-                            colorsSnapshot.data!.withOpacity(0.2),
+                            colorsSnapshot.data?.withOpacity(0.5) as Color,
+                            colorsSnapshot.data?.withOpacity(0.2) as Color,
                             // colorsSnapshot.data!.withOpacity(0.3),
                           ],
                         ),
@@ -800,14 +801,24 @@ class _PlayScreenState extends State<PlayScreen> {
                                           child: CircularProgressIndicator(),
                                         ),
                                       )
-                                    : ArtWorkWidget(
-                                        cardKey: cardKey,
-                                        mediaItem: mediaItem,
-                                        width: constraints.maxWidth,
-                                        audioHandler: audioHandler,
-                                        offline: offline,
-                                        getLyricsOnline: getLyricsOnline,
-                                      ),
+                                    : colorsSnapshot.connectionState ==
+                                            ConnectionState.none
+                                        ? SizedBox(
+                                            height: constraints.maxWidth * 0.85,
+                                            width: constraints.maxWidth * 0.85,
+                                            child: const Image(
+                                              fit: BoxFit.cover,
+                                              image: AssetImage(
+                                                  'assets/cover.jpg'),
+                                            ))
+                                        : ArtWorkWidget(
+                                            cardKey: cardKey,
+                                            mediaItem: mediaItem,
+                                            width: constraints.maxWidth,
+                                            audioHandler: audioHandler,
+                                            offline: offline,
+                                            getLyricsOnline: getLyricsOnline,
+                                          ),
 
                                 // title and controls
                                 NameNControls(
@@ -1883,6 +1894,15 @@ class NameNControls extends StatelessWidget {
         height > 500 ? height * 0.4 : height * 0.15;
     final bool useFullScreenGradient = Hive.box('settings')
         .get('useFullScreenGradient', defaultValue: false) as bool;
+
+    //get dorminant color from image rendered
+    Future<Color> getdominantColor(ImageProvider imageProvider) async {
+      final PaletteGenerator paletteGenerator =
+          await PaletteGenerator.fromImageProvider(imageProvider);
+
+      return paletteGenerator.dominantColor!.color;
+    }
+
     return SizedBox(
       width: width,
       height: height,
@@ -2170,122 +2190,152 @@ class NameNControls extends StatelessWidget {
             ],
           ),
 
-          // Up Next with blur background
-          SlidingUpPanel(
-            minHeight: nowplayingBoxHeight,
-            maxHeight: 350,
-            borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(15.0),
-              topRight: Radius.circular(15.0),
-            ),
-            margin: EdgeInsets.zero,
-            padding: EdgeInsets.zero,
-            boxShadow: const [],
-            color: useFullScreenGradient
-                ? const Color.fromRGBO(0, 0, 0, 0.05)
-                : const Color.fromRGBO(0, 0, 0, 0.5),
-            controller: panelController,
-            panelBuilder: (ScrollController scrollController) {
-              return ClipRRect(
-                borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(15.0),
-                  topRight: Radius.circular(15.0),
-                ),
-                child: BackdropFilter(
-                  filter: ui.ImageFilter.blur(
-                    sigmaX: 8.0,
-                    sigmaY: 8.0,
-                  ),
-                  child: ShaderMask(
-                    shaderCallback: (rect) {
-                      return const LinearGradient(
-                        end: Alignment.topCenter,
-                        begin: Alignment.center,
-                        colors: [
-                          Colors.black,
-                          Colors.black,
-                          Colors.black,
-                          Colors.transparent,
-                          Colors.transparent,
-                        ],
-                      ).createShader(
-                        Rect.fromLTRB(
-                          0,
-                          0,
-                          rect.width,
-                          rect.height,
-                        ),
-                      );
-                    },
-                    blendMode: BlendMode.dstIn,
-                    child: NowPlayingStream(
-                      head: true,
-                      headHeight: nowplayingBoxHeight,
-                      audioHandler: audioHandler,
-                      scrollController: scrollController,
-                    ),
-                  ),
-                ),
-              );
-            },
-            header: GestureDetector(
-              onTap: () {
-                if (panelController.isPanelOpen) {
-                  panelController.close();
-                } else {
-                  if (panelController.panelPosition > 0.9) {
-                    panelController.close();
-                  } else {
-                    panelController.open();
-                  }
-                }
-              },
-              onVerticalDragUpdate: (DragUpdateDetails details) {
-                if (details.delta.dy > 0.0) {
-                  panelController.animatePanelToPosition(0.0);
-                }
-              },
-              child: Container(
-                height: nowplayingBoxHeight,
-                width: width,
-                color: Colors.transparent,
-                child: Column(
-                  children: [
-                    const SizedBox(
-                      height: 5,
-                    ),
-                    Center(
-                      child: Container(
-                        width: 30,
-                        height: 5,
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                    ),
-                    const Expanded(
-                      child: Center(
-                        child: Text(
-                          "Coming Up",
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 18,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-                  ],
-                ),
-              ),
-            ),
-          ),
+          //Playing Queue
+          nowPlayingQueue(getdominantColor, nowplayingBoxHeight),
         ],
       ),
     );
+  }
+
+  StreamBuilder<PlaybackState> nowPlayingQueue(
+      Future<ui.Color> Function(ImageProvider<Object> imageProvider)
+          getdominantColor,
+      double nowplayingBoxHeight) {
+    return StreamBuilder<PlaybackState>(
+        stream: audioHandler.playbackState,
+        builder: (context, snapshot) {
+          final playbackState = snapshot.data;
+          final processingState = playbackState?.processingState;
+          if (processingState == AudioProcessingState.idle) {
+            return const SizedBox();
+          }
+          return StreamBuilder<MediaItem?>(
+              stream: audioHandler.mediaItem,
+              builder: (context, snapshot) {
+                final mediaItem = snapshot.data;
+                if (mediaItem == null) return const SizedBox();
+                return FutureBuilder(
+                    future: getdominantColor(
+                      (mediaItem.artUri.toString().startsWith('file:'))
+                          ? FileImage(
+                              File(
+                                mediaItem.artUri!.toFilePath(),
+                              ),
+                            )
+                          : NetworkImage(mediaItem.artUri.toString())
+                              as ImageProvider,
+                    ),
+                    builder: (context, AsyncSnapshot<Color> colorsSnapshot) {
+                      return Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SlidingUpPanel(
+                          minHeight: nowplayingBoxHeight - 10,
+                          maxHeight: 350,
+                          borderRadius: const BorderRadius.only(
+                            topLeft: Radius.circular(8.0),
+                            topRight: Radius.circular(8.0),
+                          ),
+                          margin: EdgeInsets.zero,
+                          padding: EdgeInsets.zero,
+                          boxShadow: const [],
+                          color: colorsSnapshot.data?.withOpacity(0.8) as Color,
+                          // color: useFullScreenGradient
+                          //     ? const Color.fromRGBO(0, 0, 0, 0.05)
+                          //     : const Color.fromRGBO(0, 0, 0, 0.5),
+                          controller: panelController,
+                          panelBuilder: (ScrollController scrollController) {
+                            return GlassmorphicContainer(
+                              width: double.maxFinite,
+                              height: 350,
+                              borderRadius: 8,
+                              blur: 20,
+                              padding: const EdgeInsets.all(40),
+                              alignment: Alignment.bottomCenter,
+                              border: 2,
+                              linearGradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    colorsSnapshot.data?.withOpacity(0.1)
+                                        as Color,
+                                    colorsSnapshot.data?.withOpacity(0.05)
+                                        as Color,
+                                  ],
+                                  stops: const [
+                                    0.1,
+                                    1,
+                                  ]),
+                              borderGradient: const LinearGradient(
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                                colors: [
+                                  Colors.transparent,
+                                  Colors.transparent
+                                ],
+                              ),
+                              child: NowPlayingStream(
+                                head: true,
+                                headHeight: nowplayingBoxHeight,
+                                audioHandler: audioHandler,
+                                scrollController: scrollController,
+                              ),
+                            );
+                          },
+                          header: GestureDetector(
+                            onTap: () {
+                              if (panelController.isPanelOpen) {
+                                panelController.close();
+                              } else {
+                                if (panelController.panelPosition > 0.9) {
+                                  panelController.close();
+                                } else {
+                                  panelController.open();
+                                }
+                              }
+                            },
+                            onVerticalDragUpdate: (DragUpdateDetails details) {
+                              if (details.delta.dy > 0.0) {
+                                panelController.animatePanelToPosition(0.0);
+                              }
+                            },
+                            child: Container(
+                              height: nowplayingBoxHeight,
+                              width: width,
+                              color: Colors.transparent,
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 5),
+                                  Center(
+                                    child: Container(
+                                      width: 30,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        color: colorsSnapshot.data!,
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                    ),
+                                  ),
+                                  const Expanded(
+                                    child: Center(
+                                      child: Text(
+                                        "PLAYING QUEUE",
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 16.5,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 5),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    });
+              });
+        });
   }
 }

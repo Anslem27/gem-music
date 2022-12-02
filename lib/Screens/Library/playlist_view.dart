@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/online_playlists.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -48,9 +47,9 @@ class _PlaylistViewState extends State<PlaylistView>
         appBar: AppBar(
           centerTitle: true,
           backgroundColor: Colors.transparent,
-          title: Text(
+          title: const Text(
             "My Playlists",
-            style: GoogleFonts.roboto(
+            style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -62,21 +61,19 @@ class _PlaylistViewState extends State<PlaylistView>
               color: Theme.of(context).focusColor,
               height: 6,
             ),
-            tabs: [
+            tabs: const [
               Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
+                padding: EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   "Online",
-                  style: GoogleFonts.roboto(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.only(bottom: 10.0),
+                padding: EdgeInsets.only(bottom: 10.0),
                 child: Text(
                   "Offline",
-                  style: GoogleFonts.roboto(
-                      fontWeight: FontWeight.bold, fontSize: 18),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
               )
             ],
