@@ -43,6 +43,8 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../animations/wavy_anim.dart';
+
 class PlayScreen extends StatefulWidget {
   final List songsList;
   final bool fromMiniplayer;

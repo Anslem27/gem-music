@@ -19,6 +19,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../models/widgets/main/login_view.dart';
 import 'components/drawer.dart';
 import 'components/home_logic.dart';
 
@@ -270,6 +271,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             const YouTube(),
+                            const LoginView(),
                             const LibraryPage(),
                           ],
                         ),
@@ -321,6 +323,16 @@ class _HomePageState extends State<HomePage> {
                 ),
                 selectedIcon: const Icon(
                   CupertinoIcons.search,
+                  size: 25,
+                ),
+              ),
+              CustomNavigationBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.lastfm,
+                  size: 25,
+                ),
+                selectedIcon: const Icon(
+                  FontAwesomeIcons.lastfm,
                   size: 25,
                 ),
               ),
