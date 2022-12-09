@@ -199,6 +199,7 @@ Drawer gemDrawer(BuildContext context) {
                                       builder: (context) =>
                                           const DownloadedSongs(
                                         showPlaylists: true,
+                                        fromHomElement: false,
                                       ),
                                     ),
                                   );

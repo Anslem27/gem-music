@@ -6,12 +6,20 @@ import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
 import 'package:gem/Screens/LocalMusic/pages/albums_page.dart';
 import 'package:gem/animations/custompageroute.dart';
+import 'package:glassmorphism/glassmorphism.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../../Helpers/local_music_functions.dart';
+import '../../../models/services/image_id.dart';
+import '../../../models/widgets/entity/entity_image.dart';
 import '../../LocalMusic/pages/detail_page.dart';
 import '../../LocalMusic/pages/local_genres.dart';
 import '../../Player/music_player.dart';
 import '../widgets/component_detail_page.dart';
+
+import '../../../models/services/lastfm/artist.dart';
+import '../../../models/services/lastfm/lastfm.dart';
+
+//title header component with actions
 
 Row _homeTitleComponent(String title, Function()? ontap, Icon? icon) {
   return Row(
@@ -31,6 +39,229 @@ Row _homeTitleComponent(String title, Function()? ontap, Icon? icon) {
           splashRadius: 24, onPressed: ontap, icon: icon ?? const SizedBox())
     ],
   );
+}
+
+//gridview widget for all local songs
+class SongGrid extends StatefulWidget {
+  const SongGrid({super.key});
+
+  @override
+  State<SongGrid> createState() => _SongGridState();
+}
+
+class _SongGridState extends State<SongGrid> {
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<SongModel> recntly_added = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    recntly_added = await offlineAudioQuery.getSongs(
+      sortType: SongSortType.DATE_ADDED,
+    );
+
+    setState(() {
+      loading = true;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchSongs();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    return SizedBox(
+      height: boxSize - 20,
+      width: boxSize - 30,
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: recntly_added.length < 3 ? 1 : 2,
+        children: recntly_added
+            .take(4)
+            .map(
+              (image) => QueryArtworkWidget(
+                id: image.id,
+                type: ArtworkType.AUDIO,
+                // artworkHeight: boxSize - 35,
+                // artworkWidth: boxSize - 40,
+                artworkBorder: BorderRadius.circular(0.0),
+                nullArtworkWidget: ClipRRect(
+                  borderRadius: BorderRadius.circular(0.0),
+                  child: Image(
+                    fit: BoxFit.cover,
+                    height: boxSize - 35,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    image: const AssetImage('assets/album.png'),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+//playlist collage component
+class PlaylistCollage extends StatefulWidget {
+  final int playlistId;
+
+  const PlaylistCollage({super.key, required this.playlistId});
+
+  @override
+  State<PlaylistCollage> createState() => _PlaylistCollageState();
+}
+
+class _PlaylistCollageState extends State<PlaylistCollage> {
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<SongModel> queriedPlaylist = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    queriedPlaylist =
+        await offlineAudioQuery.getPlaylistSongs(widget.playlistId);
+    setState(() {
+      loading = true;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchSongs();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    return queriedPlaylist.length < 3
+        ? QueryArtworkWidget(
+            id: widget.playlistId,
+            type: ArtworkType.ARTIST,
+            artworkHeight: boxSize - 20,
+            artworkWidth: boxSize - 30,
+            artworkBorder: BorderRadius.circular(8.0),
+            nullArtworkWidget: ClipRRect(
+              borderRadius: BorderRadius.circular(8.0),
+              child: Image(
+                fit: BoxFit.cover,
+                height: boxSize - 35,
+                width: MediaQuery.of(context).size.width / 2.5,
+                image: const AssetImage('assets/album.png'),
+              ),
+            ),
+          )
+        : SizedBox(
+            height: boxSize - 25,
+            width: boxSize - 30,
+            child: GridView.count(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisCount: 2,
+              children: queriedPlaylist
+                  .take(4)
+                  .map(
+                    (image) => QueryArtworkWidget(
+                      id: image.id,
+                      type: ArtworkType.AUDIO,
+                      // artworkHeight: boxSize - 35,
+                      // artworkWidth: boxSize - 40,
+                      artworkBorder: BorderRadius.circular(0.0),
+                      nullArtworkWidget: ClipRRect(
+                        borderRadius: BorderRadius.circular(0.0),
+                        child: Image(
+                          fit: BoxFit.cover,
+                          height: boxSize - 35,
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          image: const AssetImage('assets/album.png'),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          );
+  }
+}
+
+//local playlist collage
+
+class LocalPlayListCollage extends StatefulWidget {
+  const LocalPlayListCollage({super.key});
+
+  @override
+  State<LocalPlayListCollage> createState() => _LocalPlayListCollageState();
+}
+
+class _LocalPlayListCollageState extends State<LocalPlayListCollage> {
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<PlaylistModel> localPlaylists = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    localPlaylists = await offlineAudioQuery.getPlaylists();
+
+    setState(() {
+      loading = true;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchSongs();
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    return SizedBox(
+      height: boxSize - 20,
+      width: boxSize - 30,
+      child: GridView.count(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        crossAxisCount: localPlaylists.length < 3 ? 1 : 2,
+        children: localPlaylists
+            .take(4)
+            .map(
+              (image) => QueryArtworkWidget(
+                id: image.id,
+                type: ArtworkType.PLAYLIST,
+                // artworkHeight: boxSize - 35,
+                // artworkWidth: boxSize - 40,
+                artworkBorder: BorderRadius.circular(0.0),
+                nullArtworkWidget: ClipRRect(
+                  borderRadius: BorderRadius.circular(0.0),
+                  child: Image(
+                    fit: BoxFit.cover,
+                    height: boxSize - 35,
+                    width: MediaQuery.of(context).size.width / 2.5,
+                    image: const AssetImage('assets/album.png'),
+                  ),
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
 }
 
 class RecentlyAddedSongs extends StatefulWidget {
@@ -376,7 +607,7 @@ class _HomeGenresState extends State<HomeGenres> {
           child: ListView.builder(
             itemCount: home_genres.take(10).length,
             scrollDirection: Axis.horizontal,
-            physics: const ClampingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemBuilder: (_, index) {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -391,7 +622,7 @@ class _HomeGenresState extends State<HomeGenres> {
                         builder: (_) => LocalMusicsDetail(
                           title: home_genres[index].genre,
                           id: home_genres[index].id,
-                          certainCase: 'nil', //genre
+                          certainCase: 'genre', //genre
                           songs: album_songs,
                         ),
                       ),
@@ -497,72 +728,213 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         _homeTitleComponent(
-            "ARTISTS", () {}, const Icon(EvaIcons.searchOutline)),
+          "ARTISTS",
+          () {},
+          const Icon(EvaIcons.searchOutline),
+        ),
+        //testing fetching some images from last fm api
         SizedBox(
           height: boxSize + 40,
           child: ListView.builder(
             itemCount: a_glance.take(10).length,
             scrollDirection: Axis.horizontal,
-            physics: const ClampingScrollPhysics(),
+            physics: const BouncingScrollPhysics(),
             itemBuilder: (_, index) {
-              return GestureDetector(
-                onTap: () async {
-                  var album_songs = await offlineAudioQuery
-                      .getArtistSongs(a_glance[index].id);
+              return FutureBuilder<List<LTopArtistsResponseArtist>>(
+                future: Lastfm.getGlobalTopArtists(100),
+                builder: (_, snapshot) {
+                  if (!snapshot.hasData) {
+                    return GestureDetector(
+                      onTap: () async {
+                        var album_songs = await offlineAudioQuery
+                            .getArtistSongs(a_glance[index].id);
 
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (_) => LocalMusicsDetail(
-                        title: a_glance[index].artist,
-                        id: a_glance[index].id,
-                        certainCase: 'artist',
-                        songs: album_songs,
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (_) => LocalMusicsDetail(
+                              title: a_glance[index].artist,
+                              id: a_glance[index].id,
+                              certainCase: 'artist',
+                              songs: album_songs,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: SizedBox(
+                          height: boxSize - 30,
+                          width: boxSize - 40,
+                          child: Column(
+                            children: [
+                              QueryArtworkWidget(
+                                id: a_glance[index].id,
+                                type: ArtworkType.AUDIO,
+                                artworkHeight: boxSize - 35,
+                                artworkWidth: boxSize - 40,
+                                artworkBorder: BorderRadius.circular(7.0),
+                                nullArtworkWidget: ClipRRect(
+                                  borderRadius: BorderRadius.circular(100.0),
+                                  child: Image(
+                                    fit: BoxFit.cover,
+                                    height: boxSize - 35,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.5,
+                                    image:
+                                        const AssetImage('assets/artist.png'),
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: ListTile(
+                                  title: Text(
+                                    a_glance[index].artist.toUpperCase(),
+                                    textAlign: TextAlign.center,
+                                    softWrap: false,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
+                    );
+                  }
+                  return SizedBox(
+                    height: boxSize + 40,
+                    child: ListView(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      // padding: EdgeInsets.zero,
+                      children: snapshot.data!
+                          .map(
+                            (artist) => FutureBuilder<List<LArtistTopAlbum>>(
+                                future: ArtistGetTopAlbumsRequest(artist.name)
+                                    .getData(1, 1),
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return CircleAvatar(
+                                      radius: 100,
+                                      child: GlassmorphicContainer(
+                                        height: boxSize - 30,
+                                        width: boxSize - 20,
+                                        borderRadius: 100,
+                                        blur: 20,
+                                        alignment: Alignment.bottomCenter,
+                                        border: 2,
+                                        linearGradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              const Color(0xFFffffff)
+                                                  .withOpacity(0.1),
+                                              const Color(0xFFFFFFFF)
+                                                  .withOpacity(0.05),
+                                            ],
+                                            stops: const [
+                                              0.1,
+                                              1,
+                                            ]),
+                                        borderGradient: const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.transparent
+                                          ],
+                                        ),
+                                        child: null,
+                                      ),
+                                    );
+                                  }
+                                  return snapshot.hasData &&
+                                          a_glance[index]
+                                                  .artist
+                                                  .trim()
+                                                  .toLowerCase() ==
+                                              artist.name.toLowerCase().trim()
+                                      ? Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                  height: boxSize - 30,
+                                                  width: boxSize - 40,
+                                                  child: CircleAvatar(
+                                                    radius: 50,
+                                                    child: EntityImage(
+                                                      entity:
+                                                          snapshot.data!.first,
+                                                      quality:
+                                                          ImageQuality.high,
+                                                      placeholderBehavior:
+                                                          PlaceholderBehavior
+                                                              .none,
+                                                    ),
+                                                  )),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              artist.name.toUpperCase(),
+                                              textAlign: TextAlign.center,
+                                              softWrap: false,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      : Column(
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.all(8.0),
+                                              child: SizedBox(
+                                                height: boxSize - 30,
+                                                width: boxSize - 40,
+                                                child: CircleAvatar(
+                                                  radius: 50,
+                                                  child: EntityImage(
+                                                    entity:
+                                                        snapshot.data!.first,
+                                                    quality: ImageQuality.high,
+                                                    placeholderBehavior:
+                                                        PlaceholderBehavior
+                                                            .none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              artist.name.toUpperCase(),
+                                              textAlign: TextAlign.center,
+                                              softWrap: false,
+                                              overflow: TextOverflow.ellipsis,
+                                              style: const TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                }),
+                          )
+                          .take(10)
+                          .toList(),
                     ),
                   );
                 },
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: boxSize - 30,
-                    width: boxSize - 40,
-                    child: Column(
-                      children: [
-                        QueryArtworkWidget(
-                          id: a_glance[index].id,
-                          type: ArtworkType.AUDIO,
-                          artworkHeight: boxSize - 35,
-                          artworkWidth: boxSize - 40,
-                          artworkBorder: BorderRadius.circular(7.0),
-                          nullArtworkWidget: ClipRRect(
-                            borderRadius: BorderRadius.circular(100.0),
-                            child: Image(
-                              fit: BoxFit.cover,
-                              height: boxSize - 35,
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              image: const AssetImage('assets/artist.png'),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: ListTile(
-                            title: Text(
-                              a_glance[index].artist.toUpperCase(),
-                              textAlign: TextAlign.center,
-                              softWrap: false,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
               );
             },
           ),

@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gem/models/widgets/main/main_view.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import '../../../APIs/env.dart';
 import '../../services/image_id.dart';
@@ -13,6 +12,7 @@ import '../../services/lastfm/lastfm.dart';
 import '../../util/constants.dart';
 import '../../util/preferences.dart';
 import '../entity/entity_image.dart';
+import 'last_fm_home.dart';
 
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
@@ -29,17 +29,20 @@ class LoginView extends StatelessWidget {
     final result = await FlutterWebAuth.authenticate(
         url: Uri.https('last.fm', 'api/auth',
             {'api_key': apiKey, 'cb': authCallbackUrl}).toString(),
-        callbackUrlScheme: 'finale');
+        callbackUrlScheme: 'true');
     final token = Uri.parse(result).queryParameters['token']!;
     final session = await Lastfm.authenticate(token);
 
     Preferences.name.value = session.name;
     Preferences.key.value = session.key;
+    //username: session.name
 
     await Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-            builder: (context) => MainView(username: session.name)));
+            builder: (context) => ProfileView(
+                  username: session.name,
+                )));
   }
 
   @override

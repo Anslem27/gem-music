@@ -1,6 +1,7 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:glassmorphism/glassmorphism.dart';
-import 'package:google_fonts/google_fonts.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -69,7 +70,45 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                 delegate: SliverChildListDelegate(
                   [
                     // page body
+                    widget.certainCase == "genre" ||
+                            widget.certainCase == "artist"
+                        ? Row(
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                child: Text(
+                                  "SONGS",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const Spacer(),
+                              Padding(
+                                padding:
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                                child: Text(
+                                  "${widget.songs.length} ${widget.songs.length < 2 ? "Song" : "Songs"}",
+                                  style: const TextStyle(
+                                      fontSize: 15, color: Colors.grey),
+                                ),
+                              ),
+                            ],
+                          )
+                        : const SizedBox(height: 0, width: 0),
                     _songWidget(boxSize),
+
+                    // ListView.builder(itemBuilder: (_, index) {
+                    //   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+                    //   List<AlbumModel> getAlbums = [];
+
+                    //     getAlbums = await offlineAudioQuery
+                    //         .(widget.title);
+                    //     setState(() {
+
+                    //     });
+                    // })
                   ],
                 ),
               ),
@@ -90,10 +129,79 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
       shrinkWrap: true,
       itemCount: widget.songs.length,
       itemBuilder: (context, index) {
+        // getLenght() {
+        //   int? getSum;
+        //   for (var i in widget.songs) {
+        //     getSum = i.duration;
+        //   }
+        //   var h = getSum! ~/ 3600;
+        //   var m = ((getSum - h * 3600)) ~/ 60;
+        //   String result = "$h hr:$m min";
+        //   return result;
+        // }
+
         return Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            widget.certainCase == "album"
+                ? Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 0, vertical: 5),
+                    child: ListTile(
+                      onTap: () async {
+                        OfflineAudioQuery offlineAudioQuery =
+                            OfflineAudioQuery();
+                        var albumSongs =
+                            await offlineAudioQuery.getArtistsByName(
+                                widget.songs[index].artist as String);
+
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (_) => LocalMusicsDetail(
+                              title: albumSongs[index].artist as String,
+                              id: albumSongs[index].id,
+                              certainCase: 'artist',
+                              songs: albumSongs,
+                            ),
+                          ),
+                        );
+                      },
+                      leading: const CircleAvatar(
+                        radius: 25,
+                        backgroundImage: AssetImage("assets/artist.png"),
+                      ),
+                      title: Text(
+                          "by ${widget.songs[index].artist!.toUpperCase()}"),
+                      subtitle: Text(
+                        "${widget.songs.length} ${widget.songs.length < 2 ? "Song" : "Songs"}",
+                      ),
+                      // trailing: IconButton(
+                      //   splashRadius: 24,
+                      //   onPressed: () {},
+                      //   icon: const Icon(EvaIcons.personOutline),
+                      // ),
+                    ),
+                  )
+                : const SizedBox(width: 0, height: 0),
+            widget.certainCase == "album"
+                ? Row(
+                    children: const [
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
+                        child: Text(
+                          "SONGS",
+                          style: TextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : const SizedBox(height: 0, width: 0),
+            const SizedBox(height: 5),
             GestureDetector(
               onTap: () {
                 setState(() {});
@@ -132,7 +240,7 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                               ? widget.songs[index].title
                               : widget.songs[index].displayNameWOExt,
                           overflow: TextOverflow.ellipsis,
-                          style: GoogleFonts.roboto(fontSize: 17),
+                          style: const TextStyle(fontSize: 17),
                         ),
                         subtitle: Text(
                           widget.songs[index].album

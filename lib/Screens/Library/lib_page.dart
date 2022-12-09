@@ -90,6 +90,7 @@ class _LibraryPageState extends State<LibraryPage> {
                     MaterialPageRoute(
                       builder: (context) => const DownloadedSongs(
                         showPlaylists: true,
+                        fromHomElement: false,
                       ),
                     ),
                   );

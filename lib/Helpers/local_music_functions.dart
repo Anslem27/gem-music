@@ -75,6 +75,22 @@ class OfflineAudioQuery {
     );
   }
 
+  Future<List<SongModel>> getArtistsByName(
+    String artist, {
+    SongSortType? sortType,
+    OrderType? orderType,
+    String? path,
+  }) async {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.ARTIST,
+      artist,
+      sortType: sortType ?? SongSortType.DATE_ADDED,
+      orderType: orderType ?? OrderType.DESC_OR_GREATER,
+    );
+  }
+
+
+
   Future<List<SongModel>> getAlbumSongs(
     int albumId, {
     SongSortType? sortType,
@@ -155,11 +171,11 @@ class OfflineAudioQuery {
     required ArtworkType type,
     required String? tempPath,
     required String fileName,
-    // int size = 200,
-    // int quality = 200,
-    ArtworkFormat format = ArtworkFormat.JPEG,
+    int size = 200,
+    int quality = 200,
+    ArtworkFormat format = ArtworkFormat.PNG,
   }) async {
-    final File file = File('$tempPath/$fileName.jpg');
+    final File file = File('$tempPath/$fileName.png');
 
     if (!await file.exists()) {
       await file.create();
@@ -167,8 +183,8 @@ class OfflineAudioQuery {
         id,
         type,
         format: format,
-        // size: size,
-        // quality: quality,
+        size: size,
+        quality: quality,
       );
       file.writeAsBytesSync(image!);
     }
@@ -182,7 +198,7 @@ class OfflineAudioQuery {
     required String fileName,
     // int size = 200,
     // int quality = 100,
-    ArtworkFormat format = ArtworkFormat.JPEG,
+    ArtworkFormat format = ArtworkFormat.PNG,
     ArtworkType artworkType = ArtworkType.AUDIO,
     BorderRadius? borderRadius,
     Clip clipBehavior = Clip.antiAlias,

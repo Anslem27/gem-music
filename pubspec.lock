@@ -590,6 +590,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.3.2+2"
+  overlapping_panels:
+    dependency: "direct main"
+    description:
+      name: overlapping_panels
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.0.3"
   package_info_plus:
     dependency: "direct main"
     description:

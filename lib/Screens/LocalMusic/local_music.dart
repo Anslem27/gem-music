@@ -25,6 +25,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import '../Home/components/home_components.dart';
 import '../Library/downloads.dart';
 
 class DownloadedSongs extends StatefulWidget {
@@ -32,12 +33,14 @@ class DownloadedSongs extends StatefulWidget {
   final String? title;
   final int? playlistId;
   final bool showPlaylists;
+  final bool fromHomElement;
   const DownloadedSongs({
     super.key,
     this.cachedSongs,
     this.title,
     this.playlistId,
     this.showPlaylists = false,
+    required this.fromHomElement,
   });
   @override
   _DownloadedSongsState createState() => _DownloadedSongsState();
@@ -184,6 +187,7 @@ class _DownloadedSongsState extends State<DownloadedSongs>
     Future<Color> getdominantColor(ImageProvider imageProvider) async {
       final PaletteGenerator paletteGenerator =
           await PaletteGenerator.fromImageProvider(imageProvider);
+
       return paletteGenerator.dominantColor!.color;
     }
 
@@ -191,351 +195,318 @@ class _DownloadedSongsState extends State<DownloadedSongs>
         future:
             getdominantColor(const AssetImage("assets/elements/online.png")),
         builder: (context, AsyncSnapshot<Color> snapshot) {
-          return snapshot.connectionState == ConnectionState.waiting &&
-                  snapshot.connectionState == ConnectionState.none
-              ? const Center(
-                  child: CircularProgressIndicator(),
-                )
-              : GradientContainer(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: DefaultTabController(
-                            length: widget.showPlaylists ? 5 : 4,
-                            child: Stack(children: [
-                              NestedScrollView(
-                                //shrinkWrap: true,
-                                physics: const BouncingScrollPhysics(),
-                                headerSliverBuilder: (BuildContext context,
-                                    bool innerBoxIsScrolled) {
-                                  return [
-                                    SliverAppBar(
-                                      elevation: 0,
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-                                      stretch: true,
-                                      pinned: true,
-                                      centerTitle: true,
-                                      expandedHeight:
-                                          MediaQuery.of(context).size.height *
-                                              0.3,
-                                      bottom: TabBar(
-                                        isScrollable: widget.showPlaylists,
-                                        controller: _tcontroller,
-                                        indicator: MaterialIndicator(
-                                          horizontalPadding: 20,
-                                          color: Theme.of(context).focusColor,
-                                          height: 6,
+          return GradientContainer(
+            child: Column(
+              children: [
+                Expanded(
+                  child: DefaultTabController(
+                      length: widget.fromHomElement
+                          ? 1
+                          : widget.showPlaylists
+                              ? 5
+                              : 4,
+                      child: Stack(children: [
+                        NestedScrollView(
+                          //shrinkWrap: true,
+                          physics: const BouncingScrollPhysics(),
+                          headerSliverBuilder:
+                              (BuildContext context, bool innerBoxIsScrolled) {
+                            return [
+                              SliverAppBar(
+                                elevation: 0,
+                                backgroundColor: Theme.of(context).cardColor,
+                                stretch: true,
+                                pinned: true,
+                                centerTitle: true,
+                                expandedHeight:
+                                    MediaQuery.of(context).size.height * 0.35,
+                                bottom: TabBar(
+                                  isScrollable: widget.showPlaylists,
+                                  controller: _tcontroller,
+                                  indicator: MaterialIndicator(
+                                    horizontalPadding: 20,
+                                    color: Theme.of(context).focusColor,
+                                    height: 6,
+                                  ),
+                                  tabs: [
+                                    const Tab(text: "Songs"),
+                                    const Tab(text: "Albums"),
+                                    const Tab(text: "Artists"),
+                                    const Tab(text: "Genres"),
+                                    if (widget.showPlaylists)
+                                      const Tab(text: "Playlists"),
+                                  ],
+                                ),
+                                actions: [
+                                  IconButton(
+                                    splashRadius: 24,
+                                    icon: const Icon(CupertinoIcons.search),
+                                    tooltip: 'Search',
+                                    onPressed: () {
+                                      showSearch(
+                                        context: context,
+                                        delegate: DataSearch(
+                                          data: _songs,
+                                          tempPath: tempPath!,
                                         ),
-                                        tabs: [
-                                          const Tab(text: "Songs"),
-                                          const Tab(text: "Albums"),
-                                          const Tab(text: "Artists"),
-                                          const Tab(text: "Genres"),
-                                          if (widget.showPlaylists)
-                                            const Tab(text: "Playlists"),
-                                        ],
-                                      ),
-                                      actions: [
-                                        IconButton(
-                                          splashRadius: 24,
-                                          icon:
-                                              const Icon(CupertinoIcons.search),
-                                          tooltip: 'Search',
-                                          onPressed: () {
-                                            showSearch(
-                                              context: context,
-                                              delegate: DataSearch(
-                                                data: _songs,
-                                                tempPath: tempPath!,
+                                      );
+                                    },
+                                  ),
+                                  PopupMenuButton(
+                                    splashRadius: 24,
+                                    icon: const Icon(
+                                      Iconsax.filter,
+                                    ),
+                                    shape: const RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                          Radius.circular(15.0)),
+                                    ),
+                                    onSelected: (int value) async {
+                                      if (value < 6) {
+                                        sortValue = value;
+                                        Hive.box('settings')
+                                            .put('sortValue', value);
+                                      } else {
+                                        orderValue = value - 6;
+                                        Hive.box('settings')
+                                            .put('orderValue', orderValue);
+                                      }
+                                      await sortSongs(sortValue, orderValue);
+                                      setState(() {});
+                                    },
+                                    itemBuilder: (context) {
+                                      final List<String> sortTypes = [
+                                        'Display Name',
+                                        'Date Added',
+                                        'Album',
+                                        'Artist',
+                                        'Duration',
+                                        'Size',
+                                      ];
+                                      final List<String> orderTypes = [
+                                        'Increasing',
+                                        'Decreasing',
+                                      ];
+                                      final menuList = <PopupMenuEntry<int>>[];
+                                      menuList.addAll(
+                                        sortTypes
+                                            .map(
+                                              (e) => PopupMenuItem(
+                                                value: sortTypes.indexOf(e),
+                                                child: Row(
+                                                  children: [
+                                                    if (sortValue ==
+                                                        sortTypes.indexOf(e))
+                                                      Icon(
+                                                        Icons.check_rounded,
+                                                        size: 20,
+                                                        color: Theme.of(context)
+                                                                    .brightness ==
+                                                                Brightness.dark
+                                                            ? Colors.white
+                                                            : Colors.grey[700],
+                                                      )
+                                                    else
+                                                      const SizedBox(),
+                                                    const SizedBox(width: 10),
+                                                    Text(e),
+                                                  ],
+                                                ),
                                               ),
-                                            );
-                                          },
+                                            )
+                                            .toList(),
+                                      );
+                                      menuList.add(
+                                        const PopupMenuDivider(
+                                          height: 10,
                                         ),
-                                        PopupMenuButton(
-                                          splashRadius: 24,
-                                          icon: const Icon(
-                                            Iconsax.filter,
-                                          ),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
-                                          ),
-                                          onSelected: (int value) async {
-                                            if (value < 6) {
-                                              sortValue = value;
-                                              Hive.box('settings')
-                                                  .put('sortValue', value);
-                                            } else {
-                                              orderValue = value - 6;
-                                              Hive.box('settings').put(
-                                                  'orderValue', orderValue);
-                                            }
-                                            await sortSongs(
-                                                sortValue, orderValue);
-                                            setState(() {});
-                                          },
-                                          itemBuilder: (context) {
-                                            final List<String> sortTypes = [
-                                              'Display Name',
-                                              'Date Added',
-                                              'Album',
-                                              'Artist',
-                                              'Duration',
-                                              'Size',
-                                            ];
-                                            final List<String> orderTypes = [
-                                              'Increasing',
-                                              'Decreasing',
-                                            ];
-                                            final menuList =
-                                                <PopupMenuEntry<int>>[];
-                                            menuList.addAll(
-                                              sortTypes
-                                                  .map(
-                                                    (e) => PopupMenuItem(
-                                                      value:
-                                                          sortTypes.indexOf(e),
-                                                      child: Row(
-                                                        children: [
-                                                          if (sortValue ==
-                                                              sortTypes
-                                                                  .indexOf(e))
-                                                            Icon(
-                                                              Icons
-                                                                  .check_rounded,
-                                                              size: 20,
-                                                              color: Theme.of(context)
-                                                                          .brightness ==
-                                                                      Brightness
-                                                                          .dark
-                                                                  ? Colors.white
-                                                                  : Colors.grey[
-                                                                      700],
-                                                            )
-                                                          else
-                                                            const SizedBox(),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Text(e),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            );
-                                            menuList.add(
-                                              const PopupMenuDivider(
-                                                height: 10,
+                                      );
+                                      menuList.addAll(
+                                        orderTypes
+                                            .map(
+                                              (e) => PopupMenuItem(
+                                                value: sortTypes.length +
+                                                    orderTypes.indexOf(e),
+                                                child: Row(
+                                                  children: [
+                                                    if (orderValue ==
+                                                        orderTypes.indexOf(e))
+                                                      Icon(
+                                                        Icons.check_rounded,
+                                                        size: 20,
+                                                        color: Theme.of(context)
+                                                                    .brightness ==
+                                                                Brightness.dark
+                                                            ? Colors.white
+                                                            : Colors.grey[700],
+                                                      )
+                                                    else
+                                                      const SizedBox(),
+                                                    const SizedBox(width: 10),
+                                                    Text(e),
+                                                  ],
+                                                ),
                                               ),
-                                            );
-                                            menuList.addAll(
-                                              orderTypes
-                                                  .map(
-                                                    (e) => PopupMenuItem(
-                                                      value: sortTypes.length +
-                                                          orderTypes.indexOf(e),
-                                                      child: Row(
-                                                        children: [
-                                                          if (orderValue ==
-                                                              orderTypes
-                                                                  .indexOf(e))
-                                                            Icon(
-                                                              Icons
-                                                                  .check_rounded,
-                                                              size: 20,
-                                                              color: Theme.of(context)
-                                                                          .brightness ==
-                                                                      Brightness
-                                                                          .dark
-                                                                  ? Colors.white
-                                                                  : Colors.grey[
-                                                                      700],
-                                                            )
-                                                          else
-                                                            const SizedBox(),
-                                                          const SizedBox(
-                                                              width: 10),
-                                                          Text(e),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  )
-                                                  .toList(),
-                                            );
-                                            return menuList;
-                                          },
-                                        ),
-                                      ],
-                                      // title: Opacity(
-                                      //   opacity: 1 - _opacity.value,
+                                            )
+                                            .toList(),
+                                      );
+                                      return menuList;
+                                    },
+                                  ),
+                                ],
+                                // title: Opacity(
+                                //   opacity: 1 - _opacity.value,
+                                //   child: Text(
+                                //     title.toUpperCase(),
+                                //     style: const TextStyle(
+                                //       fontSize: 17,
+                                //       fontWeight: FontWeight.w500,
+                                //     ),
+                                //   ),
+                                // ),
+                                flexibleSpace: LayoutBuilder(
+                                  builder: (BuildContext context,
+                                      BoxConstraints constraints) {
+                                    double top = constraints.biggest.height;
+                                    if (top >
+                                        MediaQuery.of(context).size.height *
+                                            0.45) {
+                                      top = MediaQuery.of(context).size.height *
+                                          0.45;
+                                    }
+                                    return FlexibleSpaceBar(
+                                      // title: const Opacity(
+                                      //   opacity: 0.5,
                                       //   child: Text(
-                                      //     title.toUpperCase(),
-                                      //     style: const TextStyle(
-                                      //       fontSize: 17,
+                                      //     "All Music",
+                                      //     style: TextStyle(
+                                      //       fontSize: 15,
                                       //       fontWeight: FontWeight.w500,
                                       //     ),
+                                      //     textAlign: TextAlign.center,
+                                      //     overflow: TextOverflow.ellipsis,
                                       //   ),
                                       // ),
-                                      flexibleSpace: LayoutBuilder(
-                                        builder: (BuildContext context,
-                                            BoxConstraints constraints) {
-                                          double top =
-                                              constraints.biggest.height;
-                                          if (top >
-                                              MediaQuery.of(context)
-                                                      .size
-                                                      .height *
-                                                  0.45) {
-                                            top = MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.45;
-                                          }
-                                          return FlexibleSpaceBar(
-                                            // title: const Opacity(
-                                            //   opacity: 0.5,
-                                            //   child: Text(
-                                            //     "All Music",
-                                            //     style: TextStyle(
-                                            //       fontSize: 15,
-                                            //       fontWeight: FontWeight.w500,
-                                            //     ),
-                                            //     textAlign: TextAlign.center,
-                                            //     overflow: TextOverflow.ellipsis,
-                                            //   ),
-                                            // ),
-                                            centerTitle: true,
-                                            background: GlassmorphicContainer(
-                                              width: double.maxFinite,
-                                              height: double.maxFinite,
-                                              borderRadius: 0,
-                                              blur: 20,
-                                              alignment: Alignment.bottomCenter,
-                                              border: 2,
-                                              linearGradient: LinearGradient(
-                                                  begin: Alignment.topLeft,
-                                                  end: Alignment.bottomRight,
-                                                  colors: [
-                                                    snapshot.data
-                                                            ?.withOpacity(0.9)
-                                                        as Color,
-                                                    snapshot.data
-                                                            ?.withOpacity(0.05)
-                                                        as Color,
+                                      centerTitle: true,
+                                      background: GlassmorphicContainer(
+                                        width: double.maxFinite,
+                                        height: double.maxFinite,
+                                        borderRadius: 0,
+                                        blur: 20,
+                                        alignment: Alignment.bottomCenter,
+                                        border: 2,
+                                        linearGradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              snapshot.data?.withOpacity(0.9)
+                                                  as Color,
+                                              snapshot.data?.withOpacity(0.05)
+                                                  as Color,
+                                            ],
+                                            stops: const [
+                                              0.1,
+                                              1,
+                                            ]),
+                                        borderGradient: const LinearGradient(
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
+                                          colors: [
+                                            Colors.transparent,
+                                            Colors.transparent
+                                          ],
+                                        ),
+                                        child: Stack(
+                                          children: [
+                                            if (!rotated)
+                                              Align(
+                                                alignment: Alignment.center,
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.center,
+                                                  children: [
+                                                    Padding(
+                                                      padding: const EdgeInsets
+                                                              .symmetric(
+                                                          vertical: 15.0),
+                                                      child: SizedBox(
+                                                        height: boxSize,
+                                                        child: const SongGrid(),
+                                                      ),
+                                                    ),
                                                   ],
-                                                  stops: const [
-                                                    0.1,
-                                                    1,
-                                                  ]),
-                                              borderGradient:
-                                                  const LinearGradient(
-                                                begin: Alignment.topLeft,
-                                                end: Alignment.bottomRight,
-                                                colors: [
-                                                  Colors.transparent,
-                                                  Colors.transparent
-                                                ],
+                                                ),
                                               ),
-                                              child: Stack(
-                                                children: [
-                                                  if (!rotated)
-                                                    Align(
-                                                      alignment:
-                                                          Alignment.center,
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                        .symmetric(
-                                                                    vertical:
-                                                                        12.0),
-                                                            child: SizedBox(
-                                                              height:
-                                                                  boxSize - 40,
-                                                              child: Image.asset(
-                                                                  "assets/cover.jpg"),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  if (rotated)
-                                                    Align(
-                                                      alignment:
-                                                          const Alignment(
-                                                              -0.85, 0.5),
-                                                      child: Card(
-                                                        elevation: 5,
-                                                        color:
-                                                            Colors.transparent,
-                                                        shape:
-                                                            RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      7.0),
-                                                        ),
-                                                        clipBehavior:
-                                                            Clip.antiAlias,
-                                                        child: SizedBox(
-                                                          height: MediaQuery.of(
-                                                                      context)
-                                                                  .size
-                                                                  .height *
-                                                              0.3,
-                                                          child: Image.asset(
-                                                              "assets/cover.jpg"),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                ],
+                                            if (rotated)
+                                              Align(
+                                                alignment:
+                                                    const Alignment(-0.85, 0.5),
+                                                child: Card(
+                                                  elevation: 5,
+                                                  color: Colors.transparent,
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            7.0),
+                                                  ),
+                                                  clipBehavior: Clip.antiAlias,
+                                                  child: SizedBox(
+                                                    height:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .height *
+                                                            0.3,
+                                                    child: Image.asset(
+                                                        "assets/cover.jpg"),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                          );
-                                        },
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                  ];
-                                },
-                                body: !added
-                                    ? const Center(
-                                        child: CircularProgressIndicator(),
-                                      )
-                                    : TabBarView(
-                                        physics: const CustomPhysics(),
-                                        controller: _tcontroller,
-                                        children: [
-                                          SongsTab(
-                                            songs: _songs,
-                                            playlistId: widget.playlistId,
-                                            playlistName: widget.title,
-                                            tempPath: tempPath!,
-                                          ),
-                                          const LocalAlbumsPage(),
-                                          const LocalArtistsPage(),
-                                          const LocalGenresPage(),
-                                          if (widget.showPlaylists)
-                                            LocalPlaylists(
-                                              playlistDetails: playlistDetails,
-                                              offlineAudioQuery:
-                                                  offlineAudioQuery,
-                                            ),
-                                        ],
-                                      ),
+                                    );
+                                  },
+                                ),
                               ),
-                            ])),
-                      ),
-                      const MiniPlayer(),
-                    ],
-                  ),
-                );
+                            ];
+                          },
+                          body: !added
+                              ? const Center(
+                                  child: CircularProgressIndicator(),
+                                )
+                              : TabBarView(
+                                  physics: const CustomPhysics(),
+                                  controller: _tcontroller,
+                                  children: [
+                                    SongsTab(
+                                      songs: _songs,
+                                      playlistId: widget.playlistId,
+                                      playlistName: widget.title,
+                                      tempPath: tempPath!,
+                                    ),
+                                    const LocalAlbumsPage(),
+                                    const LocalArtistsPage(),
+                                    const LocalGenresPage(),
+                                    if (widget.showPlaylists)
+                                      LocalPlaylists(
+                                        playlistDetails: playlistDetails,
+                                        offlineAudioQuery: offlineAudioQuery,
+                                      ),
+                                  ],
+                                ),
+                        ),
+                      ])),
+                ),
+                const MiniPlayer(),
+              ],
+            ),
+          );
         });
   }
 }
@@ -704,9 +675,11 @@ class _SongsTabState extends State<SongsTab>
                                             if (value == 2) {
                                               widget.songs[index] =
                                                   (await editTags(
-                                                widget.songs[index] as Map,
+                                                widget.songs[index].getMap,
                                                 context,
                                               )) as SongModel;
+                                              // print(widget.songs[index].getMap);
+                                              setState(() {});
                                             }
                                           },
                                           itemBuilder: (context) => [

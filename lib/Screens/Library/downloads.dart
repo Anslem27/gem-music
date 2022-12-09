@@ -11,16 +11,17 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/animations/custom_physics.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:glassmorphism/glassmorphism.dart';
+// import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
+import 'package:palette_generator/palette_generator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
 
@@ -286,295 +287,411 @@ class _DownloadsState extends State<Downloads>
 
   @override
   Widget build(BuildContext context) {
+    final bool rotated =
+        MediaQuery.of(context).size.height < MediaQuery.of(context).size.width;
+
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
+    //get dorminant color from image rendered
+    Future<Color> getdominantColor(ImageProvider imageProvider) async {
+      final PaletteGenerator paletteGenerator =
+          await PaletteGenerator.fromImageProvider(imageProvider);
+
+      return paletteGenerator.dominantColor!.color;
+    }
+
     return GradientContainer(
-      child: Column(
-        children: [
-          Expanded(
-            child: DefaultTabController(
-              length: 4,
-              child: Scaffold(
-                backgroundColor: Colors.transparent,
-                appBar: AppBar(
-                  title: Text(
-                    'Downloads',
-                    style: GoogleFonts.roboto(fontWeight: FontWeight.bold),
-                  ),
-                  centerTitle: true,
-                  backgroundColor:
-                      Theme.of(context).brightness == Brightness.dark
-                          ? Colors.transparent
-                          : Theme.of(context).colorScheme.secondary,
-                  elevation: 0,
-                  bottom: TabBar(
-                    controller: _tcontroller,
-                    indicator: MaterialIndicator(
-                      horizontalPadding: 28,
-                      color: Theme.of(context).focusColor,
-                      height: 6,
-                    ),
-                    tabs: [
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          "Songs",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w400, fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          "Albums",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w400, fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          "Artists",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w400, fontSize: 16),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 10.0),
-                        child: Text(
-                          "Genres",
-                          style: GoogleFonts.roboto(
-                              fontWeight: FontWeight.w400, fontSize: 16),
-                        ),
-                      ),
-                    ],
-                  ),
-                  actions: [
-                    IconButton(
-                      splashRadius: 24,
-                      icon: const Icon(CupertinoIcons.search),
-                      tooltip: 'Search',
-                      onPressed: () {
-                        showSearch(
-                          context: context,
-                          delegate: DownloadsSearch(
-                            data: _songs,
-                            isDowns: true,
-                          ),
-                        );
-                      },
-                    ),
-                    if (_songs.isNotEmpty)
-                      PopupMenuButton(
-                        splashRadius: 24,
-                        icon: const Icon(Iconsax.sort),
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(15.0)),
-                        ),
-                        onSelected: (int value) {
-                          if (value < 5) {
-                            sortValue = value;
-                            Hive.box('settings').put('sortValue', value);
-                          } else {
-                            orderValue = value - 5;
-                            Hive.box('settings').put('orderValue', orderValue);
-                          }
-                          sortSongs(sortVal: sortValue, order: orderValue);
-                          setState(() {});
-                        },
-                        itemBuilder: (context) {
-                          final List<String> sortTypes = [
-                            'Display name',
-                            'Date added',
-                            'Album',
-                            'Artists',
-                            'Duration',
-                          ];
-                          final List<String> orderTypes = [
-                            'Increasing',
-                            'Decreasing',
-                          ];
-                          final menuList = <PopupMenuEntry<int>>[];
-                          menuList.addAll(
-                            sortTypes
-                                .map(
-                                  (e) => PopupMenuItem(
-                                    value: sortTypes.indexOf(e),
-                                    child: Row(
-                                      children: [
-                                        if (sortValue == sortTypes.indexOf(e))
-                                          Icon(
-                                            size: 20,
-                                            Icons.check_rounded,
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.grey[700],
-                                          )
-                                        else
-                                          const SizedBox(),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          e,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          );
-                          menuList.add(
-                            const PopupMenuDivider(
-                              height: 10,
-                            ),
-                          );
-                          menuList.addAll(
-                            orderTypes
-                                .map(
-                                  (e) => PopupMenuItem(
-                                    value: sortTypes.length +
-                                        orderTypes.indexOf(e),
-                                    child: Row(
-                                      children: [
-                                        if (orderValue == orderTypes.indexOf(e))
-                                          Icon(
-                                            Icons.check_rounded,
-                                            size: 20,
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.grey[700],
-                                          )
-                                        else
-                                          const SizedBox(),
-                                        const SizedBox(width: 10),
-                                        Text(
-                                          e,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          );
-                          return menuList;
-                        },
-                      ),
-                  ],
+      child: FutureBuilder<Color>(
+          future: getdominantColor(const AssetImage("assets/elements/onl.png")),
+          builder: (context, snapshot) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              floatingActionButton: Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardColor,
+                  borderRadius: BorderRadius.circular(100.0),
                 ),
-                body: !added
-                    ? const Center(
-                        child: CircularProgressIndicator(),
-                      )
-                    : TabBarView(
-                        physics: const CustomPhysics(),
-                        controller: _tcontroller,
-                        children: [
-                          DownSongsTab(
-                            onDelete: (Map item) {
-                              deleteSong(item);
-                            },
-                            songs: _songs,
-                            scrollController: _scrollController,
-                          ),
-                          AlbumsTab(
-                            albums: _albums,
+                child: GestureDetector(
+                  onTap: () {
+                    if (_songs.isNotEmpty) {
+                      final tempList = _songs.toList();
+                      tempList.shuffle();
+                      Navigator.of(context).push(
+                        PageRouteBuilder(
+                          opaque: false,
+                          pageBuilder: (_, __, ___) => PlayScreen(
+                            songsList: tempList,
+                            index: 0,
                             offline: true,
-                            type: 'album',
-                            sortedAlbumKeysList: _sortedAlbumKeysList,
+                            fromMiniplayer: false,
+                            fromDownloads: true,
+                            recommend: false,
                           ),
-                          AlbumsTab(
-                            albums: _artists,
-                            type: 'artist',
-                            // tempPath: tempPath,
-                            offline: true,
-                            sortedAlbumKeysList: _sortedArtistKeysList,
-                          ),
-                          AlbumsTab(
-                            albums: _genres,
-                            type: 'genre',
-                            offline: true,
-                            sortedAlbumKeysList: _sortedGenreKeysList,
-                          ),
-                        ],
-                      ),
-                floatingActionButton: Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).cardColor,
-                    borderRadius: BorderRadius.circular(100.0),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      if (_songs.isNotEmpty) {
-                        final tempList = _songs.toList();
-                        tempList.shuffle();
-                        Navigator.of(context).push(
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => PlayScreen(
-                              songsList: tempList,
-                              index: 0,
-                              offline: true,
-                              fromMiniplayer: false,
-                              fromDownloads: true,
-                              recommend: false,
-                            ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: AnimatedSize(
-                        duration: const Duration(milliseconds: 200),
-                        child: ValueListenableBuilder<bool>(
-                          valueListenable: _showShuffle,
-                          builder: (
-                            BuildContext context,
-                            bool showFullShuffle,
-                            Widget? child,
-                          ) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(
-                                  Icons.shuffle_rounded,
-                                  color: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Colors.white
-                                      : Colors.black,
-                                  size: 24.0,
-                                ),
-                                if (showFullShuffle) const SizedBox(width: 5.0),
-                                if (showFullShuffle)
-                                  Text(
-                                    'Shuffle',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 18.0,
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? Colors.white
-                                          : Colors.black,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                if (showFullShuffle) const SizedBox(width: 2.5),
-                              ],
-                            );
-                          },
                         ),
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: AnimatedSize(
+                      duration: const Duration(milliseconds: 200),
+                      child: ValueListenableBuilder<bool>(
+                        valueListenable: _showShuffle,
+                        builder: (
+                          BuildContext context,
+                          bool showFullShuffle,
+                          Widget? child,
+                        ) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.shuffle_rounded,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                                size: 24.0,
+                              ),
+                              if (showFullShuffle) const SizedBox(width: 5.0),
+                              if (showFullShuffle)
+                                Text(
+                                  'Shuffle',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18.0,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? Colors.white
+                                        : Colors.black,
+                                  ),
+                                  textAlign: TextAlign.center,
+                                ),
+                              if (showFullShuffle) const SizedBox(width: 2.5),
+                            ],
+                          );
+                        },
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ),
-          const MiniPlayer(),
-        ],
-      ),
+              body: NestedScrollView(
+                  headerSliverBuilder:
+                      (BuildContext context, bool innerBoxIsScrolled) {
+                    return [
+                      SliverAppBar(
+                        elevation: 0,
+                        backgroundColor: Theme.of(context).cardColor,
+                        stretch: true,
+                        pinned: true,
+                        centerTitle: true,
+                        expandedHeight:
+                            MediaQuery.of(context).size.height * 0.35,
+                        actions: [
+                          IconButton(
+                            splashRadius: 24,
+                            icon: const Icon(CupertinoIcons.search),
+                            tooltip: 'Search',
+                            onPressed: () {
+                              showSearch(
+                                context: context,
+                                delegate: DownloadsSearch(
+                                  data: _songs,
+                                  isDowns: true,
+                                ),
+                              );
+                            },
+                          ),
+                          if (_songs.isNotEmpty)
+                            PopupMenuButton(
+                              splashRadius: 24,
+                              icon: const Icon(Iconsax.sort),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              onSelected: (int value) {
+                                if (value < 5) {
+                                  sortValue = value;
+                                  Hive.box('settings').put('sortValue', value);
+                                } else {
+                                  orderValue = value - 5;
+                                  Hive.box('settings')
+                                      .put('orderValue', orderValue);
+                                }
+                                sortSongs(
+                                    sortVal: sortValue, order: orderValue);
+                                setState(() {});
+                              },
+                              itemBuilder: (context) {
+                                final List<String> sortTypes = [
+                                  'Display name',
+                                  'Date added',
+                                  'Album',
+                                  'Artists',
+                                  'Duration',
+                                ];
+                                final List<String> orderTypes = [
+                                  'Increasing',
+                                  'Decreasing',
+                                ];
+                                final menuList = <PopupMenuEntry<int>>[];
+                                menuList.addAll(
+                                  sortTypes
+                                      .map(
+                                        (e) => PopupMenuItem(
+                                          value: sortTypes.indexOf(e),
+                                          child: Row(
+                                            children: [
+                                              if (sortValue ==
+                                                  sortTypes.indexOf(e))
+                                                Icon(
+                                                  size: 20,
+                                                  Icons.check_rounded,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
+                                                )
+                                              else
+                                                const SizedBox(),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                e,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                );
+                                menuList.add(
+                                  const PopupMenuDivider(
+                                    height: 10,
+                                  ),
+                                );
+                                menuList.addAll(
+                                  orderTypes
+                                      .map(
+                                        (e) => PopupMenuItem(
+                                          value: sortTypes.length +
+                                              orderTypes.indexOf(e),
+                                          child: Row(
+                                            children: [
+                                              if (orderValue ==
+                                                  orderTypes.indexOf(e))
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
+                                                )
+                                              else
+                                                const SizedBox(),
+                                              const SizedBox(width: 10),
+                                              Text(
+                                                e,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      )
+                                      .toList(),
+                                );
+                                return menuList;
+                              },
+                            ),
+                        ],
+                        flexibleSpace: LayoutBuilder(
+                          builder: (BuildContext context,
+                              BoxConstraints constraints) {
+                            double top = constraints.biggest.height;
+                            if (top >
+                                MediaQuery.of(context).size.height * 0.45) {
+                              top = MediaQuery.of(context).size.height * 0.45;
+                            }
+                            return FlexibleSpaceBar(
+                              // title: const Opacity(
+                              //   opacity: 0.5,
+                              //   child: Text(
+                              //     "All Music",
+                              //     style: TextStyle(
+                              //       fontSize: 15,
+                              //       fontWeight: FontWeight.w500,
+                              //     ),
+                              //     textAlign: TextAlign.center,
+                              //     overflow: TextOverflow.ellipsis,
+                              //   ),
+                              // ),
+                              centerTitle: true,
+                              background: GlassmorphicContainer(
+                                width: double.maxFinite,
+                                height: double.maxFinite,
+                                borderRadius: 0,
+                                blur: 20,
+                                alignment: Alignment.bottomCenter,
+                                border: 2,
+                                linearGradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      snapshot.data?.withOpacity(0.9) as Color,
+                                      snapshot.data?.withOpacity(0.05) as Color,
+                                    ],
+                                    stops: const [
+                                      0.1,
+                                      1,
+                                    ]),
+                                borderGradient: const LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    Colors.transparent,
+                                    Colors.transparent
+                                  ],
+                                ),
+                                child: Stack(
+                                  children: [
+                                    if (!rotated)
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Column(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 15.0),
+                                              child: SizedBox(
+                                                height: boxSize,
+                                                child: Image.asset(
+                                                    "assets/elements/onl.png"),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    if (rotated)
+                                      Align(
+                                        alignment: const Alignment(-0.85, 0.5),
+                                        child: Card(
+                                          elevation: 5,
+                                          color: Colors.transparent,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(7.0),
+                                          ),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                    .size
+                                                    .height *
+                                                0.3,
+                                            child: Image.asset(
+                                                "assets/elements/onl.png"),
+                                          ),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                        bottom: TabBar(
+                          controller: _tcontroller,
+                          indicator: MaterialIndicator(
+                            horizontalPadding: 28,
+                            color: Theme.of(context).focusColor,
+                            height: 6,
+                          ),
+                          tabs: const [
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                "Songs",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 16),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                "Albums",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 16),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                "Artists",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 16),
+                              ),
+                            ),
+                            Padding(
+                              padding: EdgeInsets.only(bottom: 10.0),
+                              child: Text(
+                                "Genres",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400, fontSize: 16),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    ];
+                  },
+                  body: !added
+                      ? const Center(
+                          child: CircularProgressIndicator(),
+                        )
+                      : TabBarView(
+                          physics: const CustomPhysics(),
+                          controller: _tcontroller,
+                          children: [
+                            DownSongsTab(
+                              onDelete: (Map item) {
+                                deleteSong(item);
+                              },
+                              songs: _songs,
+                              scrollController: _scrollController,
+                            ),
+                            AlbumsTab(
+                              albums: _albums,
+                              offline: true,
+                              type: 'album',
+                              sortedAlbumKeysList: _sortedAlbumKeysList,
+                            ),
+                            AlbumsTab(
+                              albums: _artists,
+                              type: 'artist',
+                              // tempPath: tempPath,
+                              offline: true,
+                              sortedAlbumKeysList: _sortedArtistKeysList,
+                            ),
+                            AlbumsTab(
+                              albums: _genres,
+                              type: 'genre',
+                              offline: true,
+                              sortedAlbumKeysList: _sortedGenreKeysList,
+                            ),
+                          ],
+                        )),
+            );
+          }),
     );
   }
 }
@@ -584,7 +701,7 @@ Future<Map> editTags(Map song, BuildContext context) async {
     context: context,
     builder: (BuildContext context) {
       final tagger = Audiotagger();
-
+//TODO: get Artwork
       FileImage songImage = FileImage(File(song['image'].toString()));
 
       final titlecontroller =
@@ -920,10 +1037,10 @@ class _DownSongsTabState extends State<DownSongsTab>
                 SvgPicture.asset("assets/svg/add_content.svg",
                     height: 140, width: 100),
                 const SizedBox(height: 20),
-                Text(
+                const Text(
                   "Try downloading\nsome music",
                   textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
+                  style: TextStyle(
                     fontSize: 20,
                   ),
                 ),

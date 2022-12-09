@@ -1,5 +1,6 @@
 // ignore_for_file: non_constant_identifier_names
 import 'dart:math' as math;
+// import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/LocalMusic/pages/detail_page.dart';
@@ -17,6 +18,7 @@ class LocalGenresPage extends StatefulWidget {
 
 class _LocalGenresPageState extends State<LocalGenresPage> {
   OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  OnAudioQuery onAudioQuery = OnAudioQuery();
   List<GenreModel> local_genres = [];
   bool loading = false;
 
@@ -28,6 +30,10 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
       loading = true;
     });
   }
+
+  // Future<Uint8List?> getArt(int id) async {
+  //   await onAudioQuery.queryArtwork(id, ArtworkType.GENRE);
+  // }
 
   @override
   void initState() {
@@ -71,7 +77,7 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                       builder: (_) => LocalMusicsDetail(
                         title: local_genres[index].genre,
                         id: local_genres[index].id,
-                        certainCase: 'nil', //genre
+                        certainCase: 'genre', //genre
                         songs: album_songs,
                       ),
                     ),
@@ -117,7 +123,7 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                             child: QueryArtworkWidget(
                               id: local_genres[index].id,
                               type: ArtworkType.GENRE,
-                              artworkHeight: boxSize - 20,
+                              artworkHeight: boxSize - 40,
                               artworkWidth:
                                   MediaQuery.of(context).size.width / 2.5,
                               artworkBorder: BorderRadius.circular(7.0),
@@ -125,7 +131,7 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                                 borderRadius: BorderRadius.circular(7.0),
                                 child: Image(
                                   fit: BoxFit.cover,
-                                  height: boxSize - 35,
+                                  height: boxSize - 55,
                                   width:
                                       MediaQuery.of(context).size.width / 2.5,
                                   image: const AssetImage('assets/cover.jpg'),

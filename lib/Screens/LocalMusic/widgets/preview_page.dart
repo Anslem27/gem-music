@@ -88,6 +88,10 @@ class PreviewPage extends StatelessWidget {
     return FutureBuilder(
       future: getdominantColor(AssetImage(imageUrl!)),
       builder: (_, AsyncSnapshot<Color> snapshot) {
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
         return snapshot.connectionState == ConnectionState.waiting
             ? const Center(
                 child: SizedBox(),

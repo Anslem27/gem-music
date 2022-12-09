@@ -55,7 +55,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                     icon: Icon(
                       widget.icon == 'download'
                           ? Icons.download_rounded
-                          : EvaIcons.save,
+                          : EvaIcons.cloudDownloadOutline,
                     ),
                     iconSize: widget.size ?? 24.0,
                     color: Theme.of(context).iconTheme.color,

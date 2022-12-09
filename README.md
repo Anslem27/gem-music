@@ -34,7 +34,6 @@ Flutter music App project.
 - Clean Out unneccesary code
 - Add daily shuffle to home
 - Artist, plylist detail page customed pages
-- Add spotify playlists url under youtube search [Spotify design nature]
 - Add Box Grid like design for library
 - Song Recommendations based on recent.
 

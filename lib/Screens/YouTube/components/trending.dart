@@ -110,7 +110,7 @@ class _TrendingListState extends State<TrendingList>
             : MediaQuery.of(context).size.height / 2.5;
 
     if (isListEmpty) {
-      return const CircularProgressIndicator();
+      return const Center(child: CircularProgressIndicator());
     } else {
       return Material(
         color: Colors.transparent,

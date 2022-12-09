@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -15,7 +16,6 @@ import 'package:gem/Screens/Settings/player_gradient.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingPage extends StatefulWidget {
@@ -831,8 +831,8 @@ class _SettingPageState extends State<SettingPage> {
                                                   ),
                                                   child: Text(
                                                     value
-                                                        ? 'Included Details'
-                                                        : 'Excluded Details',
+                                                        ? 'Included Folders'
+                                                        : 'Excluded Folders',
                                                     textAlign: TextAlign.start,
                                                   ),
                                                 ),
@@ -1779,15 +1779,15 @@ class _SettingPageState extends State<SettingPage> {
               keyName: 'useBlurForNowPlaying',
               defaultValue: true,
             ),
-            const BoxSwitchTile(
-              title: Text(
-                'Use minimal Mini player',
-              ),
-              subtitle: Text('Mini player will have shorter height'),
-              keyName: 'useDenseMini',
-              defaultValue: false,
-              isThreeLine: false,
-            ),
+            // const BoxSwitchTile(
+            //   title: Text(
+            //     'Use minimal Mini player',
+            //   ),
+            //   subtitle: Text('Mini player will have shorter height'),
+            //   keyName: 'useDenseMini',
+            //   defaultValue: false,
+            //   isThreeLine: false,
+            // ),
             ListTile(
               title: const Text(
                 'Mini Player Buttons',
@@ -1908,9 +1908,7 @@ class _SettingPageState extends State<SettingPage> {
                               },
                               child: const Text('Ok'),
                             ),
-                            const SizedBox(
-                              width: 5,
-                            ),
+                            const SizedBox(width: 5),
                           ],
                         );
                       },
@@ -1919,112 +1917,6 @@ class _SettingPageState extends State<SettingPage> {
                 );
               },
             ),
-
-            // ListTile(
-            //   title: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .blacklistedHomeSections,
-            //   ),
-            //   subtitle: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .blacklistedHomeSectionsSub,
-            //   ),
-            //   dense: true,
-            //   onTap: () {
-            //     final GlobalKey<AnimatedListState> listKey =
-            //         GlobalKey<AnimatedListState>();
-            //     showModalBottomSheet(
-            //       isDismissible: true,
-            //       backgroundColor: Colors.transparent,
-            //       context: context,
-            //       builder: (BuildContext context) {
-            //         return BottomGradientContainer(
-            //           borderRadius: BorderRadius.circular(
-            //             20.0,
-            //           ),
-            //           child: AnimatedList(
-            //             physics: const BouncingScrollPhysics(),
-            //             shrinkWrap: true,
-            //             padding: const EdgeInsets.fromLTRB(
-            //               0,
-            //               10,
-            //               0,
-            //               10,
-            //             ),
-            //             key: listKey,
-            //             initialItemCount: blacklistedHomeSections.length + 1,
-            //             itemBuilder: (cntxt, idx, animation) {
-            //               return (idx == 0)
-            //                   ? ListTile(
-            //                       title: const Text('Add new'),
-            //                       leading: const Icon(CupertinoIcons.add),
-            //                       onTap: () async {
-            //                         showTextInputDialog(
-            //                           context: context,
-            //                           title: 'Enter Text',
-            //                           keyboardType: TextInputType.text,
-            //                           onSubmitted: (String value) {
-            //                             Navigator.pop(context);
-            //                             blacklistedHomeSections.add(
-            //                               value.trim().toLowerCase(),
-            //                             );
-            //                             Hive.box('settings').put(
-            //                               'blacklistedHomeSections',
-            //                               blacklistedHomeSections,
-            //                             );
-            //                             listKey.currentState!.insertItem(
-            //                               blacklistedHomeSections.length,
-            //                             );
-            //                           },
-            //                         );
-            //                       },
-            //                     )
-            //                   : SizeTransition(
-            //                       sizeFactor: animation,
-            //                       child: ListTile(
-            //                         leading: const Icon(
-            //                           CupertinoIcons.folder,
-            //                         ),
-            //                         title: Text(
-            //                           blacklistedHomeSections[idx - 1]
-            //                               .toString(),
-            //                         ),
-            //                         trailing: IconButton(
-            //                           icon: const Icon(
-            //                             CupertinoIcons.clear,
-            //                             size: 15.0,
-            //                           ),
-            //                           tooltip: 'Remove',
-            //                           onPressed: () {
-            //                             blacklistedHomeSections
-            //                                 .removeAt(idx - 1);
-            //                             Hive.box('settings').put(
-            //                               'blacklistedHomeSections',
-            //                               blacklistedHomeSections,
-            //                             );
-            //                             listKey.currentState!.removeItem(
-            //                               idx,
-            //                               (
-            //                                 context,
-            //                                 animation,
-            //                               ) =>
-            //                                   Container(),
-            //                             );
-            //                           },
-            //                         ),
-            //                       ),
-            //                     );
-            //             },
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
 
             BoxSwitchTile(
               title: const Text(
@@ -2048,22 +1940,6 @@ class _SettingPageState extends State<SettingPage> {
                 widget.callback!();
               },
             ),
-            // BoxSwitchTile(
-            //   title: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .showHistory,
-            //   ),
-            //   subtitle: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .showHistorySub,
-            //   ),
-            //   keyName: 'showHistory',
-            //   defaultValue: true,
-            // ),
             const BoxSwitchTile(
               title: Text('Enable gestures '),
               keyName: 'enableGesture',
@@ -2083,7 +1959,7 @@ class _SettingPageState extends State<SettingPage> {
         title: const Text(
           'Save Theme',
         ),
-        trailing: const Icon(Iconsax.save_2, size: 20),
+        trailing: const Icon(EvaIcons.save, size: 20),
         onTap: () {
           final initialThemeName = 'Theme ${userThemes.length + 1}';
           showTextInputDialog(

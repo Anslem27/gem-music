@@ -7,6 +7,7 @@ import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:hive/hive.dart';
 import '../LocalMusic/widgets/preview_page.dart';
+import 'components/top_artists.dart';
 import 'components/trending.dart';
 import 'logic/suggestions.dart';
 
@@ -274,6 +275,7 @@ class _YouTubeState extends State<YouTube>
                     return const StaggeredTile.count(1, 1.2);
                   },
                 ),
+                const TopSearchArtists(),
               ],
             ),
           ),

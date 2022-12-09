@@ -1,5 +1,6 @@
 // ignore_for_file: use_super_parameters
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
@@ -28,9 +29,18 @@ class _MiniPlayerState extends State<MiniPlayer> {
 
 //get dorminant color from image rendered
     Future<Color> getdominantColor(ImageProvider imageProvider) async {
-      final PaletteGenerator paletteGenerator =
-          await PaletteGenerator.fromImageProvider(imageProvider);
-      return paletteGenerator.dominantColor!.color;
+      try {
+        final PaletteGenerator paletteGenerator =
+            await PaletteGenerator.fromImageProvider(imageProvider);
+
+        return paletteGenerator.dominantColor!.color;
+      } on TimeoutException {
+        final PaletteGenerator paletteGenerator =
+            await PaletteGenerator.fromImageProvider(
+                const AssetImage("assets/cover.jpg"));
+
+        return paletteGenerator.dominantColor!.color;
+      }
     }
 
     return StreamBuilder<PlaybackState>(
@@ -61,6 +71,10 @@ class _MiniPlayerState extends State<MiniPlayer> {
                           as ImageProvider,
                 ),
                 builder: (context, AsyncSnapshot<Color> colorsSnapshot) {
+                  if (!colorsSnapshot.hasData) {
+                    return placeholderContainer(true);
+                  }
+
                   return Material(
                     color: Colors.transparent,
                     child: Dismissible(
