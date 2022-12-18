@@ -1,4 +1,4 @@
-name: Take screenshots
+name: Take screenshots and send to Telegram
 
 on:
   push:
@@ -24,10 +24,20 @@ jobs:
 
       # Take screenshots on each device
       - name: Take screenshots
-        run: flutter drive --target=test_driver/screenshot.dart --screenshots
+        run: flutter drive --target=test_driver/screenshot.dart --driver-log-file=screenshots.log
         env:
           FLUTTER_DRIVER_USE_FIRST_DEVICE: true
           FLUTTER_DRIVER_NO_ANIMATIONS: true
+
+      # Extract and decode the base64-encoded strings from the log file
+      - name: Extract and decode screenshots
+        run: |
+          strings=$(grep 'screenshot:' screenshots.log | sed 's/screenshot: //')
+          i=0
+          for string in $strings; do
+            base64 --decode <<< $string > screenshot-$i.png
+            i=$((i+1))
+          done
 
       # Create a new release
       - name: Create release
@@ -42,11 +52,4 @@ jobs:
 
       # Upload the screenshots to the release
       - name: Upload screenshots
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: screenshots/*
-          asset_name: screenshots-${{ github.ref }}.zip
-          asset_content_type: application/zip
+        uses: actions/upload-release-asset@
