@@ -5,7 +5,6 @@ import 'package:json_annotation/json_annotation.dart';
 import '../../util/formatters.dart';
 import '../generic.dart';
 import '../image_id.dart';
-import '../spotify/spotify.dart';
 import 'common.dart';
 import 'lastfm.dart';
 
@@ -163,12 +162,6 @@ class LUserWeeklyTrackChartTrack extends Track {
   @override
   String get displayTrailing => pluralize(playCount ?? 0);
 
-  @override
-  ImageIdProvider get imageIdProvider =>
-      ImageId.scrape(url, '.cover-art > :first-child',
-          attribute: 'src',
-          endUrlAtPeriod: true,
-          spotifyFallback: SSearchTracksRequest('$name $artistName'));
 }
 
 @JsonSerializable()
@@ -242,10 +235,6 @@ class LUserWeeklyArtistChartArtist extends BasicArtist {
   @override
   final String url;
 
-  @JsonKey(name: 'image', fromJson: extractImageId)
-  @override
-  ImageIdProvider get imageIdProvider =>
-      () async => await (await Lastfm.getArtist(this)).imageIdProvider();
 
   @override
   final String name;

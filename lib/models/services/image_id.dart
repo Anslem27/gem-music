@@ -1,7 +1,6 @@
 import 'package:html/parser.dart' show parse;
 
 import '../util/constants.dart';
-import '../util/preferences.dart';
 import 'generic.dart';
 
 enum ImageQuality {
@@ -57,7 +56,7 @@ class ImageId {
           PagedRequest<Entity>? spotifyFallback}) =>
       () async {
         if (isWeb) {
-          if (spotifyFallback != null && Preferences.hasSpotifyAuthData) {
+          if (spotifyFallback != null ) {
             final fallbackEntity = await spotifyFallback.getData(1, 1);
             if (fallbackEntity.isNotEmpty) {
               return fallbackEntity.single.imageId ??

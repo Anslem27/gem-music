@@ -198,82 +198,81 @@ class _YouTubeState extends State<YouTube>
                     ),
                   ],
                 ),
-                StaggeredGridView.countBuilder(
-                  physics: const BouncingScrollPhysics(),
-                  shrinkWrap: true,
-                  crossAxisCount: 2,
-                  itemCount: chartsMore.length,
-                  itemBuilder: (_, index) {
-                    return GestureDetector(
-                      onTap: () async {},
-                      child: Padding(
-                        padding: const EdgeInsets.all(5.0),
-                        child: SizedBox(
-                          height: boxSize + 10,
-                          width: boxSize - 40,
-                          child: GestureDetector(
-                            onTap: () {
-                              if (index == 0) {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (_) => PreviewPage(
-                                      isSong: false,
-                                      localImage: true,
-                                      title: "CHARTS\nTop 20 Tracks",
-                                      imageUrl: chartImg[0],
-                                      sliverList: const TrendingList(
-                                        type: 'top',
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              }
-                              if (index == 1) {
-                                Navigator.push(
-                                  context,
-                                  CupertinoPageRoute(
-                                    builder: (_) => PreviewPage(
+                SizedBox(
+                  height: boxSize - 20,
+                  child: ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemCount: chartsMore.length,
+                    itemBuilder: (_, index) {
+                      return GestureDetector(
+                        onTap: () async {},
+                        child: Padding(
+                          padding: const EdgeInsets.all(5.0),
+                          child: SizedBox(
+                            height: boxSize + 10,
+                            width: boxSize - 40,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (index == 0) {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (_) => PreviewPage(
                                         isSong: false,
                                         localImage: true,
-                                        title:
-                                            "TOP\nTop Tracks around the globe",
-                                        imageUrl: chartImg[1],
-                                        sliverList: const SizedBox()),
+                                        title: "CHARTS\nTop 20 Tracks",
+                                        imageUrl: chartImg[0],
+                                        sliverList: const TrendingList(
+                                          type: 'top',
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                }
+                                if (index == 1) {
+                                  Navigator.push(
+                                    context,
+                                    CupertinoPageRoute(
+                                      builder: (_) => PreviewPage(
+                                          isSong: false,
+                                          localImage: true,
+                                          title:
+                                              "TOP\nTop Tracks around the globe",
+                                          imageUrl: chartImg[1],
+                                          sliverList: const SizedBox()),
+                                    ),
+                                  );
+                                }
+                              },
+                              child: Column(
+                                children: [
+                                  Image.asset(
+                                    chartImg[index],
+                                    height: boxSize - 30,
                                   ),
-                                );
-                              }
-                            },
-                            child: Column(
-                              children: [
-                                Image.asset(
-                                  chartImg[index],
-                                  height: boxSize - 30,
-                                ),
-                                Expanded(
-                                  child: ListTile(
-                                    title: Text(
-                                      chartsMore[index],
-                                      textAlign: TextAlign.center,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
+                                  Expanded(
+                                    child: ListTile(
+                                      title: Text(
+                                        chartsMore[index],
+                                        textAlign: TextAlign.center,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                  staggeredTileBuilder: (int index) {
-                    return const StaggeredTile.count(1, 1.2);
-                  },
+                      );
+                    },
+                  ),
                 ),
                 const TopSearchArtists(),
               ],

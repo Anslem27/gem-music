@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart'
     show DefaultCacheManager, HttpExceptionWithStatus;
-import 'package:gem/models/services/spotify/spotify.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../util/constants.dart';
@@ -261,10 +260,7 @@ class FullConcreteAlbum extends FullAlbum {
 abstract class BasicArtist extends Entity {
   String get name;
 
-  @override
-  ImageIdProvider get imageIdProvider =>
-      ImageId.scrape(url, '.header-new-gallery--link',
-          spotifyFallback: SSearchArtistsRequest(name));
+
 
   @override
   EntityType get type => EntityType.artist;

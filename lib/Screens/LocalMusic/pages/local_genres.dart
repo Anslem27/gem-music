@@ -60,11 +60,25 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
   genreBody(double boxSize, BuildContext context) {
     return Column(
       children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Text(
+                "${local_genres.length} GENRES",
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ],
+        ),
         Expanded(
-          child: ListView.builder(
-            physics: const BouncingScrollPhysics(),
-            shrinkWrap: true,
+          child: GridView.builder(
             itemCount: local_genres.length,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, mainAxisSpacing: 4, childAspectRatio: 1.8),
             itemBuilder: (_, index) {
               return GestureDetector(
                 onTap: () async {
@@ -86,7 +100,7 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                 child: GlassmorphicContainer(
                   margin: const EdgeInsets.all(5),
                   width: double.maxFinite,
-                  height: boxSize - 20,
+                  height: boxSize - 60,
                   borderRadius: 8,
                   blur: 20,
                   alignment: Alignment.bottomCenter,
@@ -113,19 +127,12 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                         children: [
                           Transform.rotate(
                             angle: -math.pi / 9,
-                            child: SizedBox(
-                              height: boxSize - 10,
-                              child: Image.asset("assets/cover.jpg"),
-                            ),
-                          ),
-                          Transform.rotate(
-                            angle: -math.pi / 9,
                             child: QueryArtworkWidget(
                               id: local_genres[index].id,
                               type: ArtworkType.GENRE,
-                              artworkHeight: boxSize - 40,
+                              artworkHeight: boxSize - 110,
                               artworkWidth:
-                                  MediaQuery.of(context).size.width / 2.5,
+                                  MediaQuery.of(context).size.width / 5,
                               artworkBorder: BorderRadius.circular(7.0),
                               nullArtworkWidget: ClipRRect(
                                 borderRadius: BorderRadius.circular(7.0),
@@ -142,19 +149,17 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
                         ],
                       ),
                       Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: ListTile(
-                            title: Text(
-                              local_genres[index].genre.toUpperCase(),
-                              textAlign: TextAlign.start,
-                              overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w400,
-                              ),
+                        child: ListTile(
+                          title: Text(
+                            local_genres[index].genre.toUpperCase(),
+                            textAlign: TextAlign.start,
+                            overflow: TextOverflow.ellipsis,
+                            style: const TextStyle(
+                              fontSize: 15,
                             ),
                           ),
+                          subtitle: Text(
+                              "${local_genres[index].numOfSongs} ${local_genres[index].numOfSongs > 1 ? "Songs" : "Song"}"),
                         ),
                       )
                     ],
@@ -163,7 +168,7 @@ class _LocalGenresPageState extends State<LocalGenresPage> {
               );
             },
           ),
-        )
+        ),
       ],
     );
   }

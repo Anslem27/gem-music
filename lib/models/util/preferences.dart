@@ -1,6 +1,5 @@
 import 'package:gem/models/util/preference.dart';
 import 'package:gem/models/util/profile_tab.dart';
-import 'package:gem/models/util/theme.dart';
 
 import '../services/auth.dart';
 import '../services/lastfm/period.dart';
@@ -27,7 +26,6 @@ class Preferences {
     searchEngine,
     stripTags,
     listenMoreFrequently,
-    themeColor,
     appleMusicEnabled,
     appleMusicBackgroundScrobblingEnabled,
     lastAppleMusicScrobble,
@@ -131,11 +129,7 @@ class Preferences {
   static final listenMoreFrequently =
       Preference<bool, bool>('listenMoreFrequently', defaultValue: false);
 
-  static final themeColor = Preference.forEnum<ThemeColor>(
-    'themeColorIndex',
-    ThemeColor.values,
-    defaultValue: ThemeColor.red,
-  );
+ 
 
   static final appleMusicEnabled =
       Preference<bool, bool>('isAppleMusicEnabled', defaultValue: true);

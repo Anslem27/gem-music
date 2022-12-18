@@ -98,7 +98,7 @@ class _LibraryPageState extends State<LibraryPage> {
               ),
             LibraryTile(
               title: 'Downloads',
-              icon: EvaIcons.downloadOutline,
+              icon: EvaIcons.cloudDownloadOutline,
               onTap: () {
                 Navigator.pushNamed(context, '/downloads');
               },

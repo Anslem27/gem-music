@@ -40,6 +40,76 @@ void addToNowPlaying({
   }
 }
 
+void addOfflineToNowPlaying({
+  required BuildContext context,
+  required MediaItem mediaItem,
+  bool showNotification = true,
+}) {
+  final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
+  final MediaItem? currentMediaItem = audioHandler.mediaItem.value;
+  if (currentMediaItem != null) {
+    if (audioHandler.queue.value.contains(mediaItem) && showNotification) {
+      ShowSnackBar().showSnackBar(
+        context,
+        'Song already in queue',
+      );
+    } else {
+      audioHandler.addQueueItem(mediaItem);
+
+      if (showNotification) {
+        ShowSnackBar().showSnackBar(
+          context,
+          'Added to playing queue',
+        );
+      }
+    }
+  } else {
+    if (showNotification) {
+      ShowSnackBar().showSnackBar(
+        context,
+        currentMediaItem == null
+            ? 'No music is playing'
+            : 'Failed to add to queue',
+      );
+    }
+  }
+}
+
+void playOfflineNext(
+  MediaItem mediaItem,
+  BuildContext context,
+) {
+  final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
+  final MediaItem? currentMediaItem = audioHandler.mediaItem.value;
+  if (currentMediaItem != null &&
+      mediaItem.artUri.toString().startsWith('file:')) {
+    final queue = audioHandler.queue.value;
+    if (queue.contains(mediaItem)) {
+      audioHandler.moveQueueItem(
+        queue.indexOf(mediaItem),
+        queue.indexOf(currentMediaItem) + 1,
+      );
+    } else {
+      audioHandler.addQueueItem(mediaItem).then(
+            (value) => audioHandler.moveQueueItem(
+              queue.length,
+              queue.indexOf(currentMediaItem) + 1,
+            ),
+          );
+    }
+
+    ShowSnackBar().showSnackBar(
+      context,
+      '"${mediaItem.title}" set to play next}',
+    );
+  } else {
+    ShowSnackBar().showSnackBar(
+      context,
+      currentMediaItem == null ? 'No music playing' : 'Cant add song to queue',
+    );
+  }
+}
+
 void playNext(
   MediaItem mediaItem,
   BuildContext context,

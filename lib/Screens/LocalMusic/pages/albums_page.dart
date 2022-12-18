@@ -57,6 +57,20 @@ class _LocalAlbumsPageState extends State<LocalAlbumsPage> {
   albumBody(double boxSize, BuildContext context) {
     return Column(
       children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+              child: Text(
+                "${local_albums.length} ALBUMS",
+                style: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ],
+        ),
         const SizedBox(height: 20),
         Expanded(
           child: StaggeredGridView.countBuilder(

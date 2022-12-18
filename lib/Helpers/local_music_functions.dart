@@ -36,7 +36,13 @@ class OfflineAudioQuery {
     return audioQuery.createPlaylist(name);
   }
 
-  Future<bool> removePlaylist({required int playlistId}) async {
+  Future<bool> renamePlaylist(
+      {required int playlistId, required String newName}) async {
+    newName.replaceAll(avoid, '').replaceAll('  ', ' ');
+    return audioQuery.renamePlaylist(playlistId, newName);
+  }
+
+  Future removePlaylist({required int playlistId}) async {
     return audioQuery.removePlaylist(playlistId);
   }
 
@@ -54,12 +60,12 @@ class OfflineAudioQuery {
     return audioQuery.removeFromPlaylist(playlistId, audioId);
   }
 
-  Future<bool> renamePlaylist({
-    required int playlistId,
-    required String newName,
-  }) async {
-    return audioQuery.renamePlaylist(playlistId, newName);
-  }
+  // Future<bool> renamePlaylist({
+  //   required int playlistId,
+  //   required String newName,
+  // }) async {
+  //   return audioQuery.renamePlaylist(playlistId, newName);
+  // }
 
   Future<List<SongModel>> getPlaylistSongs(
     int playlistId, {
@@ -88,8 +94,6 @@ class OfflineAudioQuery {
       orderType: orderType ?? OrderType.DESC_OR_GREATER,
     );
   }
-
-
 
   Future<List<SongModel>> getAlbumSongs(
     int albumId, {

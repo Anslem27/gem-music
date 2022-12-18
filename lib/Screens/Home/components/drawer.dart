@@ -98,6 +98,26 @@ Drawer gemDrawer(BuildContext context) {
                                           mediaItem.artUri!.toFilePath(),
                                         ),
                                       ),
+                                      // loadingBuilder: (_, __, ___) {
+                                      //   return Image.asset(
+                                      //     'assets/cover.jpg',
+                                      //   );
+                                      // },
+                                      errorBuilder: (_, __, ___) {
+                                        // if (widget.songs[index]['image'] != null &&
+                                        //     widget.songs[index]['image_url'] !=
+                                        //         null) {
+                                        //   downImage(
+                                        //     widget.songs[index]['image'].toString(),
+                                        //     widget.songs[index]['path'].toString(),
+                                        //     widget.songs[index]['image_url']
+                                        //         .toString(),
+                                        //   );
+                                        // }
+                                        return Image.asset(
+                                          'assets/cover.jpg',
+                                        );
+                                      },
                                     ),
                                   )
                                 : SizedBox.square(

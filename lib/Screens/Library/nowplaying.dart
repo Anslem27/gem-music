@@ -83,8 +83,10 @@ class _NowPlayingState extends State<NowPlaying> {
                                     sliverList: SliverList(
                                       delegate: SliverChildListDelegate(
                                         [
-                                          NowPlayingStream(
-                                            audioHandler: audioHandler,
+                                          GradientContainer(
+                                            child: NowPlayingStream(
+                                              audioHandler: audioHandler,
+                                            ),
                                           )
                                         ],
                                       ),

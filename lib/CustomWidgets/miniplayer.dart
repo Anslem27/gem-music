@@ -257,6 +257,20 @@ class _MiniPlayerState extends State<MiniPlayer> {
                                                                     .toFilePath(),
                                                               ),
                                                             ),
+                                                            errorBuilder:
+                                                                (_, __, ___) {
+                                                              return Image
+                                                                  .asset(
+                                                                'assets/cover.jpg',
+                                                              );
+                                                            },
+                                                            // loadingBuilder:
+                                                            //     (_, __, ___) {
+                                                            //   return Image
+                                                            //       .asset(
+                                                            //     'assets/cover.jpg',
+                                                            //   );
+                                                            // },
                                                           ),
                                                         )
                                                       : SizedBox.square(

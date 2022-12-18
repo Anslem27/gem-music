@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
 
+import 'package:audio_service/audio_service.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -8,10 +10,10 @@ import 'package:gem/CustomWidgets/data_search.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/LocalMusic/localplaylists.dart';
 import 'package:gem/Screens/LocalMusic/pages/albums_page.dart';
+import 'package:gem/Screens/LocalMusic/pages/detail_page.dart';
 import 'package:gem/Screens/LocalMusic/pages/local_artists.dart';
 import 'package:gem/Screens/LocalMusic/pages/local_genres.dart';
 import 'package:gem/Screens/Player/music_player.dart';
@@ -22,11 +24,11 @@ import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+import '../../CustomWidgets/like_button.dart';
+import '../../Helpers/add_mediaitem_to_queue.dart';
 import '../Home/components/home_components.dart';
-import '../Library/downloads.dart';
 
 class DownloadedSongs extends StatefulWidget {
   final List<SongModel>? cachedSongs;
@@ -183,331 +185,307 @@ class _DownloadedSongsState extends State<DownloadedSongs>
             ? MediaQuery.of(context).size.width / 2
             : MediaQuery.of(context).size.height / 2.5;
 
-//get dorminant color from image rendered
-    Future<Color> getdominantColor(ImageProvider imageProvider) async {
-      final PaletteGenerator paletteGenerator =
-          await PaletteGenerator.fromImageProvider(imageProvider);
-
-      return paletteGenerator.dominantColor!.color;
-    }
-
-    return FutureBuilder(
-        future:
-            getdominantColor(const AssetImage("assets/elements/online.png")),
-        builder: (context, AsyncSnapshot<Color> snapshot) {
-          if (!snapshot.hasData) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          return GradientContainer(
-            child: Column(
-              children: [
-                Expanded(
-                  child: DefaultTabController(
-                      length: widget.fromHomElement
-                          ? 1
-                          : widget.showPlaylists
-                              ? 5
-                              : 4,
-                      child: Stack(children: [
-                        NestedScrollView(
-                          //shrinkWrap: true,
-                          physics: const BouncingScrollPhysics(),
-                          headerSliverBuilder:
-                              (BuildContext context, bool innerBoxIsScrolled) {
-                            return [
-                              SliverAppBar(
-                                elevation: 0,
-                                backgroundColor: Theme.of(context).cardColor,
-                                stretch: true,
-                                pinned: true,
-                                centerTitle: true,
-                                expandedHeight:
-                                    MediaQuery.of(context).size.height * 0.35,
-                                bottom: TabBar(
-                                  isScrollable: widget.showPlaylists,
-                                  controller: _tcontroller,
-                                  indicator: MaterialIndicator(
-                                    horizontalPadding: 20,
-                                    color: Theme.of(context).focusColor,
-                                    height: 6,
+    return GradientContainer(
+      child: Column(
+        children: [
+          Expanded(
+            child: DefaultTabController(
+                length: widget.fromHomElement
+                    ? 1
+                    : widget.showPlaylists
+                        ? 5
+                        : 4,
+                child: Stack(children: [
+                  NestedScrollView(
+                    //shrinkWrap: true,
+                    physics: const BouncingScrollPhysics(),
+                    headerSliverBuilder:
+                        (BuildContext context, bool innerBoxIsScrolled) {
+                      return [
+                        SliverAppBar(
+                          elevation: 0,
+                          backgroundColor: Theme.of(context).cardColor,
+                          stretch: true,
+                          pinned: true,
+                          centerTitle: true,
+                          expandedHeight:
+                              MediaQuery.of(context).size.height * 0.35,
+                          bottom: TabBar(
+                            isScrollable: widget.showPlaylists,
+                            controller: _tcontroller,
+                            indicator: MaterialIndicator(
+                              horizontalPadding: 20,
+                              color: Theme.of(context).focusColor,
+                              height: 6,
+                            ),
+                            tabs: [
+                              const Tab(text: "Songs"),
+                              const Tab(text: "Albums"),
+                              const Tab(text: "Artists"),
+                              const Tab(text: "Genres"),
+                              if (widget.showPlaylists)
+                                const Tab(text: "Playlists"),
+                            ],
+                          ),
+                          actions: [
+                            IconButton(
+                              splashRadius: 24,
+                              icon: const Icon(CupertinoIcons.search),
+                              tooltip: 'Search',
+                              onPressed: () {
+                                showSearch(
+                                  context: context,
+                                  delegate: DataSearch(
+                                    data: _songs,
+                                    tempPath: tempPath!,
                                   ),
-                                  tabs: [
-                                    const Tab(text: "Songs"),
-                                    const Tab(text: "Albums"),
-                                    const Tab(text: "Artists"),
-                                    const Tab(text: "Genres"),
-                                    if (widget.showPlaylists)
-                                      const Tab(text: "Playlists"),
-                                  ],
-                                ),
-                                actions: [
-                                  IconButton(
-                                    splashRadius: 24,
-                                    icon: const Icon(CupertinoIcons.search),
-                                    tooltip: 'Search',
-                                    onPressed: () {
-                                      showSearch(
-                                        context: context,
-                                        delegate: DataSearch(
-                                          data: _songs,
-                                          tempPath: tempPath!,
+                                );
+                              },
+                            ),
+                            PopupMenuButton(
+                              splashRadius: 24,
+                              icon: const Icon(
+                                Iconsax.filter,
+                              ),
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(15.0)),
+                              ),
+                              onSelected: (int value) async {
+                                if (value < 6) {
+                                  sortValue = value;
+                                  Hive.box('settings').put('sortValue', value);
+                                } else {
+                                  orderValue = value - 6;
+                                  Hive.box('settings')
+                                      .put('orderValue', orderValue);
+                                }
+                                await sortSongs(sortValue, orderValue);
+                                setState(() {});
+                              },
+                              itemBuilder: (context) {
+                                final List<String> sortTypes = [
+                                  'Display Name',
+                                  'Date Added',
+                                  'Album',
+                                  'Artist',
+                                  'Duration',
+                                  'Size',
+                                ];
+                                final List<String> orderTypes = [
+                                  'Increasing',
+                                  'Decreasing',
+                                ];
+                                final menuList = <PopupMenuEntry<int>>[];
+                                menuList.addAll(
+                                  sortTypes
+                                      .map(
+                                        (e) => PopupMenuItem(
+                                          value: sortTypes.indexOf(e),
+                                          child: Row(
+                                            children: [
+                                              if (sortValue ==
+                                                  sortTypes.indexOf(e))
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
+                                                )
+                                              else
+                                                const SizedBox(),
+                                              const SizedBox(width: 10),
+                                              Text(e),
+                                            ],
+                                          ),
                                         ),
-                                      );
-                                    },
+                                      )
+                                      .toList(),
+                                );
+                                menuList.add(
+                                  const PopupMenuDivider(
+                                    height: 10,
                                   ),
-                                  PopupMenuButton(
-                                    splashRadius: 24,
-                                    icon: const Icon(
-                                      Iconsax.filter,
-                                    ),
-                                    shape: const RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.all(
-                                          Radius.circular(15.0)),
-                                    ),
-                                    onSelected: (int value) async {
-                                      if (value < 6) {
-                                        sortValue = value;
-                                        Hive.box('settings')
-                                            .put('sortValue', value);
-                                      } else {
-                                        orderValue = value - 6;
-                                        Hive.box('settings')
-                                            .put('orderValue', orderValue);
-                                      }
-                                      await sortSongs(sortValue, orderValue);
-                                      setState(() {});
-                                    },
-                                    itemBuilder: (context) {
-                                      final List<String> sortTypes = [
-                                        'Display Name',
-                                        'Date Added',
-                                        'Album',
-                                        'Artist',
-                                        'Duration',
-                                        'Size',
-                                      ];
-                                      final List<String> orderTypes = [
-                                        'Increasing',
-                                        'Decreasing',
-                                      ];
-                                      final menuList = <PopupMenuEntry<int>>[];
-                                      menuList.addAll(
-                                        sortTypes
-                                            .map(
-                                              (e) => PopupMenuItem(
-                                                value: sortTypes.indexOf(e),
-                                                child: Row(
-                                                  children: [
-                                                    if (sortValue ==
-                                                        sortTypes.indexOf(e))
-                                                      Icon(
-                                                        Icons.check_rounded,
-                                                        size: 20,
-                                                        color: Theme.of(context)
-                                                                    .brightness ==
-                                                                Brightness.dark
-                                                            ? Colors.white
-                                                            : Colors.grey[700],
-                                                      )
-                                                    else
-                                                      const SizedBox(),
-                                                    const SizedBox(width: 10),
-                                                    Text(e),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                      );
-                                      menuList.add(
-                                        const PopupMenuDivider(
-                                          height: 10,
+                                );
+                                menuList.addAll(
+                                  orderTypes
+                                      .map(
+                                        (e) => PopupMenuItem(
+                                          value: sortTypes.length +
+                                              orderTypes.indexOf(e),
+                                          child: Row(
+                                            children: [
+                                              if (orderValue ==
+                                                  orderTypes.indexOf(e))
+                                                Icon(
+                                                  Icons.check_rounded,
+                                                  size: 20,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? Colors.white
+                                                      : Colors.grey[700],
+                                                )
+                                              else
+                                                const SizedBox(),
+                                              const SizedBox(width: 10),
+                                              Text(e),
+                                            ],
+                                          ),
                                         ),
-                                      );
-                                      menuList.addAll(
-                                        orderTypes
-                                            .map(
-                                              (e) => PopupMenuItem(
-                                                value: sortTypes.length +
-                                                    orderTypes.indexOf(e),
-                                                child: Row(
-                                                  children: [
-                                                    if (orderValue ==
-                                                        orderTypes.indexOf(e))
-                                                      Icon(
-                                                        Icons.check_rounded,
-                                                        size: 20,
-                                                        color: Theme.of(context)
-                                                                    .brightness ==
-                                                                Brightness.dark
-                                                            ? Colors.white
-                                                            : Colors.grey[700],
-                                                      )
-                                                    else
-                                                      const SizedBox(),
-                                                    const SizedBox(width: 10),
-                                                    Text(e),
-                                                  ],
-                                                ),
-                                              ),
-                                            )
-                                            .toList(),
-                                      );
-                                      return menuList;
-                                    },
-                                  ),
-                                ],
-                                // title: Opacity(
-                                //   opacity: 1 - _opacity.value,
+                                      )
+                                      .toList(),
+                                );
+                                return menuList;
+                              },
+                            ),
+                          ],
+                          // title: Opacity(
+                          //   opacity: 1 - _opacity.value,
+                          //   child: Text(
+                          //     title.toUpperCase(),
+                          //     style: const TextStyle(
+                          //       fontSize: 17,
+                          //       fontWeight: FontWeight.w500,
+                          //     ),
+                          //   ),
+                          // ),
+                          flexibleSpace: LayoutBuilder(
+                            builder: (BuildContext context,
+                                BoxConstraints constraints) {
+                              double top = constraints.biggest.height;
+                              if (top >
+                                  MediaQuery.of(context).size.height * 0.45) {
+                                top = MediaQuery.of(context).size.height * 0.45;
+                              }
+                              return FlexibleSpaceBar(
+                                // title: const Opacity(
+                                //   opacity: 0.5,
                                 //   child: Text(
-                                //     title.toUpperCase(),
-                                //     style: const TextStyle(
-                                //       fontSize: 17,
+                                //     "All Music",
+                                //     style: TextStyle(
+                                //       fontSize: 15,
                                 //       fontWeight: FontWeight.w500,
                                 //     ),
+                                //     textAlign: TextAlign.center,
+                                //     overflow: TextOverflow.ellipsis,
                                 //   ),
                                 // ),
-                                flexibleSpace: LayoutBuilder(
-                                  builder: (BuildContext context,
-                                      BoxConstraints constraints) {
-                                    double top = constraints.biggest.height;
-                                    if (top >
-                                        MediaQuery.of(context).size.height *
-                                            0.45) {
-                                      top = MediaQuery.of(context).size.height *
-                                          0.45;
-                                    }
-                                    return FlexibleSpaceBar(
-                                      // title: const Opacity(
-                                      //   opacity: 0.5,
-                                      //   child: Text(
-                                      //     "All Music",
-                                      //     style: TextStyle(
-                                      //       fontSize: 15,
-                                      //       fontWeight: FontWeight.w500,
-                                      //     ),
-                                      //     textAlign: TextAlign.center,
-                                      //     overflow: TextOverflow.ellipsis,
-                                      //   ),
-                                      // ),
-                                      centerTitle: true,
-                                      background: GlassmorphicContainer(
-                                        width: double.maxFinite,
-                                        height: double.maxFinite,
-                                        borderRadius: 0,
-                                        blur: 20,
-                                        alignment: Alignment.bottomCenter,
-                                        border: 2,
-                                        linearGradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              snapshot.data?.withOpacity(0.9)
-                                                  as Color,
-                                              snapshot.data?.withOpacity(0.05)
-                                                  as Color,
+                                centerTitle: true,
+                                background: GlassmorphicContainer(
+                                  width: double.maxFinite,
+                                  height: double.maxFinite,
+                                  borderRadius: 0,
+                                  blur: 20,
+                                  alignment: Alignment.bottomCenter,
+                                  border: 2,
+                                  linearGradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.black.withOpacity(0.9),
+                                        Colors.black.withOpacity(0.05),
+                                      ],
+                                      stops: const [
+                                        0.1,
+                                        1,
+                                      ]),
+                                  borderGradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.transparent,
+                                      Colors.transparent
+                                    ],
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      if (!rotated)
+                                        Align(
+                                          alignment: Alignment.center,
+                                          child: Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        vertical: 15.0),
+                                                child: SizedBox(
+                                                  height: boxSize,
+                                                  child: const SongGrid(),
+                                                ),
+                                              ),
                                             ],
-                                            stops: const [
-                                              0.1,
-                                              1,
-                                            ]),
-                                        borderGradient: const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.transparent
-                                          ],
+                                          ),
                                         ),
-                                        child: Stack(
-                                          children: [
-                                            if (!rotated)
-                                              Align(
-                                                alignment: Alignment.center,
-                                                child: Column(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Padding(
-                                                      padding: const EdgeInsets
-                                                              .symmetric(
-                                                          vertical: 15.0),
-                                                      child: SizedBox(
-                                                        height: boxSize,
-                                                        child: const SongGrid(),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            if (rotated)
-                                              Align(
-                                                alignment:
-                                                    const Alignment(-0.85, 0.5),
-                                                child: Card(
-                                                  elevation: 5,
-                                                  color: Colors.transparent,
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            7.0),
-                                                  ),
-                                                  clipBehavior: Clip.antiAlias,
-                                                  child: SizedBox(
-                                                    height:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .height *
-                                                            0.3,
-                                                    child: Image.asset(
-                                                        "assets/cover.jpg"),
-                                                  ),
-                                                ),
-                                              ),
-                                          ],
+                                      if (rotated)
+                                        Align(
+                                          alignment:
+                                              const Alignment(-0.85, 0.5),
+                                          child: Card(
+                                            elevation: 5,
+                                            color: Colors.transparent,
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(7.0),
+                                            ),
+                                            clipBehavior: Clip.antiAlias,
+                                            child: SizedBox(
+                                              height: MediaQuery.of(context)
+                                                      .size
+                                                      .height *
+                                                  0.3,
+                                              child: Image.asset(
+                                                  "assets/cover.jpg"),
+                                            ),
+                                          ),
                                         ),
-                                      ),
-                                    );
-                                  },
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ];
-                          },
-                          body: !added
-                              ? const Center(
-                                  child: CircularProgressIndicator(),
-                                )
-                              : TabBarView(
-                                  physics: const CustomPhysics(),
-                                  controller: _tcontroller,
-                                  children: [
-                                    SongsTab(
-                                      songs: _songs,
-                                      playlistId: widget.playlistId,
-                                      playlistName: widget.title,
-                                      tempPath: tempPath!,
-                                    ),
-                                    const LocalAlbumsPage(),
-                                    const LocalArtistsPage(),
-                                    const LocalGenresPage(),
-                                    if (widget.showPlaylists)
-                                      LocalPlaylists(
-                                        playlistDetails: playlistDetails,
-                                        offlineAudioQuery: offlineAudioQuery,
-                                      ),
-                                  ],
-                                ),
+                              );
+                            },
+                          ),
                         ),
-                      ])),
-                ),
-                const MiniPlayer(),
-              ],
-            ),
-          );
-        });
+                      ];
+                    },
+                    body: !added
+                        ? const Center(
+                            child: CircularProgressIndicator(),
+                          )
+                        : TabBarView(
+                            physics: const CustomPhysics(),
+                            controller: _tcontroller,
+                            children: [
+                              SongsTab(
+                                songs: _songs,
+                                playlistId: widget.playlistId,
+                                playlistName: widget.title,
+                                tempPath: tempPath!,
+                              ),
+                              const LocalAlbumsPage(),
+                              const LocalArtistsPage(),
+                              const LocalGenresPage(),
+                              if (widget.showPlaylists)
+                                LocalPlaylists(
+                                  playlistDetails: playlistDetails,
+                                  offlineAudioQuery: offlineAudioQuery,
+                                ),
+                            ],
+                          ),
+                  ),
+                ])),
+          ),
+          const MiniPlayer(),
+        ],
+      ),
+    );
   }
 }
 
@@ -574,6 +552,7 @@ class _SongsTabState extends State<SongsTab>
                     shrinkWrap: true,
                     itemCount: widget.songs.length,
                     itemBuilder: (context, index) {
+                      OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -640,86 +619,245 @@ class _SongsTabState extends State<SongsTab>
                                     child: Column(
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
                                       children: [
-                                        PopupMenuButton(
+                                        IconButton(
                                           splashRadius: 24,
-                                          icon: const Icon(
-                                            Icons.more_horiz_rounded,
-                                            color: Colors.grey,
-                                          ),
-                                          shape: const RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.all(
-                                                Radius.circular(15.0)),
-                                          ),
-                                          onSelected: (int? value) async {
-                                            if (value == 0) {
-                                              AddToOffPlaylist()
-                                                  .addToOffPlaylist(
-                                                context,
-                                                widget.songs[index].id,
-                                              );
-                                            }
-                                            if (value == 1) {
-                                              await OfflineAudioQuery()
-                                                  .removeFromPlaylist(
-                                                playlistId: widget.playlistId!,
-                                                audioId: widget.songs[index].id,
-                                              );
-                                              ShowSnackBar().showSnackBar(
-                                                context,
-                                                '${'Removed from'} ${widget.playlistName}',
-                                              );
-                                            }
-                                            if (value == 2) {
-                                              widget.songs[index] =
-                                                  (await editTags(
-                                                widget.songs[index].getMap,
-                                                context,
-                                              )) as SongModel;
-                                              // print(widget.songs[index].getMap);
-                                              setState(() {});
-                                            }
+                                          onPressed: () {
+                                            showModalBottomSheet(
+                                              isDismissible: true,
+                                              backgroundColor:
+                                                  Colors.transparent,
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                String playTitle =
+                                                    widget.songs[index].title;
+                                                playTitle == ''
+                                                    ? playTitle = widget
+                                                        .songs[index]
+                                                        .displayNameWOExt
+                                                    : playTitle = widget
+                                                        .songs[index].title;
+                                                String playArtist =
+                                                    widget.songs[index].artist!;
+                                                playArtist == '<unknown>'
+                                                    ? playArtist = 'Unknown'
+                                                    : playArtist = widget
+                                                        .songs[index].artist!;
+
+                                                final String playAlbum =
+                                                    widget.songs[index].album!;
+                                                final int playDuration = widget
+                                                        .songs[index]
+                                                        .duration ??
+                                                    180000;
+                                                final String imagePath =
+                                                    '${widget.tempPath}/${widget.songs[index].displayNameWOExt}.png';
+
+                                                final MediaItem mediaItem =
+                                                    MediaItem(
+                                                  id: widget.songs[index].id
+                                                      .toString(),
+                                                  album: playAlbum,
+                                                  duration: Duration(
+                                                      milliseconds:
+                                                          playDuration),
+                                                  title:
+                                                      playTitle.split('(')[0],
+                                                  artist: playArtist,
+                                                  genre:
+                                                      widget.songs[index].genre,
+                                                  artUri: Uri.file(imagePath),
+                                                  extras: {
+                                                    'url': widget
+                                                        .songs[index].data,
+                                                    'date_added': widget
+                                                        .songs[index].dateAdded,
+                                                    'date_modified': widget
+                                                        .songs[index]
+                                                        .dateModified,
+                                                    'size': widget
+                                                        .songs[index].size,
+                                                    'year': widget.songs[index]
+                                                        .getMap['year'],
+                                                  },
+                                                );
+                                                return SizedBox(
+                                                  child:
+                                                      BottomGradientContainer(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            20.0),
+                                                    child: Column(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .start,
+                                                      children: [
+                                                        Expanded(
+                                                          child: ListTile(
+                                                            leading:
+                                                                OfflineAudioQuery
+                                                                    .offlineArtworkWidget(
+                                                              id: widget
+                                                                  .songs[index]
+                                                                  .id,
+                                                              type: ArtworkType
+                                                                  .AUDIO,
+                                                              height: 50,
+                                                              width: 50,
+                                                              tempPath: widget
+                                                                  .tempPath,
+                                                              fileName: widget
+                                                                  .songs[index]
+                                                                  .displayNameWOExt,
+                                                            ),
+                                                            title: Text(
+                                                              widget
+                                                                  .songs[index]
+                                                                  .title
+                                                                  .toUpperCase(),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              softWrap: false,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w400,
+                                                              ),
+                                                            ),
+                                                            subtitle: Text(
+                                                              widget
+                                                                      .songs[index]
+                                                                      .artist
+                                                                  as String,
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .start,
+                                                              softWrap: false,
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              style:
+                                                                  const TextStyle(
+                                                                fontSize: 13,
+                                                                color:
+                                                                    Colors.grey,
+                                                              ),
+                                                            ),
+                                                            trailing: LikeButton(
+                                                                mediaItem:
+                                                                    mediaItem),
+                                                          ),
+                                                        ),
+                                                        _sheetTile("Play Next",
+                                                            () {
+                                                          playOfflineNext(
+                                                              mediaItem,
+                                                              context);
+                                                        },
+                                                            EvaIcons
+                                                                .playCircleOutline),
+                                                        _sheetTile(
+                                                            "Add to queue", () {
+                                                          addOfflineToNowPlaying(
+                                                              context: context,
+                                                              mediaItem:
+                                                                  mediaItem);
+                                                        }, EvaIcons.fileAdd),
+                                                        _sheetTile(
+                                                            "Add to playlist",
+                                                            () {
+                                                          AddToOffPlaylist()
+                                                              .addToOffPlaylist(
+                                                            context,
+                                                            widget.songs[index]
+                                                                .id,
+                                                          );
+                                                        },
+                                                            Iconsax
+                                                                .music_playlist),
+                                                        _sheetTile("View Album",
+                                                            () async {
+                                                          var albumSongs =
+                                                              await offlineAudioQuery
+                                                                  .getAlbumSongs(widget
+                                                                      .songs[
+                                                                          index]
+                                                                      .albumId as int);
+
+                                                          Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                              builder: (_) =>
+                                                                  LocalMusicsDetail(
+                                                                title: widget
+                                                                        .songs[
+                                                                            index]
+                                                                        .album
+                                                                    as String,
+                                                                id: widget
+                                                                    .songs[
+                                                                        index]
+                                                                    .id,
+                                                                certainCase:
+                                                                    'album',
+                                                                songs:
+                                                                    albumSongs,
+                                                              ),
+                                                            ),
+                                                          ).then((value) =>
+                                                              Navigator.pop(
+                                                                  context));
+                                                        }, Icons.album_outlined),
+                                                        _sheetTile(
+                                                            "View Artist",
+                                                            () async {
+                                                          var albumSongs =
+                                                              await offlineAudioQuery
+                                                                  .getArtistsByName(widget
+                                                                          .songs[
+                                                                              index]
+                                                                          .artist
+                                                                      as String);
+
+                                                          Navigator.push(
+                                                            context,
+                                                            CupertinoPageRoute(
+                                                              builder: (_) =>
+                                                                  LocalMusicsDetail(
+                                                                title: widget
+                                                                        .songs[
+                                                                            index]
+                                                                        .artist
+                                                                    as String,
+                                                                id: widget
+                                                                    .songs[
+                                                                        index]
+                                                                    .id,
+                                                                certainCase:
+                                                                    'artist',
+                                                                songs:
+                                                                    albumSongs,
+                                                              ),
+                                                            ),
+                                                          ).then((value) =>
+                                                              Navigator.pop(
+                                                                  context));
+                                                        }, EvaIcons.person),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                );
+                                              },
+                                            );
                                           },
-                                          itemBuilder: (context) => [
-                                            PopupMenuItem(
-                                              value: 0,
-                                              child: Row(
-                                                children: const [
-                                                  Icon(Icons
-                                                      .playlist_add_rounded),
-                                                  SizedBox(width: 10.0),
-                                                  Text(
-                                                    'Add to Playlist',
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            if (widget.playlistId != null)
-                                              PopupMenuItem(
-                                                value: 1,
-                                                child: Row(
-                                                  children: const [
-                                                    Icon(Iconsax.trash),
-                                                    SizedBox(width: 10.0),
-                                                    Text('Remove'),
-                                                  ],
-                                                ),
-                                              ),
-                                            PopupMenuItem(
-                                              value: 2,
-                                              child: Row(
-                                                children: const [
-                                                  Icon(Iconsax.edit),
-                                                  SizedBox(width: 10.0),
-                                                  Text(
-                                                    'Edit Tag',
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                          icon: const Icon(
+                                              EvaIcons.moreHorizontalOutline),
                                         ),
                                         IconButton(
                                           splashRadius: 24,
@@ -758,4 +896,13 @@ class _SongsTabState extends State<SongsTab>
             ),
     );
   }
+}
+
+// list tile for song options
+ListTile _sheetTile(String title, Function()? ontap, IconData icon) {
+  return ListTile(
+    leading: Icon(icon),
+    title: Text(title),
+    onTap: ontap,
+  );
 }

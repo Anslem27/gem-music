@@ -7,9 +7,8 @@ import 'package:gem/models/services/lastfm/period_paged_request.dart';
 import 'package:gem/models/services/lastfm/track.dart';
 import 'package:gem/models/services/lastfm/user.dart';
 import 'package:gem/models/util/extensions.dart';
-
-import '../../../APIs/env.dart';
 import '../../util/preferences.dart';
+import '../../../APIs/env.dart';
 import '../generic.dart';
 import 'album.dart';
 import 'artist.dart';

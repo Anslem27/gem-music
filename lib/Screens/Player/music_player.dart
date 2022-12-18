@@ -8,7 +8,6 @@ import 'dart:ui' as ui;
 import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:flip_card/flip_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
@@ -43,6 +42,8 @@ import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import '../Home/components/home_logic.dart';
 
 class PlayScreen extends StatefulWidget {
   final List songsList;
@@ -92,7 +93,6 @@ class _PlayScreenState extends State<PlayScreen> {
   final List<Color?>? getGradient = GetIt.I<MyTheme>().playGradientColor;
   final PanelController _panelController = PanelController();
   final AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
-  GlobalKey<FlipCardState> cardKey = GlobalKey<FlipCardState>();
 
   void sleepTimer(int time) {
     audioHandler.customAction('sleepTimer', {'time': time});
@@ -578,7 +578,6 @@ class _PlayScreenState extends State<PlayScreen> {
               return StreamBuilder<MediaItem?>(
                 stream: audioHandler.mediaItem,
                 builder: (context, snapshot) {
-                  bool? noArtFuture;
                   final MediaItem? mediaItem = snapshot.data;
                   if (mediaItem == null) return const SizedBox();
                   try {
@@ -596,7 +595,7 @@ class _PlayScreenState extends State<PlayScreen> {
                             ),
                           ).then((value) => updateBackgroundColors(value));
                   } catch (e) {
-                   throw Exception;
+                    throw Exception;
                   }
                   return FutureBuilder(
                       future: getdominantColor(
@@ -606,18 +605,15 @@ class _PlayScreenState extends State<PlayScreen> {
                                   mediaItem.artUri!.toFilePath(),
                                 ),
                               )
-                            : noArtFuture == true
-                                ? const AssetImage("assets/cover.jpg")
-                                : NetworkImage(mediaItem.artUri.toString())
-                                    as ImageProvider,
+                            : NetworkImage(mediaItem.artUri.toString())
+                                as ImageProvider,
                       ),
                       builder: (context, AsyncSnapshot<Color> colorsSnapshot) {
-                        if (!colorsSnapshot.hasData) {
+                        if (!colorsSnapshot.hasData ||
+                            colorsSnapshot.hasError) {
                           WidgetsBinding.instance
                               .addPostFrameCallback((timeStamp) {
-                            setState(() {
-                              noArtFuture = true;
-                            });
+                            setState(() {});
                           });
                           return ValueListenableBuilder(
                             valueListenable: gradientColor,
@@ -679,6 +675,11 @@ class _PlayScreenState extends State<PlayScreen> {
                                             );
                                           },
                                         ),
+                                      // if (offline)
+                                      //   LikeButton(
+                                      //     mediaItem: mediaItem,
+                                      //     size:25
+                                      //   ),
                                       //now playing song options
                                       PopupMenuButton(
                                         splashRadius: 24,
@@ -1656,7 +1657,6 @@ class _PlayScreenState extends State<PlayScreen> {
                                         children: [
                                           // Artwork
                                           ArtWorkWidget(
-                                            cardKey: cardKey,
                                             mediaItem: mediaItem,
                                             width: min(
                                               constraints.maxHeight / 0.9,
@@ -1694,15 +1694,34 @@ class _PlayScreenState extends State<PlayScreen> {
                                                       CircularProgressIndicator(),
                                                 ),
                                               )
-                                            : ArtWorkWidget(
-                                                cardKey: cardKey,
-                                                mediaItem: mediaItem,
-                                                width: constraints.maxWidth,
-                                                audioHandler: audioHandler,
-                                                offline: offline,
-                                                getLyricsOnline:
-                                                    getLyricsOnline,
-                                              ),
+                                            : colorsSnapshot.hasError ||
+                                                    colorsSnapshot
+                                                            .connectionState ==
+                                                        ConnectionState.none
+                                                //TODO: Add null artwork image
+                                                ? SizedBox(
+                                                    height:
+                                                        constraints.maxWidth *
+                                                            0.85,
+                                                    width:
+                                                        constraints.maxWidth *
+                                                            0.85,
+                                                    child: const Center(
+                                                      child: Image(
+                                                        fit: BoxFit.cover,
+                                                        image: AssetImage(
+                                                            'assets/cover.jpg'),
+                                                      ),
+                                                    ),
+                                                  )
+                                                : ArtWorkWidget(
+                                                    mediaItem: mediaItem,
+                                                    width: constraints.maxWidth,
+                                                    audioHandler: audioHandler,
+                                                    offline: offline,
+                                                    getLyricsOnline:
+                                                        getLyricsOnline,
+                                                  ),
 
                                         // title and controls
                                         NameNControls(
@@ -2106,7 +2125,7 @@ abstract class AudioPlayerHandler implements AudioHandler {
   ValueStream<double> get speed;
 }
 
-class NowPlayingStream extends StatelessWidget {
+class NowPlayingStream extends StatefulWidget {
   final AudioPlayerHandler audioHandler;
   final ScrollController? scrollController;
   final bool head;
@@ -2121,24 +2140,32 @@ class NowPlayingStream extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<NowPlayingStream> createState() => _NowPlayingStreamState();
+}
+
+class _NowPlayingStreamState extends State<NowPlayingStream> {
+  @override
   Widget build(BuildContext context) {
     return StreamBuilder<QueueState>(
-      stream: audioHandler.queueState,
+      stream: widget.audioHandler.queueState,
       builder: (context, snapshot) {
         final queueState = snapshot.data ?? QueueState.empty;
         final queue = queueState.queue;
+ //place stream to recently played box
+        Hive.openBox("recently_played");
+        updateRandomArray(queue);
 
         return ReorderableListView.builder(
           header: SizedBox(
-            height: head ? headHeight : 0,
+            height: widget.head ? widget.headHeight : 0,
           ),
           onReorder: (int oldIndex, int newIndex) {
             if (oldIndex < newIndex) {
               newIndex--;
             }
-            audioHandler.moveQueueItem(oldIndex, newIndex);
+            widget.audioHandler.moveQueueItem(oldIndex, newIndex);
           },
-          scrollController: scrollController,
+          scrollController: widget.scrollController,
           physics: const BouncingScrollPhysics(),
           padding: const EdgeInsets.only(bottom: 10),
           shrinkWrap: true,
@@ -2150,7 +2177,7 @@ class NowPlayingStream extends StatelessWidget {
                   ? DismissDirection.none
                   : DismissDirection.horizontal,
               onDismissed: (dir) {
-                audioHandler.removeQueueItemAt(index);
+                widget.audioHandler.removeQueueItemAt(index);
               },
               child: ListTileTheme(
                 //selectedColor: Theme.of(context).colorScheme.secondary,
@@ -2278,7 +2305,6 @@ class NowPlayingStream extends StatelessWidget {
                                         fit: BoxFit.cover,
                                         image: FileImage(
                                           File(
-                                            //TODO: Catch error when file image fails to load
                                             queue[index]
                                                     .artUri!
                                                     .toFilePath()
@@ -2289,6 +2315,11 @@ class NowPlayingStream extends StatelessWidget {
                                                     .toFilePath(),
                                           ),
                                         ),
+                                        errorBuilder: (_, __, ___) {
+                                          return Image.asset(
+                                            'assets/cover.jpg',
+                                          );
+                                        },
                                       )
                                     : CachedNetworkImage(
                                         fit: BoxFit.cover,
@@ -2329,7 +2360,7 @@ class NowPlayingStream extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   onTap: () {
-                    audioHandler.skipToQueueItem(index);
+                    widget.audioHandler.skipToQueueItem(index);
                   },
                 ),
               ),
@@ -2342,7 +2373,6 @@ class NowPlayingStream extends StatelessWidget {
 }
 
 class ArtWorkWidget extends StatefulWidget {
-  final GlobalKey<FlipCardState> cardKey;
   final MediaItem mediaItem;
   final bool offline;
   final bool getLyricsOnline;
@@ -2351,7 +2381,6 @@ class ArtWorkWidget extends StatefulWidget {
 
   const ArtWorkWidget({
     Key? key,
-    required this.cardKey,
     required this.mediaItem,
     required this.width,
     this.offline = false,
@@ -2458,18 +2487,25 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                     child: widget.mediaItem.artUri.toString().startsWith('file')
                         //TODO: fix issue with local music image image thats low quality
 
-                        ? widget.mediaItem.artUri!.toFilePath().isEmpty
+                        ? widget.mediaItem.artUri!.toFilePath().isEmpty ||
+                                widget.mediaItem.artUri!.hasEmptyPath ||
+                                widget.mediaItem.artUri == null
                             //expression checks for an empty mediaItem file string
-                            //TODO: Add a placeholder image for null image
+
                             ? const Image(
                                 fit: BoxFit.cover,
                                 image: AssetImage('assets/cover.jpg'),
                               )
-                            : Image.file(
-                                File(widget.mediaItem.artUri!.toFilePath()),
-                                fit: BoxFit.contain,
-                                //width: widget.width * 0.85,
-                                gaplessPlayback: true,
+                            : Image(
+                                fit: BoxFit.cover,
+                                image: FileImage(
+                                  File(widget.mediaItem.artUri!.toFilePath()),
+                                ),
+                                errorBuilder: (_, __, ___) {
+                                  return Image.asset(
+                                    'assets/cover.jpg',
+                                  );
+                                },
                               )
                         : CachedNetworkImage(
                             fit: BoxFit.contain,
@@ -2836,92 +2872,105 @@ class NameNControls extends StatelessWidget {
                                 builder: (context, snapshot) {
                                   final shuffleModeEnabled =
                                       snapshot.data ?? false;
-                                  return IconButton(
-                                    icon: shuffleModeEnabled
-                                        ? const Icon(
-                                            EvaIcons.shuffle2,
-                                          )
-                                        : Icon(
-                                            EvaIcons.shuffle2,
-                                            color:
-                                                Theme.of(context).disabledColor,
-                                          ),
-                                    tooltip: 'Shuffle',
-                                    onPressed: () async {
-                                      final enable = !shuffleModeEnabled;
-                                      await audioHandler.setShuffleMode(
-                                        enable
-                                            ? AudioServiceShuffleMode.all
-                                            : AudioServiceShuffleMode.none,
-                                      );
-                                    },
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        padding: const EdgeInsets.all(3),
+                                        icon: shuffleModeEnabled
+                                            ? const Icon(
+                                                EvaIcons.shuffle2,
+                                              )
+                                            : Icon(
+                                                EvaIcons.shuffle2,
+                                                color: Theme.of(context)
+                                                    .disabledColor,
+                                              ),
+                                        tooltip: 'Shuffle',
+                                        onPressed: () async {
+                                          final enable = !shuffleModeEnabled;
+                                          await audioHandler.setShuffleMode(
+                                            enable
+                                                ? AudioServiceShuffleMode.all
+                                                : AudioServiceShuffleMode.none,
+                                          );
+                                        },
+                                      ),
+                                      if (offline)
+                                        LikeButton(mediaItem: mediaItem)
+                                    ],
                                   );
                                 },
                               ),
-                              if (!offline)
-                                LikeButton(mediaItem: mediaItem, size: 25.0)
                             ],
                           ),
-                          ControlButtons(
-                            audioHandler,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ControlButtons(
+                              audioHandler,
+                            ),
                           ),
-                          Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              const SizedBox(height: 6.0),
-                              StreamBuilder<AudioServiceRepeatMode>(
-                                stream: audioHandler.playbackState
-                                    .map((state) => state.repeatMode)
-                                    .distinct(),
-                                builder: (context, snapshot) {
-                                  final repeatMode = snapshot.data ??
-                                      AudioServiceRepeatMode.none;
-                                  const texts = ['None', 'All', 'One'];
-                                  final icons = [
-                                    Icon(
-                                      EvaIcons.repeat,
-                                      color: Theme.of(context).disabledColor,
+                          Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const SizedBox(height: 6.0),
+                                StreamBuilder<AudioServiceRepeatMode>(
+                                  stream: audioHandler.playbackState
+                                      .map((state) => state.repeatMode)
+                                      .distinct(),
+                                  builder: (context, snapshot) {
+                                    final repeatMode = snapshot.data ??
+                                        AudioServiceRepeatMode.none;
+                                    const texts = ['None', 'All', 'One'];
+                                    final icons = [
+                                      Icon(
+                                        EvaIcons.repeat,
+                                        color: Theme.of(context).disabledColor,
+                                      ),
+                                      const Icon(
+                                        EvaIcons.repeat,
+                                      ),
+                                      const Icon(
+                                        Icons.repeat_one_rounded,
+                                      ),
+                                    ];
+                                    const cycleModes = [
+                                      AudioServiceRepeatMode.none,
+                                      AudioServiceRepeatMode.all,
+                                      AudioServiceRepeatMode.one,
+                                    ];
+                                    final index =
+                                        cycleModes.indexOf(repeatMode);
+                                    return IconButton(
+                                      icon: icons[index],
+                                      tooltip:
+                                          'Repeat ${texts[(index + 1) % texts.length]}',
+                                      onPressed: () async {
+                                        await Hive.box('settings').put(
+                                          'repeatMode',
+                                          texts[(index + 1) % texts.length],
+                                        );
+                                        await audioHandler.setRepeatMode(
+                                          cycleModes[
+                                              (cycleModes.indexOf(repeatMode) +
+                                                      1) %
+                                                  cycleModes.length],
+                                        );
+                                      },
+                                    );
+                                  },
+                                ),
+                                if (!offline)
+                                  DownloadButton(
+                                    size: 25.0,
+                                    data: MediaItemConverter.mediaItemToMap(
+                                      mediaItem,
                                     ),
-                                    const Icon(
-                                      EvaIcons.repeat,
-                                    ),
-                                    const Icon(
-                                      Icons.repeat_one_rounded,
-                                    ),
-                                  ];
-                                  const cycleModes = [
-                                    AudioServiceRepeatMode.none,
-                                    AudioServiceRepeatMode.all,
-                                    AudioServiceRepeatMode.one,
-                                  ];
-                                  final index = cycleModes.indexOf(repeatMode);
-                                  return IconButton(
-                                    icon: icons[index],
-                                    tooltip:
-                                        'Repeat ${texts[(index + 1) % texts.length]}',
-                                    onPressed: () async {
-                                      await Hive.box('settings').put(
-                                        'repeatMode',
-                                        texts[(index + 1) % texts.length],
-                                      );
-                                      await audioHandler.setRepeatMode(
-                                        cycleModes[
-                                            (cycleModes.indexOf(repeatMode) +
-                                                    1) %
-                                                cycleModes.length],
-                                      );
-                                    },
-                                  );
-                                },
-                              ),
-                              if (!offline)
-                                DownloadButton(
-                                  size: 25.0,
-                                  data: MediaItemConverter.mediaItemToMap(
-                                    mediaItem,
-                                  ),
-                                )
-                            ],
+                                  )
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -2971,7 +3020,7 @@ class NameNControls extends StatelessWidget {
                               as ImageProvider,
                     ),
                     builder: (context, AsyncSnapshot<Color> colorsSnapshot) {
-                      if (!colorsSnapshot.hasData) {
+                      if (!colorsSnapshot.hasData || colorsSnapshot.hasError) {
                         return const SizedBox();
                       }
 

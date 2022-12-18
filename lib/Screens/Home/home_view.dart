@@ -14,6 +14,7 @@ import '../LocalMusic/local_music.dart';
 import '../LocalMusic/localplaylists.dart';
 import '../LocalMusic/widgets/preview_page.dart';
 import 'components/home_components.dart';
+import 'components/recently_played.dart';
 
 bool fetched = false;
 List likedRadio =
@@ -92,7 +93,7 @@ class _HomeViewPageState extends State<HomeViewPage>
       }
     ];
 
-    List<String> playlistImages = ["assets/elements/onl.png"];
+    List<String> playlistImages = ["", "assets/elements/onl.png"];
 
     List<Function()?> playlistLibOntaps = [
       () {
@@ -254,6 +255,8 @@ class _HomeViewPageState extends State<HomeViewPage>
                         ),
                       ),
                       const RecentlyAddedSongs(),
+                      //const SizedBox(height: 10),
+                      //const Previously(),
                       const SizedBox(height: 10),
                       const HomeAlbums(),
                       const SizedBox(height: 10),
@@ -360,73 +363,77 @@ class _HomeViewPageState extends State<HomeViewPage>
                                               ),
                                             );
                                           },
-                                          child: SizedBox(
-                                            height: boxSize - 20,
-                                            width: boxSize - 40,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.start,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                QueryArtworkWidget(
-                                                  id: offlinePlaylists[index]
-                                                      .id,
-                                                  type: ArtworkType.PLAYLIST,
-                                                  artworkHeight: boxSize - 30,
-                                                  artworkWidth: boxSize - 30,
-                                                  artworkBorder:
-                                                      BorderRadius.circular(
-                                                          0.0),
-                                                  nullArtworkWidget: ClipRRect(
-                                                    borderRadius:
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: SizedBox(
+                                              height: boxSize - 20,
+                                              width: boxSize - 30,
+                                              child: Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  QueryArtworkWidget(
+                                                    id: offlinePlaylists[index]
+                                                        .id,
+                                                    type: ArtworkType.PLAYLIST,
+                                                    artworkHeight: boxSize - 30,
+                                                    artworkWidth: boxSize - 30,
+                                                    artworkBorder:
                                                         BorderRadius.circular(
                                                             0.0),
-                                                    child: Image(
-                                                      fit: BoxFit.cover,
-                                                      height: boxSize - 35,
-                                                      width: boxSize - 40,
-                                                      image: const AssetImage(
-                                                          'assets/file_playlist.png'),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  child: ListTile(
-                                                    title: Text(
-                                                      offlinePlaylists[index]
-                                                          .playlist
-                                                          .toUpperCase(),
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      softWrap: false,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                      ),
-                                                    ),
-                                                    subtitle: Text(
-                                                      offlinePlaylists[index]
-                                                                  .numOfSongs >
-                                                              0
-                                                          ? "${offlinePlaylists[index].numOfSongs} songs"
-                                                          : "Empty playlist",
-                                                      textAlign:
-                                                          TextAlign.center,
-                                                      softWrap: false,
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      style: const TextStyle(
-                                                        fontSize: 13,
-                                                        color: Colors.grey,
+                                                    nullArtworkWidget:
+                                                        ClipRRect(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              0.0),
+                                                      child: Image(
+                                                        fit: BoxFit.cover,
+                                                        height: boxSize - 35,
+                                                        width: boxSize - 40,
+                                                        image: const AssetImage(
+                                                            'assets/file_playlist.png'),
                                                       ),
                                                     ),
                                                   ),
-                                                )
-                                              ],
+                                                  Expanded(
+                                                    child: ListTile(
+                                                      title: Text(
+                                                        offlinePlaylists[index]
+                                                            .playlist
+                                                            .toUpperCase(),
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        softWrap: false,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w400,
+                                                        ),
+                                                      ),
+                                                      subtitle: Text(
+                                                        offlinePlaylists[index]
+                                                                    .numOfSongs >
+                                                                0
+                                                            ? "${offlinePlaylists[index].numOfSongs} songs"
+                                                            : "Empty playlist",
+                                                        textAlign:
+                                                            TextAlign.center,
+                                                        softWrap: false,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        style: const TextStyle(
+                                                          fontSize: 13,
+                                                          color: Colors.grey,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         );
@@ -462,6 +469,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                 : '${playlistDetails[name]['count']} songs';
                             return GestureDetector(
                               child: SizedBox(
+                                height: boxSize - 20,
                                 width: boxSize - 30,
                                 child: HoverBox(
                                   child: (playlistDetails[name] == null ||
