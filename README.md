@@ -1,5 +1,4 @@
-
-# Gem
+# gem
 
 Flutter music App project.
 
@@ -7,10 +6,8 @@ Flutter music App project.
 
 - Best Streaming Quality (320kbps aac)
 - Song, Album, Artist and Playlist Search
-- Trending Songs
 - Artist and Genre
-- Add Songs to Favorite  
-- Playlists support
+- Add Songs to Favorite
 - Import Playlists from YouTube
 - Import/Export Playlists as JSON File
 - Share Playlists
@@ -22,32 +19,26 @@ Flutter music App project.
 - Custom Gradients and other Theme options
 - Download for offline play (320kbps with ID3 tags)
 - Play Online as well as Offline Songs
-- Tag Editing Support
-- Trending Search Results
 - YouTube Search Support
 - Play videos as audio
-- Auto Song Recommendations
 - Inbuilt Equalizer
 - Cache support
 
 ## TODO
 
-- Add visualizer support option
 - Add a daily shuffle from local or online music
-- Fix local music widget [images]
-- Add suitable music search API
+- Add a "MADE FOR YOU" option at home shuffle kind of thing
+- Fix local music widgets [images]
+- Add suitable artist art API
+- Tag Editing Support
 - Clean Out unneccesary code
 - Add daily shuffle to home
 - Artist, plylist detail page customed pages
-- Add spotify playlists url under youtube search [Spotify design nature]
 - Add Box Grid like design for library
+- Song Recommendations based on recent.
 
 ## Add to home elements
 
-- SnapShot(Cards for elements ie local,playlists,recently played etc.)
-- Local Artists
-- Local Genres
-- Recently Added
 - Downloads
 
 ## Building from Source

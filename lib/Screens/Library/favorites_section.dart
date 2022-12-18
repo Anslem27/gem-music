@@ -1,24 +1,25 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
+import 'package:audio_service/audio_service.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gem/CustomWidgets/collage.dart';
 import 'package:gem/CustomWidgets/data_search.dart';
-import 'package:gem/CustomWidgets/download_button.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/playlist_head.dart';
-import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/songs_count.dart' as songs_count;
-import 'package:gem/Screens/Library/show_songs.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
-import 'package:gem/animations/custom_physics.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:tab_indicator_styler/tab_indicator_styler.dart';
+
+import '../../CustomWidgets/add_playlist.dart';
+import '../../Helpers/add_mediaitem_to_queue.dart';
+import '../../Helpers/mediaitem_converter.dart';
+import '../Common/song_list.dart';
+import '../Search/albums.dart';
 // import 'package:path_provider/path_provider.dart';
 
 class LikedSongs extends StatefulWidget {
@@ -47,7 +48,6 @@ class _LikedSongsState extends State<LikedSongs>
   List _sortedAlbumKeysList = [];
   List _sortedArtistKeysList = [];
   List _sortedGenreKeysList = [];
-  TabController? _tcontroller;
   // int currentIndex = 0;
   int sortValue = Hive.box('settings').get('sortValue', defaultValue: 1) as int;
   int orderValue =
@@ -63,7 +63,6 @@ class _LikedSongsState extends State<LikedSongs>
 
   @override
   void initState() {
-    _tcontroller = TabController(length: 4, vsync: this);
     _scrollController.addListener(() {
       if (_scrollController.position.userScrollDirection ==
           ScrollDirection.reverse) {
@@ -79,7 +78,6 @@ class _LikedSongsState extends State<LikedSongs>
   @override
   void dispose() {
     super.dispose();
-    _tcontroller!.dispose();
     _scrollController.dispose();
   }
 
@@ -288,11 +286,11 @@ class _LikedSongsState extends State<LikedSongs>
   _body(BuildContext context) {
     if (widget.scenario == "normal") {
       return GradientContainer(
-        child: Column(
-          children: [
-            Expanded(
-              child: DefaultTabController(
-                length: 4,
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Column(
+            children: [
+              Expanded(
                 child: Scaffold(
                   backgroundColor: Colors.transparent,
                   appBar: AppBar(
@@ -304,7 +302,7 @@ class _LikedSongsState extends State<LikedSongs>
                               widget.showName!.substring(1),
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
-                      style: GoogleFonts.roboto(fontSize: 20),
+                      style: const TextStyle(fontSize: 20),
                     ),
                     centerTitle: true,
                     backgroundColor:
@@ -312,48 +310,6 @@ class _LikedSongsState extends State<LikedSongs>
                             ? Colors.transparent
                             : Theme.of(context).colorScheme.secondary,
                     elevation: 0,
-                    bottom: TabBar(
-                      controller: _tcontroller,
-                      indicator: MaterialIndicator(
-                        horizontalPadding: 20,
-                        color: Theme.of(context).focusColor,
-                        height: 6,
-                      ),
-                      tabs: [
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            "Songs",
-                            style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400, fontSize: 16),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            "Albums",
-                            style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400, fontSize: 16),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            "Artists",
-                            style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400, fontSize: 16),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 10.0),
-                          child: Text(
-                            "Genres",
-                            style: GoogleFonts.roboto(
-                                fontWeight: FontWeight.w400, fontSize: 16),
-                          ),
-                        ),
-                      ],
-                    ),
                     actions: [
                       IconButton(
                         splashRadius: 24,
@@ -366,15 +322,6 @@ class _LikedSongsState extends State<LikedSongs>
                           );
                         },
                       ),
-                      /* if (_songs.isNotEmpty)
-                    MultiDownloadButton(
-                      data: _songs,
-                      playlistName: widget.showName == null
-                          ? widget.playlistName[0].toUpperCase() +
-                              widget.playlistName.substring(1)
-                          : widget.showName![0].toUpperCase() +
-                              widget.showName!.substring(1),
-                    ), */
                       PopupMenuButton(
                         splashRadius: 24,
                         icon: const Icon(Iconsax.sort),
@@ -472,37 +419,13 @@ class _LikedSongsState extends State<LikedSongs>
                       ? const Center(
                           child: CircularProgressIndicator(),
                         )
-                      : TabBarView(
-                          physics: const CustomPhysics(),
-                          controller: _tcontroller,
-                          children: [
-                            SongsTab(
-                              songs: _songs,
-                              onDelete: (Map item) {
-                                deleteLiked(item);
-                              },
-                              playlistName: widget.playlistName,
-                              scrollController: _scrollController,
-                            ),
-                            AlbumsTab(
-                              albums: _albums,
-                              type: 'album',
-                              offline: false,
-                              sortedAlbumKeysList: _sortedAlbumKeysList,
-                            ),
-                            AlbumsTab(
-                              albums: _artists,
-                              type: 'artist',
-                              offline: false,
-                              sortedAlbumKeysList: _sortedArtistKeysList,
-                            ),
-                            AlbumsTab(
-                              albums: _genres,
-                              type: 'genre',
-                              offline: false,
-                              sortedAlbumKeysList: _sortedGenreKeysList,
-                            ),
-                          ],
+                      : SongsTab(
+                          songs: _songs,
+                          onDelete: (Map item) {
+                            deleteLiked(item);
+                          },
+                          playlistName: widget.playlistName,
+                          scrollController: _scrollController,
                         ),
                   floatingActionButton: Container(
                     decoration: BoxDecoration(
@@ -556,7 +479,7 @@ class _LikedSongsState extends State<LikedSongs>
                                   if (showFullShuffle)
                                     Text(
                                       "Shuffle",
-                                      style: GoogleFonts.roboto(
+                                      style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 18.0,
                                         color: Theme.of(context).brightness ==
@@ -578,9 +501,9 @@ class _LikedSongsState extends State<LikedSongs>
                   ),
                 ),
               ),
-            ),
-            const MiniPlayer(),
-          ],
+              const MiniPlayer(),
+            ],
+          ),
         ),
       );
     } else {
@@ -626,320 +549,327 @@ class _SongsTabState extends State<SongsTab>
             : MediaQuery.of(context).size.height / 2.5;
     super.build(context);
     return (widget.songs.isEmpty)
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset("assets/svg/music.svg",
-                    height: 140, width: 100),
-                const SizedBox(height: 20),
-                Text(
-                  "Ooops...",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary),
-                ),
-                Text(
-                  "No music here",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                    fontSize: 20,
+        ? Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SvgPicture.asset("assets/svg/music.svg",
+                      height: 140, width: 100),
+                  const SizedBox(height: 20),
+                  Text(
+                    "Wow...",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary),
                   ),
-                ),
-              ],
+                  const Text(
+                    "No music here",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ],
+              ),
             ),
           )
-        : SingleChildScrollView(
-            child: Column(
-              children: [
-                PlaylistHead(
-                  songsList: widget.songs,
-                  offline: false,
-                  fromDownloads: false,
-                ),
-                SizedBox(
-                  height: 500,
-                  child: ListView.builder(
-                    controller: widget.scrollController,
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.only(bottom: 10),
-                    shrinkWrap: true,
-                    itemCount: widget.songs.length,
-                    itemBuilder: (context, index) {
-                      return Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                PageRouteBuilder(
-                                  opaque: false,
-                                  pageBuilder: (_, __, ___) => PlayScreen(
-                                    songsList: widget.songs,
-                                    index: index,
-                                    offline: false,
-                                    fromMiniplayer: false,
-                                    fromDownloads: false,
-                                    recommend: false,
-                                  ),
-                                ),
-                              );
-                            },
-                            child: SizedBox(
-                              height: boxSize - 100,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Card(
-                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                    child: CachedNetworkImage(
-                                      fit: BoxFit.cover,
-                                      errorWidget: (context, _, __) =>
-                                          const Image(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage('assets/cover.jpg'),
-                                        height: 70,
-                                        width: 70,
-                                      ),
-                                      height: 70,
-                                      width: 70,
-                                      imageUrl: widget.songs[index]['image']
-                                          .toString()
-                                          .replaceAll('http:', 'https:'),
-                                      placeholder: (context, url) => const Image(
-                                        fit: BoxFit.cover,
-                                        image: AssetImage(
-                                          'assets/cover.jpg',
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: ListTile(
-                                      title: Text(
-                                        '${widget.songs[index]['title']}',
-                                        overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.roboto(fontSize: 17),
-                                      ),
-                                      subtitle: Text(
-                                        '${widget.songs[index]['artist'] ?? 'Unknown'} - ${widget.songs[index]['album'] ?? 'Unknown'}',
-                                        overflow: TextOverflow.ellipsis,
-                                        textAlign: TextAlign.start,
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.normal,
-                                          fontSize: 15,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 3.0),
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Row(children: [
-                                          DownloadButton(
-                                            data: widget.songs[index] as Map,
-                                            icon: 'download',
-                                          ),
-                                          SongTileTrailingMenu(
-                                            data: widget.songs[index] as Map,
-                                            isPlaylist: true,
-                                            deleteLiked: widget.onDelete,
-                                          ),
-                                        ]),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
+        : Material(
+            color: Colors.transparent,
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  PlaylistHead(
+                    songsList: widget.songs,
+                    offline: true,
+                    fromDownloads: false,
                   ),
-                ),
-              ],
-            ),
-          );
-  }
-}
-
-class AlbumsTab extends StatefulWidget {
-  final Map<String, List> albums;
-  final List sortedAlbumKeysList;
-  // final String? tempPath;
-  final String type;
-  final bool offline;
-  const AlbumsTab({
-    Key? key,
-    required this.albums,
-    required this.offline,
-    required this.sortedAlbumKeysList,
-    required this.type,
-    // this.tempPath,
-  }) : super(key: key);
-
-  @override
-  State<AlbumsTab> createState() => _AlbumsTabState();
-}
-
-class _AlbumsTabState extends State<AlbumsTab>
-    with AutomaticKeepAliveClientMixin {
-  @override
-  bool get wantKeepAlive => true;
-
-  @override
-  Widget build(BuildContext context) {
-    super.build(context);
-    return widget.sortedAlbumKeysList.isEmpty
-        ? Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SvgPicture.asset("assets/svg/add_content.svg",
-                    height: 140, width: 100),
-                const SizedBox(height: 20),
-                Text(
-                  "Ooops...",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                      fontSize: 20,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary),
-                ),
-                Text(
-                  "No music here",
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.roboto(
-                    fontSize: 20,
-                  ),
-                ),
-              ],
-            ),
-          )
-        : Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: StaggeredGridView.countBuilder(
-              shrinkWrap: true,
-              crossAxisCount: 2,
-              mainAxisSpacing: 0,
-              itemCount: widget.sortedAlbumKeysList.length,
-              physics: const BouncingScrollPhysics(),
-              staggeredTileBuilder: (int index) {
-                return const StaggeredTile.count(1, 1.2);
-              },
-              itemBuilder: (BuildContext context, int index) {
-                double boxSize = MediaQuery.of(context).size.height >
-                        MediaQuery.of(context).size.width
-                    ? MediaQuery.of(context).size.width / 2
-                    : MediaQuery.of(context).size.height / 2.5;
-                final List imageList = widget
-                            .albums[widget.sortedAlbumKeysList[index]]!
-                            .length >=
-                        4
-                    ? widget.albums[widget.sortedAlbumKeysList[index]]!
-                        .sublist(0, 4)
-                    : widget.albums[widget.sortedAlbumKeysList[index]]!.sublist(
-                        0,
-                        widget
-                            .albums[widget.sortedAlbumKeysList[index]]!.length,
-                      );
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).push(
-                      PageRouteBuilder(
-                        opaque: false,
-                        pageBuilder: (_, __, ___) => SongsList(
-                          data:
-                              widget.albums[widget.sortedAlbumKeysList[index]]!,
-                          offline: widget.offline,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Stack(
-                    children: [
-                      Card(
-                        color: Colors.transparent,
-                        elevation: 0,
-                        margin: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Column(
+                  SizedBox(
+                    height: 500,
+                    child: ListView.builder(
+                      controller: widget.scrollController,
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.only(bottom: 10),
+                      shrinkWrap: true,
+                      itemCount: widget.songs.length,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            SizedBox(
-                              height: boxSize - 35,
-                              width: MediaQuery.of(context).size.width / 2.5,
-                              child: (widget.offline)
-                                  ? OfflineCollage(
-                                      borderRadius: 10,
-                                      imageList: imageList,
-                                      showGrid: widget.type == 'genre',
-                                      placeholderImage: widget.type == 'artist'
-                                          ? 'assets/artist.png'
-                                          : 'assets/album.png',
-                                    )
-                                  : Collage(
-                                      borderRadius: 10,
-                                      imageList: imageList,
-                                      showGrid: widget.type == 'genre',
-                                      placeholderImage: widget.type == 'artist'
-                                          ? 'assets/artist.png'
-                                          : 'assets/album.png',
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  PageRouteBuilder(
+                                    opaque: false,
+                                    pageBuilder: (_, __, ___) => PlayScreen(
+                                      songsList: widget.songs,
+                                      index: index,
+                                      offline: true,
+                                      fromMiniplayer: false,
+                                      fromDownloads: false,
+                                      recommend: false,
                                     ),
-                            ),
-                            Expanded(
-                              child: ListTile(
-                                title: Text(
-                                  '${widget.sortedAlbumKeysList[index]}',
-                                  textAlign: TextAlign.center,
-                                  softWrap: false,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.lato(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w400,
                                   ),
-                                ),
-                                subtitle: Text(
-                                  widget
-                                              .albums[widget
-                                                  .sortedAlbumKeysList[index]]!
-                                              .length ==
-                                          1
-                                      ? '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} song'
-                                      : '${widget.albums[widget.sortedAlbumKeysList[index]]!.length} songs',
-                                  textAlign: TextAlign.center,
-                                  softWrap: false,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: GoogleFonts.roboto(
-                                    fontSize: 14,
-                                    color: Colors.grey,
-                                  ),
+                                );
+                              },
+                              child: SizedBox(
+                                height: boxSize - 100,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    //TODO: Fix song Art
+                                    Card(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: Image(
+                                        fit: BoxFit.cover,
+                                        image: FileImage(
+                                          File(
+                                            widget.songs[index]['image']
+                                                .toString(),
+                                          ),
+                                        ),
+                                        errorBuilder: (_, __, ___) {
+                                          return Image.asset(
+                                            'assets/cover.jpg',
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Text(
+                                          '${widget.songs[index]['title']}',
+                                          overflow: TextOverflow.ellipsis,
+                                          style: const TextStyle(fontSize: 17),
+                                        ),
+                                        subtitle: Text(
+                                          '${widget.songs[index]['artist'] ?? 'Unknown'} - ${widget.songs[index]['album'] ?? 'Unknown'}',
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.start,
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 15,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Padding(
+                                      padding:
+                                          const EdgeInsets.only(right: 3.0),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(children: [
+                                            // SongTileTrailingMenu(
+                                            //   data: widget.songs[index] as Map,
+                                            //   isPlaylist: true,
+                                            //   deleteLiked: widget.onDelete,
+                                            // ),
+                                            PopupMenuButton(
+                                              splashRadius: 24,
+                                              icon: Icon(
+                                                Icons.more_vert_rounded,
+                                                color: Theme.of(context)
+                                                    .iconTheme
+                                                    .color,
+                                              ),
+                                              shape:
+                                                  const RoundedRectangleBorder(
+                                                borderRadius: BorderRadius.all(
+                                                  Radius.circular(15.0),
+                                                ),
+                                              ),
+                                              itemBuilder: (context) => [
+                                                PopupMenuItem(
+                                                  value: 6,
+                                                  child: Row(
+                                                    children: const [
+                                                      Icon(
+                                                        Iconsax.trash,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 10.0,
+                                                      ),
+                                                      Text("Unlike"),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 2,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.music_play,
+                                                        color: Theme.of(context)
+                                                            .iconTheme
+                                                            .color,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      const Text('Play next'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 1,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.music_play,
+                                                        color: Theme.of(context)
+                                                            .iconTheme
+                                                            .color,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      const Text(
+                                                          'Add to queue'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 0,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Icons
+                                                            .playlist_add_rounded,
+                                                        color: Theme.of(context)
+                                                            .iconTheme
+                                                            .color,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      const Text(
+                                                          'Add to playlist'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 4,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        Iconsax.music_library_2,
+                                                        color: Theme.of(context)
+                                                            .iconTheme
+                                                            .color,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      const Text('View Album'),
+                                                    ],
+                                                  ),
+                                                ),
+                                                PopupMenuItem(
+                                                  value: 5,
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        EvaIcons.person,
+                                                        color: Theme.of(context)
+                                                            .iconTheme
+                                                            .color,
+                                                      ),
+                                                      const SizedBox(
+                                                          width: 10.0),
+                                                      const Text('View Artist'),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                              onSelected: (int? value) {
+                                                final MediaItem mediaItem =
+                                                    MediaItemConverter
+                                                        .mapToMediaItem(
+                                                            widget.songs[index]
+                                                                as Map);
+
+                                                if (value == 4) {
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      opaque: false,
+                                                      pageBuilder:
+                                                          (_, __, ___) =>
+                                                              SongsListPage(
+                                                        listItem: {
+                                                          'type': 'album',
+                                                          'id':
+                                                              mediaItem.extras?[
+                                                                  'album_id'],
+                                                          'title':
+                                                              mediaItem.album,
+                                                          'image':
+                                                              mediaItem.artUri,
+                                                        },
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                if (value == 5) {
+                                                  Navigator.push(
+                                                    context,
+                                                    PageRouteBuilder(
+                                                      opaque: false,
+                                                      pageBuilder:
+                                                          (_, __, ___) =>
+                                                              AlbumSearchPage(
+                                                        query: mediaItem.artist
+                                                            .toString()
+                                                            .split(', ')
+                                                            .first,
+                                                        type: 'Artists',
+                                                      ),
+                                                    ),
+                                                  );
+                                                }
+                                                if (value == 6) {
+                                                  widget.onDelete;
+                                                  setState(() {});
+                                                }
+                                                if (value == 0) {
+                                                  AddToPlaylist().addToPlaylist(
+                                                      context, mediaItem);
+                                                }
+                                                if (value == 1) {
+                                                  addOfflineToNowPlaying(
+                                                      context: context,
+                                                      mediaItem: mediaItem);
+                                                }
+                                                if (value == 2) {
+                                                  playOfflineNext(
+                                                      mediaItem, context);
+                                                }
+                                              },
+                                            )
+                                          ]),
+                                        ],
+                                      ),
+                                    )
+                                  ],
                                 ),
                               ),
                             ),
                           ],
-                        ),
-                      ),
-                    ],
+                        );
+                      },
+                    ),
                   ),
-                );
-              },
+                ],
+              ),
             ),
           );
   }

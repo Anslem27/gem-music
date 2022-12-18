@@ -22,6 +22,7 @@ class AppTheme {
               BorderSide(width: 1.5, color: currentTheme.currentColor()),
         ),
       ),
+      fontFamily: "Avenir Next",
       listTileTheme: ListTileThemeData(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(7.0),
@@ -62,7 +63,8 @@ class AppTheme {
     return ThemeData(
       textButtonTheme: TextButtonThemeData(
         style: TextButton.styleFrom(
-          foregroundColor: Colors.white, backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.transparent,
           elevation: 0.0,
         ),
       ),

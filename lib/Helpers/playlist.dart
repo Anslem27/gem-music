@@ -1,5 +1,3 @@
-
-
 import 'package:audio_service/audio_service.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Helpers/songs_count.dart' as songs_count;
@@ -28,9 +26,7 @@ Future<void> addMapToPlaylist(String name, Map info) async {
   songs_count.addSongsCount(
     name,
     playlistBox.values.length + 1,
-    songs.length >= 4
-        ? songs.sublist(0, 4)
-        : songs.sublist(0, songs.length),
+    songs.length >= 4 ? songs.sublist(0, 4) : songs.sublist(0, songs.length),
   );
   playlistBox.put(info['id'].toString(), info);
 }
@@ -44,9 +40,7 @@ Future<void> addItemToPlaylist(String name, MediaItem mediaItem) async {
   songs_count.addSongsCount(
     name,
     playlistBox.values.length + 1,
-    songs.length >= 4
-        ? songs.sublist(0, 4)
-        : songs.sublist(0, songs.length),
+    songs.length >= 4 ? songs.sublist(0, 4) : songs.sublist(0, songs.length),
   );
   playlistBox.put(mediaItem.id, info);
 }

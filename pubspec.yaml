@@ -19,6 +19,7 @@ dependencies:
   dart_des: ^1.0.2
   device_info_plus: ^4.0.0
   file_picker: ^4.6.1
+  custom_navigation_bar: ^0.8.2
   flip_card: ^0.6.0
   flutter:
     sdk: flutter
@@ -51,6 +52,18 @@ dependencies:
   tab_indicator_styler: ^2.0.0
   auto_size_text: ^3.0.0
   spotify: ^0.8.0
+  eva_icons_flutter: ^3.1.0
+  font_awesome_flutter: ^10.2.1
+  glassmorphism: ^3.0.0
+  flutter_web_auth: ^0.5.0
+  pkce: ^1.1.0+1
+  intl: ^0.17.0
+  pool: ^1.5.1
+  shared_preferences: ^2.0.15
+  overlapping_panels: ^0.0.3
+  visibility_detector: ^0.3.3
+  in_app_review: ^2.0.6
+  modal_bottom_sheet: ^2.1.2
 
 dev_dependencies:
   flutter_test:
@@ -71,4 +84,9 @@ flutter:
     - assets/
     - assets/svg/
     - assets/elements/
+
+  fonts:
+    - family: Avenir Next
+      fonts:
+        - asset: fonts/AvenirNext.otf  
 

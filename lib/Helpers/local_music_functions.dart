@@ -36,7 +36,13 @@ class OfflineAudioQuery {
     return audioQuery.createPlaylist(name);
   }
 
-  Future<bool> removePlaylist({required int playlistId}) async {
+  Future<bool> renamePlaylist(
+      {required int playlistId, required String newName}) async {
+    newName.replaceAll(avoid, '').replaceAll('  ', ' ');
+    return audioQuery.renamePlaylist(playlistId, newName);
+  }
+
+  Future removePlaylist({required int playlistId}) async {
     return audioQuery.removePlaylist(playlistId);
   }
 
@@ -54,12 +60,12 @@ class OfflineAudioQuery {
     return audioQuery.removeFromPlaylist(playlistId, audioId);
   }
 
-  Future<bool> renamePlaylist({
-    required int playlistId,
-    required String newName,
-  }) async {
-    return audioQuery.renamePlaylist(playlistId, newName);
-  }
+  // Future<bool> renamePlaylist({
+  //   required int playlistId,
+  //   required String newName,
+  // }) async {
+  //   return audioQuery.renamePlaylist(playlistId, newName);
+  // }
 
   Future<List<SongModel>> getPlaylistSongs(
     int playlistId, {
@@ -70,6 +76,62 @@ class OfflineAudioQuery {
     return audioQuery.queryAudiosFrom(
       AudiosFromType.PLAYLIST,
       playlistId,
+      sortType: sortType ?? SongSortType.DATE_ADDED,
+      orderType: orderType ?? OrderType.DESC_OR_GREATER,
+    );
+  }
+
+  Future<List<SongModel>> getArtistsByName(
+    String artist, {
+    SongSortType? sortType,
+    OrderType? orderType,
+    String? path,
+  }) async {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.ARTIST,
+      artist,
+      sortType: sortType ?? SongSortType.DATE_ADDED,
+      orderType: orderType ?? OrderType.DESC_OR_GREATER,
+    );
+  }
+
+  Future<List<SongModel>> getAlbumSongs(
+    int albumId, {
+    SongSortType? sortType,
+    OrderType? orderType,
+    String? path,
+  }) async {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.ALBUM_ID,
+      albumId,
+      sortType: sortType ?? SongSortType.DATE_ADDED,
+      orderType: orderType ?? OrderType.DESC_OR_GREATER,
+    );
+  }
+
+  Future<List<SongModel>> getArtistSongs(
+    int albumId, {
+    SongSortType? sortType,
+    OrderType? orderType,
+    String? path,
+  }) async {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.ARTIST_ID,
+      albumId,
+      sortType: sortType ?? SongSortType.DATE_ADDED,
+      orderType: orderType ?? OrderType.DESC_OR_GREATER,
+    );
+  }
+
+  Future<List<SongModel>> getGenreSongs(
+    int albumId, {
+    SongSortType? sortType,
+    OrderType? orderType,
+    String? path,
+  }) async {
+    return audioQuery.queryAudiosFrom(
+      AudiosFromType.GENRE_ID,
+      albumId,
       sortType: sortType ?? SongSortType.DATE_ADDED,
       orderType: orderType ?? OrderType.DESC_OR_GREATER,
     );
@@ -111,13 +173,13 @@ class OfflineAudioQuery {
   static Future<String> queryNSave({
     required int id,
     required ArtworkType type,
-    required String tempPath,
+    required String? tempPath,
     required String fileName,
     int size = 200,
     int quality = 200,
-    ArtworkFormat format = ArtworkFormat.JPEG,
+    ArtworkFormat format = ArtworkFormat.PNG,
   }) async {
-    final File file = File('$tempPath/$fileName.jpg');
+    final File file = File('$tempPath/$fileName.png');
 
     if (!await file.exists()) {
       await file.create();
@@ -138,9 +200,9 @@ class OfflineAudioQuery {
     required ArtworkType type,
     required String tempPath,
     required String fileName,
-    int size = 200,
-    int quality = 100,
-    ArtworkFormat format = ArtworkFormat.JPEG,
+    // int size = 200,
+    // int quality = 100,
+    ArtworkFormat format = ArtworkFormat.PNG,
     ArtworkType artworkType = ArtworkType.AUDIO,
     BorderRadius? borderRadius,
     Clip clipBehavior = Clip.antiAlias,
@@ -159,8 +221,8 @@ class OfflineAudioQuery {
         id: id,
         type: type,
         format: format,
-        quality: quality,
-        size: size,
+        // quality: quality,
+        // size: size,
         tempPath: tempPath,
         fileName: fileName,
       ),
@@ -193,21 +255,36 @@ class OfflineAudioQuery {
               },
             ),
           );
+        } else {
+          return Card(
+            elevation: elevation,
+            shape: RoundedRectangleBorder(
+              borderRadius: borderRadius ?? BorderRadius.circular(7.0),
+            ),
+            clipBehavior: clipBehavior,
+            child: placeholder ??
+                Image(
+                  fit: BoxFit.cover,
+                  height: height,
+                  width: width,
+                  image: const AssetImage('assets/cover.jpg'),
+                ),
+          );
         }
-        return Card(
-          elevation: elevation,
-          shape: RoundedRectangleBorder(
-            borderRadius: borderRadius ?? BorderRadius.circular(7.0),
-          ),
-          clipBehavior: clipBehavior,
-          child: placeholder ??
-              Image(
-                fit: BoxFit.cover,
-                height: height,
-                width: width,
-                image: const AssetImage('assets/cover.jpg'),
-              ),
-        );
+        // return Card(
+        //   elevation: elevation,
+        //   shape: RoundedRectangleBorder(
+        //     borderRadius: borderRadius ?? BorderRadius.circular(7.0),
+        //   ),
+        //   clipBehavior: clipBehavior,
+        //   child: placeholder ??
+        //       Image(
+        //         fit: BoxFit.cover,
+        //         height: height,
+        //         width: width,
+        //         image: const AssetImage('assets/cover.jpg'),
+        //       ),
+        // );
       },
     );
   }

@@ -2,6 +2,7 @@
 
 import 'dart:io';
 
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
@@ -15,7 +16,6 @@ import 'package:gem/Screens/Settings/player_gradient.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingPage extends StatefulWidget {
@@ -620,95 +620,6 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ),
                         ),
-                        // ListTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .lang,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .langSub,
-                        //   ),
-                        //   onTap: () {},
-                        //   trailing: DropdownButton(
-                        //     value: lang,
-                        //     style: TextStyle(
-                        //       fontSize: 12,
-                        //       color:
-                        //           Theme.of(context).textTheme.bodyText1!.color,
-                        //     ),
-                        //     underline: const SizedBox(),
-                        //     onChanged: (String? newValue) {
-                        //       final Map<String, String> codes = {
-                        //         'Chinese': 'zh',
-                        //         'Czech': 'cs',
-                        //         'Dutch': 'nl',
-                        //         'English': 'en',
-                        //         'French': 'fr',
-                        //         'German': 'de',
-                        //         'Hebrew': 'he',
-                        //         'Hindi': 'hi',
-                        //         'Hungarian': 'hu',
-                        //         'Indonesian': 'id',
-                        //         'Italian': 'it',
-                        //         'Polish': 'pl',
-                        //         'Portuguese': 'pt',
-                        //         'Russian': 'ru',
-                        //         'Spanish': 'es',
-                        //         'Tamil': 'ta',
-                        //         'Turkish': 'tr',
-                        //         'Ukrainian': 'uk',
-                        //         'Urdu': 'ur',
-                        //       };
-                        //       if (newValue != null) {
-                        //         setState(
-                        //           () {
-                        //             lang = newValue;
-                        //             MyApp.of(context).setLocale(
-                        //               Locale.fromSubtags(
-                        //                 languageCode: codes[newValue]!,
-                        //               ),
-                        //             );
-                        //             Hive.box('settings').put('lang', newValue);
-                        //           },
-                        //         );
-                        //       }
-                        //     },
-                        //     items: <String>[
-                        //       'Chinese',
-                        //       'Czech',
-                        //       'Dutch',
-                        //       'English',
-                        //       'French',
-                        //       'German',
-                        //       'Hebrew',
-                        //       'Hindi',
-                        //       'Hungarian',
-                        //       'Indonesian',
-                        //       'Italian',
-                        //       'Polish',
-                        //       'Portuguese',
-                        //       'Russian',
-                        //       'Spanish',
-                        //       'Tamil',
-                        //       'Turkish',
-                        //       'Ukrainian',
-                        //       'Urdu',
-                        //     ].map<DropdownMenuItem<String>>((String value) {
-                        //       return DropdownMenuItem<String>(
-                        //         value: value,
-                        //         child: Text(
-                        //           value,
-                        //         ),
-                        //       );
-                        //     }).toList(),
-                        //   ),
-                        //   dense: true,
-                        // ),
                         ListTile(
                           title: const Text('Include/Exclude folders'),
                           subtitle: const Text(
@@ -831,8 +742,8 @@ class _SettingPageState extends State<SettingPage> {
                                                   ),
                                                   child: Text(
                                                     value
-                                                        ? 'Included Details'
-                                                        : 'Excluded Details',
+                                                        ? 'Included Folders'
+                                                        : 'Excluded Folders',
                                                     textAlign: TextAlign.start,
                                                   ),
                                                 ),
@@ -950,162 +861,6 @@ class _SettingPageState extends State<SettingPage> {
                           keyName: 'checkUpdate',
                           defaultValue: false,
                         ),
-                        // BoxSwitchTile(
-                        //   title: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .useProxy,
-                        //   ),
-                        //   subtitle: Text(
-                        //     AppLocalizations.of(
-                        //       context,
-                        //     )!
-                        //         .useProxySub,
-                        //   ),
-                        //   keyName: 'useProxy',
-                        //   defaultValue: false,
-                        //   isThreeLine: true,
-                        //   onChanged: (bool val, Box box) {
-                        //     useProxy = val;
-                        //     setState(
-                        //       () {},
-                        //     );
-                        //   },
-                        // ),
-                        // Visibility(
-                        //   visible: useProxy,
-                        //   child: ListTile(
-                        //     title: Text(
-                        //       AppLocalizations.of(
-                        //         context,
-                        //       )!
-                        //           .proxySet,
-                        //     ),
-                        //     subtitle: Text(
-                        //       AppLocalizations.of(
-                        //         context,
-                        //       )!
-                        //           .proxySetSub,
-                        //     ),
-                        //     dense: true,
-                        //     trailing: Text(
-                        //       '${Hive.box('settings').get("proxyIp")}:${Hive.box('settings').get("proxyPort")}',
-                        //       style: const TextStyle(fontSize: 12),
-                        //     ),
-                        //     onTap: () {
-                        //       showDialog(
-                        //         context: context,
-                        //         builder: (BuildContext context) {
-                        //           final controller = TextEditingController(
-                        //             text: settingsBox.get('proxyIp').toString(),
-                        //           );
-                        //           final controller2 = TextEditingController(
-                        //             text:
-                        //                 settingsBox.get('proxyPort').toString(),
-                        //           );
-                        //           return AlertDialog(
-                        //             shape: RoundedRectangleBorder(
-                        //               borderRadius: BorderRadius.circular(
-                        //                 10.0,
-                        //               ),
-                        //             ),
-                        //             content: Column(
-                        //               mainAxisSize: MainAxisSize.min,
-                        //               children: [
-                        //                 Row(
-                        //                   children: [
-                        //                     Text(
-                        //                       'Ip Address',
-                        //                       style: TextStyle(
-                        //                         color: Theme.of(context)
-                        //                             .colorScheme
-                        //                             .secondary,
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 TextField(
-                        //                   autofocus: true,
-                        //                   controller: controller,
-                        //                 ),
-                        //                 const SizedBox(
-                        //                   height: 30,
-                        //                 ),
-                        //                 Row(
-                        //                   children: [
-                        //                     Text(
-                        //                       'Port',
-                        //                       style: TextStyle(
-                        //                         color: Theme.of(context)
-                        //                             .colorScheme
-                        //                             .secondary,
-                        //                       ),
-                        //                     ),
-                        //                   ],
-                        //                 ),
-                        //                 TextField(
-                        //                   autofocus: true,
-                        //                   controller: controller2,
-                        //                 ),
-                        //               ],
-                        //             ),
-                        //             actions: [
-                        //               TextButton(
-                        //                 style: TextButton.styleFrom(
-                        //                   primary:
-                        //                       Theme.of(context).brightness ==
-                        //                               Brightness.dark
-                        //                           ? Colors.white
-                        //                           : Colors.grey[700],
-                        //                 ),
-                        //                 onPressed: () {
-                        //                   Navigator.pop(context);
-                        //                 },
-                        //                 child: const Text('Cancel'),
-                        //               ),
-                        //               TextButton(
-                        //                 style: TextButton.styleFrom(
-                        //                   primary: Theme.of(context)
-                        //                               .colorScheme
-                        //                               .secondary ==
-                        //                           Colors.white
-                        //                       ? Colors.black
-                        //                       : null,
-                        //                   backgroundColor: Theme.of(context)
-                        //                       .colorScheme
-                        //                       .secondary,
-                        //                 ),
-                        //                 onPressed: () {
-                        //                   settingsBox.put(
-                        //                     'proxyIp',
-                        //                     controller.text.trim(),
-                        //                   );
-                        //                   settingsBox.put(
-                        //                     'proxyPort',
-                        //                     int.parse(
-                        //                       controller2.text.trim(),
-                        //                     ),
-                        //                   );
-                        //                   Navigator.pop(context);
-                        //                   setState(
-                        //                     () {},
-                        //                   );
-                        //                 },
-                        //                 child: const Text(
-                        //                   'Ok',
-                        //                 ),
-                        //               ),
-                        //               const SizedBox(
-                        //                 width: 5,
-                        //               ),
-                        //             ],
-                        //           );
-                        //         },
-                        //       );
-                        //     },
-                        //   ),
-                        // ),
                         ListTile(
                           title: const Text(
                             'Clear cached data',
@@ -1779,15 +1534,15 @@ class _SettingPageState extends State<SettingPage> {
               keyName: 'useBlurForNowPlaying',
               defaultValue: true,
             ),
-            const BoxSwitchTile(
-              title: Text(
-                'Use minimal Mini player',
-              ),
-              subtitle: Text('Mini player will have shorter height'),
-              keyName: 'useDenseMini',
-              defaultValue: false,
-              isThreeLine: false,
-            ),
+            // const BoxSwitchTile(
+            //   title: Text(
+            //     'Use minimal Mini player',
+            //   ),
+            //   subtitle: Text('Mini player will have shorter height'),
+            //   keyName: 'useDenseMini',
+            //   defaultValue: false,
+            //   isThreeLine: false,
+            // ),
             ListTile(
               title: const Text(
                 'Mini Player Buttons',
@@ -1908,9 +1663,7 @@ class _SettingPageState extends State<SettingPage> {
                               },
                               child: const Text('Ok'),
                             ),
-                            const SizedBox(
-                              width: 5,
-                            ),
+                            const SizedBox(width: 5),
                           ],
                         );
                       },
@@ -1919,112 +1672,6 @@ class _SettingPageState extends State<SettingPage> {
                 );
               },
             ),
-
-            // ListTile(
-            //   title: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .blacklistedHomeSections,
-            //   ),
-            //   subtitle: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .blacklistedHomeSectionsSub,
-            //   ),
-            //   dense: true,
-            //   onTap: () {
-            //     final GlobalKey<AnimatedListState> listKey =
-            //         GlobalKey<AnimatedListState>();
-            //     showModalBottomSheet(
-            //       isDismissible: true,
-            //       backgroundColor: Colors.transparent,
-            //       context: context,
-            //       builder: (BuildContext context) {
-            //         return BottomGradientContainer(
-            //           borderRadius: BorderRadius.circular(
-            //             20.0,
-            //           ),
-            //           child: AnimatedList(
-            //             physics: const BouncingScrollPhysics(),
-            //             shrinkWrap: true,
-            //             padding: const EdgeInsets.fromLTRB(
-            //               0,
-            //               10,
-            //               0,
-            //               10,
-            //             ),
-            //             key: listKey,
-            //             initialItemCount: blacklistedHomeSections.length + 1,
-            //             itemBuilder: (cntxt, idx, animation) {
-            //               return (idx == 0)
-            //                   ? ListTile(
-            //                       title: const Text('Add new'),
-            //                       leading: const Icon(CupertinoIcons.add),
-            //                       onTap: () async {
-            //                         showTextInputDialog(
-            //                           context: context,
-            //                           title: 'Enter Text',
-            //                           keyboardType: TextInputType.text,
-            //                           onSubmitted: (String value) {
-            //                             Navigator.pop(context);
-            //                             blacklistedHomeSections.add(
-            //                               value.trim().toLowerCase(),
-            //                             );
-            //                             Hive.box('settings').put(
-            //                               'blacklistedHomeSections',
-            //                               blacklistedHomeSections,
-            //                             );
-            //                             listKey.currentState!.insertItem(
-            //                               blacklistedHomeSections.length,
-            //                             );
-            //                           },
-            //                         );
-            //                       },
-            //                     )
-            //                   : SizeTransition(
-            //                       sizeFactor: animation,
-            //                       child: ListTile(
-            //                         leading: const Icon(
-            //                           CupertinoIcons.folder,
-            //                         ),
-            //                         title: Text(
-            //                           blacklistedHomeSections[idx - 1]
-            //                               .toString(),
-            //                         ),
-            //                         trailing: IconButton(
-            //                           icon: const Icon(
-            //                             CupertinoIcons.clear,
-            //                             size: 15.0,
-            //                           ),
-            //                           tooltip: 'Remove',
-            //                           onPressed: () {
-            //                             blacklistedHomeSections
-            //                                 .removeAt(idx - 1);
-            //                             Hive.box('settings').put(
-            //                               'blacklistedHomeSections',
-            //                               blacklistedHomeSections,
-            //                             );
-            //                             listKey.currentState!.removeItem(
-            //                               idx,
-            //                               (
-            //                                 context,
-            //                                 animation,
-            //                               ) =>
-            //                                   Container(),
-            //                             );
-            //                           },
-            //                         ),
-            //                       ),
-            //                     );
-            //             },
-            //           ),
-            //         );
-            //       },
-            //     );
-            //   },
-            // ),
 
             BoxSwitchTile(
               title: const Text(
@@ -2048,22 +1695,6 @@ class _SettingPageState extends State<SettingPage> {
                 widget.callback!();
               },
             ),
-            // BoxSwitchTile(
-            //   title: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .showHistory,
-            //   ),
-            //   subtitle: Text(
-            //     AppLocalizations.of(
-            //       context,
-            //     )!
-            //         .showHistorySub,
-            //   ),
-            //   keyName: 'showHistory',
-            //   defaultValue: true,
-            // ),
             const BoxSwitchTile(
               title: Text('Enable gestures '),
               keyName: 'enableGesture',
@@ -2083,7 +1714,7 @@ class _SettingPageState extends State<SettingPage> {
         title: const Text(
           'Save Theme',
         ),
-        trailing: const Icon(Iconsax.save_2, size: 20),
+        trailing: const Icon(EvaIcons.save, size: 20),
         onTap: () {
           final initialThemeName = 'Theme ${userThemes.length + 1}';
           showTextInputDialog(

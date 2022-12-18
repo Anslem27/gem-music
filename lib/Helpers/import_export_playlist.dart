@@ -53,9 +53,10 @@ Future<void> sharePlaylist(
   final File file = await File('$temp/$showName.json').create(recursive: true);
   await file.writeAsString(songs);
 
+  // ignore: deprecated_member_use
   await Share.shareFiles(
     [file.path],
-    text: 'Hey there, try this paylist out',
+    text: 'Hey there, try this playlist out',
   );
   await Future.delayed(const Duration(seconds: 10), () {});
   if (await file.exists()) {

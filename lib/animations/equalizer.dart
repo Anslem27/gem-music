@@ -35,10 +35,16 @@ class _VisualComponentState extends State<VisualComponent>
   }
 
   @override
+  void dispose() {
+    animController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       width: 10,
-      height: animation.value,
+      height: animation.value / 2,
       decoration: BoxDecoration(
         color: widget.color,
         borderRadius: BorderRadius.circular(5),
@@ -55,7 +61,7 @@ class MusicVisualizer extends StatelessWidget {
     Colors.redAccent,
     Colors.yellowAccent,
   ];
-  List<int> duration = [900, 600, 800, 500];
+  List<int> duration = [900, 600, 800, 500, 404];
 
   MusicVisualizer({super.key});
 
@@ -64,7 +70,7 @@ class MusicVisualizer extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: List.generate(
-        10,
+        colors.length,
         (index) => VisualComponent(
           color: colors[index],
           duration: duration[index],

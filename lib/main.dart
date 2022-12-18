@@ -8,22 +8,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:gem/Helpers/app_config.dart';
-import 'package:gem/Helpers/handle_native.dart';
-import 'package:gem/Helpers/route_handler.dart';
 import 'package:gem/Screens/Home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
 import 'package:gem/Screens/Library/recent.dart';
 import 'package:gem/Screens/Login/initial_wizard.dart';
 import 'package:gem/Screens/Login/pref.dart';
-import 'package:gem/Screens/Player/audioplayer_page.dart';
+import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Screens/Settings/setting.dart';
 import 'package:gem/Services/audio_service.dart';
 import 'package:gem/theme/app_theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:receive_sharing_intent/receive_sharing_intent.dart';
 
 import 'Screens/Library/playlist_view.dart';
 
@@ -85,10 +82,10 @@ Future<void> openHiveBox(String boxName, {bool limit = false}) async {
     final String dirPath = dir.path;
     File dbFile = File('$dirPath/$boxName.hive');
     File lockFile = File('$dirPath/$boxName.lock');
-    /*  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       dbFile = File('$dirPath/Gem/$boxName.hive');
       lockFile = File('$dirPath/Gem/$boxName.lock');
-    } */
+    }
     await dbFile.delete();
     await lockFile.delete();
     await Hive.openBox(boxName);
@@ -128,23 +125,6 @@ class _MyAppState extends State<MyApp> {
     AppTheme.currentTheme.addListener(() {
       setState(() {});
     });
-
-    // For sharing or opening urls/text coming from outside the app while the app is in the memory
-    _intentDataStreamSubscription = ReceiveSharingIntent.getTextStream().listen(
-      (String value) {
-        handleSharedText(value, navigatorKey);
-      },
-      onError: (err) {
-        // print("ERROR in getTextStream: $err");
-      },
-    );
-
-    // For sharing or opening urls/text coming from outside the app while the app is closed
-    ReceiveSharingIntent.getInitialText().then(
-      (String? value) {
-        if (value != null) handleSharedText(value, navigatorKey);
-      },
-    );
   }
 
   void setLocale(Locale value) {
@@ -202,11 +182,9 @@ class _MyAppState extends State<MyApp> {
         '/nowplaying': (context) => const NowPlaying(),
         '/recent': (context) => const RecentlyPlayed(),
         '/downloads': (context) => const Downloads(),
+        '/navigation': (_) => const HomePage()
       },
       navigatorKey: navigatorKey,
-      onGenerateRoute: (RouteSettings settings) {
-        return HandleRoute.handleRoute(settings.name);
-      },
     );
   }
 }

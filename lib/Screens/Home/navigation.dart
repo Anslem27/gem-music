@@ -1,10 +1,9 @@
-// ignore_for_file: avoid_redundant_argument_values
-
-import 'dart:io';
-
+import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
 import 'package:gem/CustomWidgets/snackbar.dart';
@@ -12,20 +11,15 @@ import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/downloads_checker.dart';
 import 'package:gem/Helpers/supabase.dart';
 import 'package:gem/Screens/Home/home_view.dart';
-import 'package:gem/Screens/Library/library_main_page.dart';
-import 'package:gem/Screens/LocalMusic/local_music.dart';
-import 'package:gem/Screens/Search/search.dart';
-import 'package:gem/Screens/Settings/setting.dart';
-// import 'package:gem/Screens/YouTube/top_charts_page.dart';
+import 'package:gem/Screens/Library/lib_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:gem/animations/custom_physics.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:iconsax/iconsax.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'components/drawer.dart';
+import 'components/home_logic.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -45,10 +39,6 @@ class _HomePageState extends State<HomePage> {
   bool autoBackup =
       Hive.box('settings').get('autoBackup', defaultValue: false) as bool;
   DateTime? backButtonPressTime;
-
-  void callback() {
-    setState(() {});
-  }
 
   void _onItemTapped(int index) {
     _selectedIndex.value = index;
@@ -215,7 +205,7 @@ class _HomePageState extends State<HomePage> {
               checked,
               boxNames,
               path: autoBackPath,
-              fileName: 'BlackHole_AutoBackup',
+              fileName: 'Gem_AutoBackup',
               showDialog: false,
             );
           }
@@ -251,18 +241,11 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    //icon list
-    final List<IconData> icondata = [
-      Iconsax.home,
-      MdiIcons.youtube,
-      Iconsax.music_playlist,
-    ];
-
     return GradientContainer(
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
-        drawer: appDrawer(context),
+        drawer: gemDrawer(context),
         body: WillPopScope(
           onWillPop: () => handleWillPop(context),
           child: SafeArea(
@@ -286,6 +269,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             const YouTube(),
+                            //const LoginView(),
                             const LibraryPage(),
                           ],
                         ),
@@ -298,7 +282,77 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        bottomNavigationBar: portaitBottomNavBar(icondata),
+        bottomNavigationBar: _bottomNavBar(),
+      ),
+    );
+  }
+
+  SafeArea _bottomNavBar() {
+    return SafeArea(
+      child: ValueListenableBuilder(
+        valueListenable: _selectedIndex,
+        builder: (BuildContext context, int indexValue, Widget? child) {
+          return CustomNavigationBar(
+            opacity: 0.9,
+            blurEffect: true,
+            backgroundColor: Theme.of(
+              context,
+            ).scaffoldBackgroundColor.withOpacity(0.2),
+            iconSize: 30.0,
+            selectedColor: Theme.of(
+              context,
+            ).colorScheme.secondary,
+            strokeColor: const Color(0x30040307),
+            items: [
+              CustomNavigationBarItem(
+                icon: const Icon(
+                  EvaIcons.homeOutline,
+                  size: 30,
+                ),
+                selectedIcon: const Icon(
+                  EvaIcons.home,
+                  size: 30,
+                ),
+              ),
+              CustomNavigationBarItem(
+                icon: const Icon(
+                  EvaIcons.searchOutline,
+                  size: 25,
+                ),
+                selectedIcon: const Icon(
+                  CupertinoIcons.search,
+                  size: 25,
+                ),
+              ),
+              // CustomNavigationBarItem(
+              //   icon: const Icon(
+              //     FontAwesomeIcons.lastfm,
+              //     size: 25,
+              //   ),
+              //   selectedIcon: const Icon(
+              //     FontAwesomeIcons.lastfm,
+              //     size: 25,
+              //   ),
+              // ),
+              CustomNavigationBarItem(
+                icon: const Icon(
+                  FontAwesomeIcons.itunesNote,
+                  size: 25,
+                ),
+                selectedIcon: const Icon(
+                  FontAwesomeIcons.itunesNote,
+                  size: 25,
+                ),
+              ),
+            ],
+            currentIndex: _selectedIndex.value,
+            onTap: (index) {
+              setState(() {
+                _onItemTapped(index);
+              });
+            },
+          );
+        },
       ),
     );
   }
@@ -313,371 +367,110 @@ class _HomePageState extends State<HomePage> {
       ) {
         return <Widget>[
           SliverAppBar(
-            expandedHeight: 135,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            //pinned: true,
-            toolbarHeight: 65,
-            // floating: true,
             automaticallyImplyLeading: false,
-            flexibleSpace: LayoutBuilder(
-              builder: (
-                BuildContext context,
-                BoxConstraints constraints,
-              ) {
-                return FlexibleSpaceBar(
-                  background: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      const SizedBox(height: 40),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(
-                              left: 15.0,
+            expandedHeight: 100,
+            toolbarHeight: 120,
+            backgroundColor: Colors.transparent,
+            elevation: 1,
+            stretch: true,
+            title: AnimatedBuilder(
+              animation: _scrollController,
+              builder: (context, child) {
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
+                          child: Text(
+                            greeting().toUpperCase(),
+                            style: const TextStyle(
+                              fontSize: 18.5,
+                              fontWeight: FontWeight.w500,
                             ),
-                            child: Text(
-                              "Gem Music",
-                              style: GoogleFonts.roboto(
-                                letterSpacing: 2,
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.secondary,
-                                fontSize: 40,
-                                fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: () {},
+                          splashRadius: 24,
+                          icon: const Icon(EvaIcons.speakerOutline),
+                        ),
+                        IconButton(
+                          splashRadius: 24,
+                          onPressed: () {
+                            Navigator.pushNamed(context, '/recent');
+                          },
+                          icon: const Icon(
+                            EvaIcons.activityOutline,
+                            size: 25,
+                          ),
+                        ),
+                        IconButton(
+                          splashRadius: 24,
+                          onPressed: () {
+                            Scaffold.of(context).openDrawer();
+                          },
+                          icon: const Icon(EvaIcons.settings2, size: 25),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: GestureDetector(
+                        child: AnimatedContainer(
+                          height: 50.0,
+                          duration: const Duration(milliseconds: 150),
+                          padding: const EdgeInsets.all(2.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            color: Theme.of(context).cardColor,
+                            boxShadow: const [
+                              BoxShadow(
+                                color: Colors.black26,
+                                blurRadius: 5.0,
+                                offset: Offset(1, 1),
+                              )
+                            ],
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(width: 10.0),
+                              Icon(
+                                CupertinoIcons.search,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
-                            ),
+                              const SizedBox(
+                                width: 10.0,
+                              ),
+                              Text(
+                                'What do you want to play?',
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .caption!
+                                      .color,
+                                  fontWeight: FontWeight.normal,
+                                ),
+                              ),
+                            ],
                           ),
-                          const Spacer(),
-                          IconButton(
-                            splashRadius: 24,
-                            onPressed: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/recent',
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.history_rounded,
-                              size: 35,
-                            ),
-                          ),
-                          IconButton(
-                            splashRadius: 24,
-                            onPressed: () {
-                              Scaffold.of(context).openDrawer();
-                            },
-                            icon: const Icon(Iconsax.setting, size: 30),
-                          ),
-                        ],
+                        ),
+                        onTap: () {},
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 );
               },
-            ),
-          ),
-          SliverAppBar(
-            automaticallyImplyLeading: false,
-            pinned: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            stretch: true,
-            title: Align(
-              alignment: Alignment.centerRight,
-              child: AnimatedBuilder(
-                animation: _scrollController,
-                builder: (context, child) {
-                  return GestureDetector(
-                    child: AnimatedContainer(
-                      height: 50.0,
-                      duration: const Duration(milliseconds: 150),
-                      padding: const EdgeInsets.all(2.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                         color: Theme.of(context).cardColor,
-                        boxShadow: const [
-                          BoxShadow(
-                            color: Colors.black26,
-                            blurRadius: 5.0,
-                            offset: Offset(1, 1),
-                          )
-                        ],
-                      ),
-                      child: Row(
-                        children: [
-                          const SizedBox(width: 10.0),
-                          Icon(
-                            CupertinoIcons.search,
-                            color: Theme.of(context).colorScheme.secondary,
-                          ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Text(
-                            'What do you want to play?',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              color: Theme.of(context).textTheme.caption!.color,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SearchPage(
-                          query: '',
-                          fromHome: true,
-                          autofocus: true,
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
             ),
           ),
         ];
       },
       body: const HomeViewPage(),
-    );
-  }
-
-  SafeArea portaitBottomNavBar(List<IconData> icondata) {
-    return SafeArea(
-      child: ValueListenableBuilder(
-        valueListenable: _selectedIndex,
-        builder: (BuildContext context, int indexValue, Widget? child) {
-          return AnimatedContainer(
-            duration: const Duration(milliseconds: 100),
-            height: 65,
-            child: Padding(
-              padding: const EdgeInsets.all(10),
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                color: Colors.black,
-                child: SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: ListView.builder(
-                    itemCount: icondata.length,
-                    padding: const EdgeInsets.symmetric(horizontal: 80),
-                    itemBuilder: (ctx, i) => Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: GestureDetector(
-                        onTap: () {
-                          _onItemTapped(i);
-                        },
-                        child: AnimatedContainer(
-                          duration: const Duration(milliseconds: 250),
-                          width: 35,
-                          decoration: BoxDecoration(
-                            border: i == indexValue
-                                ? const Border(
-                                    top: BorderSide(
-                                      width: 3.0,
-                                      color: Colors.white,
-                                    ),
-                                  )
-                                : null,
-                            gradient: i == indexValue
-                                ? LinearGradient(
-                                    colors: [
-                                        Colors.grey.shade800,
-                                        Colors.black
-                                      ],
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter)
-                                : null,
-                          ),
-                          child: Icon(icondata[i],
-                              size: 37,
-                              color: i == indexValue
-                                  ? Colors.white
-                                  : Colors.grey.shade800),
-                        ),
-                      ),
-                    ),
-                    scrollDirection: Axis.horizontal,
-                  ),
-                ),
-              ),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Drawer appDrawer(BuildContext context) {
-    return Drawer(
-      child: GradientContainer(
-        child: CustomScrollView(
-          shrinkWrap: true,
-          physics: const BouncingScrollPhysics(),
-          slivers: [
-            SliverAppBar(
-              backgroundColor: Colors.transparent,
-              automaticallyImplyLeading: false,
-              elevation: 0,
-              stretch: true,
-              expandedHeight: MediaQuery.of(context).size.height * 0.2,
-              flexibleSpace: FlexibleSpaceBar(
-                title: Text(
-                  'Gem\nMusic',
-                  textAlign: TextAlign.center,
-                  style: GoogleFonts.lato(
-                    fontSize: 30,
-                    color: Colors.white.withOpacity(0.5),
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                titlePadding: const EdgeInsets.only(bottom: 40.0),
-                centerTitle: true,
-                background: ShaderMask(
-                  shaderCallback: (rect) {
-                    return LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black.withOpacity(0.8),
-                        Colors.black.withOpacity(0.1),
-                      ],
-                    ).createShader(
-                      Rect.fromLTRB(0, 0, rect.width, rect.height),
-                    );
-                  },
-                  blendMode: BlendMode.dstIn,
-                  child: const Image(
-                    fit: BoxFit.cover,
-                    alignment: Alignment.topCenter,
-                    image: AssetImage(
-                      "assets/icon-white-trans.png",
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            SliverList(
-              delegate: SliverChildListDelegate(
-                [
-                  ListTile(
-                    title: Text(
-                      "Home",
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                      ),
-                    ),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20.0),
-                    leading: Icon(
-                      Iconsax.home,
-                      color: Theme.of(context).colorScheme.secondary,
-                    ),
-                    selected: true,
-                    onTap: () {
-                      Navigator.pop(context);
-                    },
-                  ),
-                  if (Platform.isAndroid)
-                    ListTile(
-                      title: const Text("Local Music"),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20.0),
-                      leading: Icon(
-                        Iconsax.music,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const DownloadedSongs(
-                              showPlaylists: true,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ListTile(
-                    title: const Text('Downloads'),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20.0),
-                    leading: Icon(
-                      Iconsax.document_download,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/downloads');
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Playlists'),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20.0),
-                    leading: Icon(
-                      Icons.playlist_play_rounded,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.pushNamed(context, '/playlists');
-                    },
-                  ),
-                  ListTile(
-                    title: const Text('Settings'),
-                    contentPadding:
-                        const EdgeInsets.symmetric(horizontal: 20.0),
-                    leading: Icon(
-                      Iconsax.setting,
-                      color: Theme.of(context).iconTheme.color,
-                    ),
-                    onTap: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SettingPage(callback: callback),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-            SliverFillRemaining(
-              hasScrollBody: false,
-              child: Column(
-                children: <Widget>[
-                  const Spacer(),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(5, 30, 5, 20),
-                    child: ListTile(
-                      title: const Text("About"),
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 20.0),
-                      leading: Icon(
-                        Iconsax.info_circle,
-                        color: Theme.of(context).iconTheme.color,
-                      ),
-                      onTap: () {
-                        Navigator.pop(context);
-                        //TODO: Add a info dialog
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

@@ -1,5 +1,3 @@
-
-
 // ignore_for_file: use_super_parameters
 
 import 'dart:io';
@@ -73,8 +71,6 @@ class BouncyImageSliverScrollView extends StatelessWidget {
           stretch: true,
           pinned: true,
           centerTitle: true,
-          // floating: true,
-          // backgroundColor: Colors.transparent,
           expandedHeight: expandedHeight,
           actions: actions,
           title: Opacity(
@@ -83,7 +79,6 @@ class BouncyImageSliverScrollView extends StatelessWidget {
               title,
             ),
           ),
-
           flexibleSpace: LayoutBuilder(
             builder: (BuildContext context, BoxConstraints constraints) {
               double top = constraints.biggest.height;
