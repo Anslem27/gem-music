@@ -3,7 +3,7 @@ name: Update pubspec version
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   update_version:
