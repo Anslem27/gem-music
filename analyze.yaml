@@ -1,0 +1,17 @@
+# .analysis_options.yaml
+
+include: package:pedantic/analysis_options.yaml
+
+analyzer:
+  # Enable the `unused_import` and `dead_code` lints
+  enable-experiment:
+    - control-flow-collections
+  lints:
+    unused_import: error
+    dead_code: error
+
+linter:
+  # Enable the `unused_import` and `unused_local_variable` lints
+  rules:
+    - unused_import
+    - unused_local_variable
