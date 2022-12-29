@@ -1,11 +1,7 @@
 import 'dart:io';
 import 'dart:math';
-
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:glassmorphism/glassmorphism.dart';
-import 'package:palette_generator/palette_generator.dart';
-
 import '../../../CustomWidgets/miniplayer.dart';
 
 class PreviewPage extends StatelessWidget {
@@ -78,189 +74,136 @@ class PreviewPage extends StatelessWidget {
         MediaQuery.of(context).size.height < MediaQuery.of(context).size.width;
     final double expandedHeight = MediaQuery.of(context).size.height * 0.45;
 
-//get dorminant color from image rendered
-    Future<Color> getdominantColor(ImageProvider imageProvider) async {
-      final PaletteGenerator paletteGenerator =
-          await PaletteGenerator.fromImageProvider(imageProvider);
-      return paletteGenerator.dominantColor!.color;
-    }
+    return Stack(
+      children: [
+        CustomScrollView(
+          controller: scrollController,
+          shrinkWrap: shrinkWrap,
+          physics: const BouncingScrollPhysics(),
+          slivers: [
+            SliverAppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              stretch: true,
+              pinned: true,
+              centerTitle: true,
+              expandedHeight: expandedHeight,
+              actions: actions,
+              title: Opacity(
+                opacity: 1 - _opacity.value,
+                child: Text(
+                  title.toUpperCase(),
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+              flexibleSpace: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  double top = constraints.biggest.height;
+                  if (top > expandedHeight) {
+                    top = expandedHeight;
+                  }
 
-    return FutureBuilder(
-      future: getdominantColor(AssetImage(imageUrl!)),
-      builder: (_, AsyncSnapshot<Color> snapshot) {
-        if (!snapshot.hasData) {
-          return const Center(child: CircularProgressIndicator());
-        }
+                  _opacity.value = (top - 80) / (expandedHeight - 80);
 
-        return snapshot.connectionState == ConnectionState.waiting
-            ? const Center(
-                child: SizedBox(),
-              )
-            : Stack(
-                children: [
-                  CustomScrollView(
-                    controller: scrollController,
-                    shrinkWrap: shrinkWrap,
-                    physics: const BouncingScrollPhysics(),
-                    slivers: [
-                      SliverAppBar(
-                        elevation: 0,
-                        stretch: true,
-                        pinned: true,
-                        centerTitle: true,
-                        expandedHeight: expandedHeight,
-                        actions: actions,
-                        title: Opacity(
-                          opacity: 1 - _opacity.value,
-                          child: Text(
-                            title.toUpperCase(),
-                            style: const TextStyle(
-                              fontSize: 17,
-                              fontWeight: FontWeight.w500,
+                  return FlexibleSpaceBar(
+                    title: Opacity(
+                      opacity: max(0, _opacity.value),
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                        textAlign: TextAlign.center,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    centerTitle: true,
+                    background: Stack(
+                      children: [
+                        if (!rotated)
+                          Align(
+                            alignment: Alignment.center,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 12.0),
+                                  child: SizedBox(
+                                    height: boxSize + 20,
+                                    child: image,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        flexibleSpace: LayoutBuilder(
-                          builder: (BuildContext context,
-                              BoxConstraints constraints) {
-                            double top = constraints.biggest.height;
-                            if (top > expandedHeight) {
-                              top = expandedHeight;
-                            }
-
-                            _opacity.value = (top - 80) / (expandedHeight - 80);
-
-                            return FlexibleSpaceBar(
-                              title: Opacity(
-                                opacity: max(0, _opacity.value),
-                                child: Text(
-                                  title,
-                                  style: const TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  textAlign: TextAlign.center,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                        // SizedBox.expand(
+                        //   child: ShaderMask(
+                        //     shaderCallback: (rect) {
+                        //       return const LinearGradient(
+                        //         begin: Alignment.center,
+                        //         end: Alignment.bottomCenter,
+                        //         colors: [
+                        //           Colors.black,
+                        //           Colors.transparent,
+                        //         ],
+                        //       ).createShader(
+                        //         Rect.fromLTRB(
+                        //           0,
+                        //           0,
+                        //           rect.width,
+                        //           rect.height,
+                        //         ),
+                        //       );
+                        //     },
+                        //     blendMode: BlendMode.dstIn,
+                        //     child: image,
+                        //   ),
+                        // ),
+                        if (rotated)
+                          Align(
+                            alignment: const Alignment(-0.85, 0.5),
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.transparent,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(7.0),
                               ),
-                              centerTitle: true,
-                              background: GlassmorphicContainer(
-                                width: double.maxFinite,
-                                height: double.maxFinite,
-                                borderRadius: 0,
-                                blur: 20,
-                                alignment: Alignment.bottomCenter,
-                                border: 2,
-                                linearGradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      snapshot.data!.withOpacity(0.9),
-                                      snapshot.data!.withOpacity(0.05),
-                                    ],
-                                    stops: const [
-                                      0.1,
-                                      1,
-                                    ]),
-                                borderGradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.transparent
-                                  ],
-                                ),
-                                child: Stack(
-                                  children: [
-                                    if (!rotated)
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 12.0),
-                                              child: SizedBox(
-                                                height: boxSize + 20,
-                                                child: image,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    // SizedBox.expand(
-                                    //   child: ShaderMask(
-                                    //     shaderCallback: (rect) {
-                                    //       return const LinearGradient(
-                                    //         begin: Alignment.center,
-                                    //         end: Alignment.bottomCenter,
-                                    //         colors: [
-                                    //           Colors.black,
-                                    //           Colors.transparent,
-                                    //         ],
-                                    //       ).createShader(
-                                    //         Rect.fromLTRB(
-                                    //           0,
-                                    //           0,
-                                    //           rect.width,
-                                    //           rect.height,
-                                    //         ),
-                                    //       );
-                                    //     },
-                                    //     blendMode: BlendMode.dstIn,
-                                    //     child: image,
-                                    //   ),
-                                    // ),
-                                    if (rotated)
-                                      Align(
-                                        alignment: const Alignment(-0.85, 0.5),
-                                        child: Card(
-                                          elevation: 5,
-                                          color: Colors.transparent,
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                                BorderRadius.circular(7.0),
-                                          ),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: SizedBox(
-                                            height: MediaQuery.of(context)
-                                                    .size
-                                                    .height *
-                                                0.3,
-                                            child: image,
-                                          ),
-                                        ),
-                                      ),
-                                  ],
-                                ),
+                              clipBehavior: Clip.antiAlias,
+                              child: SizedBox(
+                                height:
+                                    MediaQuery.of(context).size.height * 0.3,
+                                child: image,
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                      SliverList(
-                        delegate: SliverChildListDelegate(
-                          [
-                            //page body
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildListDelegate(
+                [
+                  //page body
 
-                            sliverList,
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  const Align(
-                    alignment: Alignment.bottomCenter,
-                    child: MiniPlayer(),
-                  )
+                  sliverList,
                 ],
-              );
-      },
+              ),
+            ),
+          ],
+        ),
+        const Align(
+          alignment: Alignment.bottomCenter,
+          child: MiniPlayer(),
+        )
+      ],
     );
   }
 }

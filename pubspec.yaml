@@ -57,12 +57,12 @@ dependencies:
   flutter_web_auth: ^0.5.0
   pkce: ^1.1.0+1
   intl: ^0.17.0
-  pool: ^1.5.1
   shared_preferences: ^2.0.15
   overlapping_panels: ^0.0.3
-  visibility_detector: ^0.3.3
+  pool: ^1.5.1
   in_app_review: ^2.0.6
   modal_bottom_sheet: ^2.1.2
+  flutter_bluetooth_serial: any
 
 dev_dependencies:
   flutter_test:

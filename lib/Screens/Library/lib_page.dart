@@ -20,6 +20,21 @@ class _LibraryPageState extends State<LibraryPage> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        Positioned(
+          left: MediaQuery.of(context).size.width / 2.95,
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.width,
+            child: const Opacity(
+              opacity: 0.3,
+              child: Image(
+                image: AssetImage(
+                  'assets/ic_launcher_no_bg.png',
+                ),
+              ),
+            ),
+          ),
+        ),
         ListView(
           physics: const BouncingScrollPhysics(),
           children: [
@@ -29,7 +44,7 @@ class _LibraryPageState extends State<LibraryPage> {
                 leading: CircleAvatar(
                   radius: 15,
                   child: Image.asset(
-                    "assets/icon-white-trans.png",
+                    "assets/ic_launcher_no_bg.png",
                   ),
                 ),
                 title: Row(

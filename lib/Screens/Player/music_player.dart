@@ -2151,7 +2151,7 @@ class _NowPlayingStreamState extends State<NowPlayingStream> {
       builder: (context, snapshot) {
         final queueState = snapshot.data ?? QueueState.empty;
         final queue = queueState.queue;
- //place stream to recently played box
+        //place stream to recently played box
         Hive.openBox("recently_played");
         updateRandomArray(queue);
 
@@ -2186,13 +2186,13 @@ class _NowPlayingStreamState extends State<NowPlayingStream> {
                       const EdgeInsets.only(left: 16.0, right: 10.0),
                   selected: index == queueState.queueIndex,
                   trailing: index == queueState.queueIndex
-                      ? IconButton(
-                          icon: const Icon(
-                            //TODO: Add animated animations
-                            Icons.bar_chart_rounded,
+                      ? Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: SizedBox(
+                            height: 50,
+                            width: 40,
+                            child: Image.asset("assets/ic_launcher_no_bg.png"),
                           ),
-                          tooltip: 'Playing',
-                          onPressed: () {},
                         )
                       : queue[index]
                               .extras!['url']

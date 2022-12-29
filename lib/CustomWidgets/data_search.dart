@@ -1,12 +1,20 @@
 import 'dart:io';
 
+import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/Player/music_player.dart';
+import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
+
+import '../Helpers/add_mediaitem_to_queue.dart';
+import '../Screens/LocalMusic/pages/detail_page.dart';
+import 'add_playlist.dart';
+import 'like_button.dart';
 
 class DataSearch extends SearchDelegate {
   final List<SongModel> data;
@@ -115,9 +123,154 @@ class DataSearch extends SearchDelegate {
                 ),
               );
             },
+            trailing: IconButton(
+              onPressed: () {
+                showModalBottomSheet(
+                  isDismissible: true,
+                  backgroundColor: Colors.transparent,
+                  context: context,
+                  builder: (BuildContext context) {
+                    OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+                    String playTitle = data[index].title;
+                    playTitle == ''
+                        ? playTitle = data[index].displayNameWOExt
+                        : playTitle = data[index].title;
+                    String playArtist = data[index].artist!;
+                    playArtist == '<unknown>'
+                        ? playArtist = 'Unknown'
+                        : playArtist = data[index].artist!;
+
+                    final String playAlbum = data[index].album!;
+                    final int playDuration = data[index].duration ?? 180000;
+                    final String imagePath =
+                        '$tempPath}/${data[index].displayNameWOExt}.png';
+
+                    final MediaItem mediaItem = MediaItem(
+                      id: data[index].id.toString(),
+                      album: playAlbum,
+                      duration: Duration(milliseconds: playDuration),
+                      title: playTitle.split('(')[0],
+                      artist: playArtist,
+                      genre: data[index].genre,
+                      artUri: Uri.file(imagePath),
+                      extras: {
+                        'url': data[index].data,
+                        'date_added': data[index].dateAdded,
+                        'date_modified': data[index].dateModified,
+                        'size': data[index].size,
+                        'year': data[index].getMap['year'],
+                      },
+                    );
+                    return SizedBox(
+                      child: BottomGradientContainer(
+                        borderRadius: BorderRadius.circular(20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Expanded(
+                              child: ListTile(
+                                leading: OfflineAudioQuery.offlineArtworkWidget(
+                                  id: data[index].id,
+                                  type: ArtworkType.AUDIO,
+                                  height: 50,
+                                  width: 50,
+                                  tempPath: tempPath,
+                                  fileName: data[index].displayNameWOExt,
+                                ),
+                                title: Text(
+                                  data[index].title.toUpperCase(),
+                                  textAlign: TextAlign.start,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                                subtitle: Text(
+                                  data[index].artist as String,
+                                  textAlign: TextAlign.start,
+                                  softWrap: false,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    fontSize: 13,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                trailing: LikeButton(mediaItem: mediaItem),
+                              ),
+                            ),
+                            _sheetTile("Play Next", () {
+                              playOfflineNext(mediaItem, context);
+                              Navigator.pop(context);
+                            }, EvaIcons.playCircleOutline),
+                            _sheetTile("Add to queue", () {
+                              addOfflineToNowPlaying(
+                                  context: context, mediaItem: mediaItem);
+                              Navigator.pop(context);
+                            }, EvaIcons.fileAdd),
+                            _sheetTile("Add to playlist", () {
+                              AddToOffPlaylist().addToOffPlaylist(
+                                context,
+                                data[index].id,
+                              );
+                              Navigator.pop(context);
+                            }, Iconsax.music_playlist),
+                            _sheetTile("View Album", () async {
+                              var albumSongs = await offlineAudioQuery
+                                  .getAlbumSongs(data[index].albumId as int);
+
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (_) => LocalMusicsDetail(
+                                    title: data[index].album as String,
+                                    id: data[index].id,
+                                    certainCase: 'album',
+                                    songs: albumSongs,
+                                  ),
+                                ),
+                              ).then((value) => Navigator.pop(context));
+                            }, Icons.album_outlined),
+                            _sheetTile("View Artist", () async {
+                              var albumSongs =
+                                  await offlineAudioQuery.getArtistsByName(
+                                      data[index].artist as String);
+
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (_) => LocalMusicsDetail(
+                                    title: data[index].artist as String,
+                                    id: data[index].id,
+                                    certainCase: 'artist',
+                                    songs: albumSongs,
+                                  ),
+                                ),
+                              ).then((value) => Navigator.pop(context));
+                            }, EvaIcons.person),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              icon: const Icon(
+                EvaIcons.moreVertical,
+              ),
+            ),
           ),
         ),
       ),
+    );
+  }
+
+  ListTile _sheetTile(String title, Function()? ontap, IconData icon) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: ontap,
     );
   }
 
