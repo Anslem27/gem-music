@@ -76,7 +76,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   height: MediaQuery.of(context).size.width,
                   child: const Image(
                     image: AssetImage(
-                      'assets/icon-white-trans.png',
+                      'assets/ic_launcher_no_bg.png',
                     ),
                   ),
                 ),

@@ -3,6 +3,7 @@ import 'package:device_info_plus/device_info_plus.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gem/CustomWidgets/gradient_containers.dart';
 import 'package:gem/CustomWidgets/miniplayer.dart';
@@ -16,8 +17,12 @@ import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
 import 'package:gem/animations/custom_physics.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:on_audio_query/on_audio_query.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../CustomWidgets/data_search.dart';
+import '../../Helpers/local_music_functions.dart';
 import 'components/drawer.dart';
 import 'components/home_logic.dart';
 
@@ -39,6 +44,24 @@ class _HomePageState extends State<HomePage> {
   bool autoBackup =
       Hive.box('settings').get('autoBackup', defaultValue: false) as bool;
   DateTime? backButtonPressTime;
+
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<SongModel> _songs = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    _songs =
+        await offlineAudioQuery.getSongs(sortType: SongSortType.DATE_ADDED);
+    setState(() {
+      loading = true;
+    });
+  }
+
+  Future<void> getTempPath() async {
+    tempPath ??= (await getTemporaryDirectory()).path;
+    setState(() {});
+  }
 
   void _onItemTapped(int index) {
     _selectedIndex.value = index;
@@ -226,9 +249,23 @@ class _HomePageState extends State<HomePage> {
 
   final ScrollController _scrollController = ScrollController();
   final PageController _pageController = PageController();
+  String? _device;
+
+  String? tempPath = Hive.box('settings').get('tempDirPath')?.toString();
 
   @override
   void initState() {
+    fetchSongs();
+    getTempPath();
+    FlutterBluetoothSerial.instance.onStateChanged().listen((state) {
+      // Check if the Bluetooth device has changed
+      if (state == BluetoothState.STATE_ON) {
+        // Get the current Bluetooth device
+        setState(() {
+          _device = FlutterBluetoothSerial.instance.name as String?;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -269,7 +306,6 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             const YouTube(),
-                            //const LoginView(),
                             const LibraryPage(),
                           ],
                         ),
@@ -386,20 +422,38 @@ class _HomePageState extends State<HomePage> {
                         Padding(
                           padding: const EdgeInsets.fromLTRB(0, 15, 0, 15),
                           child: Text(
-                            greeting().toUpperCase(),
+                            greeting(),
                             style: const TextStyle(
-                              fontSize: 18.5,
+                              fontSize: 17.5,
                               fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
-                        const Spacer(),
-                        IconButton(
-                          onPressed: () {},
-                          splashRadius: 24,
-                          icon: const Icon(EvaIcons.speakerOutline),
+                        // const Spacer(),
+                        Expanded(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {},
+                                splashRadius: 24,
+                                icon: Icon(
+                                  _device == null
+                                      ? EvaIcons.speaker
+                                      : EvaIcons.headphones,
+                                ),
+                              ),
+                              Text(
+                                "Connected to\n${_device ?? "Phone Speaker"}",
+                                style: const TextStyle(
+                                  color: Colors.grey,
+                                  overflow: TextOverflow.ellipsis,
+                                  fontSize: 12,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                        IconButton(
+                        /* IconButton(
                           splashRadius: 24,
                           onPressed: () {
                             Navigator.pushNamed(context, '/recent');
@@ -408,7 +462,7 @@ class _HomePageState extends State<HomePage> {
                             EvaIcons.activityOutline,
                             size: 25,
                           ),
-                        ),
+                        ), */
                         IconButton(
                           splashRadius: 24,
                           onPressed: () {
@@ -460,7 +514,15 @@ class _HomePageState extends State<HomePage> {
                             ],
                           ),
                         ),
-                        onTap: () {},
+                        onTap: () {
+                          showSearch(
+                            context: context,
+                            delegate: DataSearch(
+                              data: _songs,
+                              tempPath: tempPath!,
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ],

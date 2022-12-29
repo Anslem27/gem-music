@@ -24,7 +24,6 @@ import '../../../models/widgets/entity/entity_image.dart';
 import '../../LocalMusic/pages/detail_page.dart';
 import '../../LocalMusic/pages/local_genres.dart';
 import '../../Player/music_player.dart';
-import '../widgets/component_detail_page.dart';
 import '../../../models/services/lastfm/artist.dart';
 import '../../../models/services/lastfm/lastfm.dart';
 
@@ -103,7 +102,7 @@ class _SongGridState extends State<SongGrid> {
       width: boxSize - 30,
       child: GridView.count(
         shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         crossAxisCount: recntly_added.length < 3 ? 1 : 2,
         children: recntly_added
             .take(4)
@@ -257,32 +256,38 @@ class _LocalPlayListCollageState extends State<LocalPlayListCollage> {
     return SizedBox(
       height: boxSize - 20,
       width: boxSize - 30,
-      child: GridView.count(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        crossAxisCount: localPlaylists.length < 3 ? 1 : 2,
-        children: localPlaylists
-            .take(4)
-            .map(
-              (image) => QueryArtworkWidget(
-                id: image.id,
-                type: ArtworkType.PLAYLIST,
-                // artworkHeight: boxSize - 35,
-                // artworkWidth: boxSize - 40,
-                artworkBorder: BorderRadius.circular(0.0),
-                nullArtworkWidget: ClipRRect(
-                  borderRadius: BorderRadius.circular(0.0),
-                  child: Image(
-                    fit: BoxFit.cover,
-                    height: boxSize - 35,
-                    width: MediaQuery.of(context).size.width / 2.5,
-                    image: const AssetImage('assets/album.png'),
-                  ),
-                ),
-              ),
+      child: localPlaylists.isNotEmpty
+          ? GridView.count(
+              shrinkWrap: true,
+              physics: const BouncingScrollPhysics(),
+              crossAxisCount: localPlaylists.length < 3 ? 1 : 2,
+              children: localPlaylists
+                  .take(4)
+                  .map(
+                    (image) => QueryArtworkWidget(
+                      id: image.id,
+                      type: ArtworkType.PLAYLIST,
+                      // artworkHeight: boxSize - 35,
+                      // artworkWidth: boxSize - 40,
+                      artworkBorder: BorderRadius.circular(0.0),
+                      nullArtworkWidget: ClipRRect(
+                        borderRadius: BorderRadius.circular(0.0),
+                        child: Image(
+                          fit: BoxFit.cover,
+                          height: boxSize - 35,
+                          width: MediaQuery.of(context).size.width / 2.5,
+                          image: const AssetImage('assets/album.png'),
+                        ),
+                      ),
+                    ),
+                  )
+                  .toList(),
             )
-            .toList(),
-      ),
+          : SizedBox(
+              height: boxSize - 20,
+              width: boxSize - 30,
+              child: Image.asset("assets/file_playlist.png"),
+            ),
     );
   }
 }
@@ -784,11 +789,13 @@ class _HomeAlbumsState extends State<HomeAlbums> {
             Navigator.push(
               context,
               FadeTransitionPageRoute(
-                child: const HomeComponentDetailPage(
-                  title: "ALBUMS",
-                  body: LocalAlbumsPage(),
+                  child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  title: const Text("ALBUMS"),
                 ),
-              ),
+                body: const LocalAlbumsPage(),
+              )),
             );
           },
           const Icon(EvaIcons.arrowRightOutline),
@@ -924,11 +931,13 @@ class _HomeGenresState extends State<HomeGenres> {
             Navigator.push(
               context,
               FadeTransitionPageRoute(
-                child: const HomeComponentDetailPage(
-                  title: "YOUR GENRES",
-                  body: LocalGenresPage(),
+                  child: Scaffold(
+                appBar: AppBar(
+                  backgroundColor: Colors.transparent,
+                  title: const Text("Genres"),
                 ),
-              ),
+                body: const LocalGenresPage(),
+              )),
             );
           },
           const Icon(EvaIcons.arrowRightOutline),
@@ -1060,8 +1069,10 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
       children: [
         _homeTitleComponent(
           "ARTISTS",
-          () {},
-          const Icon(EvaIcons.searchOutline),
+          () {
+            
+          },
+          const Icon(EvaIcons.person),
         ),
         //testing fetching some images from last fm api
         SizedBox(

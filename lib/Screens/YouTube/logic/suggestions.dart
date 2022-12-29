@@ -26,7 +26,7 @@ List<String> ytSuggestions = [
   "Mix-tapes",
   "Jazz",
   "WorkOut",
-  "Hottest in Uganda"
+  "Hottest"
 ];
 
 // Future<String> getUserCountry() async {

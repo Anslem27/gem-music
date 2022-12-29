@@ -172,7 +172,7 @@ Drawer gemDrawer(BuildContext context) {
                                   const CircleAvatar(
                                     radius: 35,
                                     backgroundImage:
-                                        AssetImage("assets/artist.png"),
+                                        AssetImage("assets/ic_launcher_no_bg.png"),
                                   ),
                                   Expanded(
                                       child: ListTile(

@@ -759,6 +759,8 @@ class _SongsTabState extends State<SongsTab>
                                                           playOfflineNext(
                                                               mediaItem,
                                                               context);
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                             EvaIcons
                                                                 .playCircleOutline),
@@ -768,6 +770,8 @@ class _SongsTabState extends State<SongsTab>
                                                               context: context,
                                                               mediaItem:
                                                                   mediaItem);
+                                                          Navigator.pop(
+                                                              context);
                                                         }, EvaIcons.fileAdd),
                                                         _sheetTile(
                                                             "Add to playlist",
@@ -778,6 +782,8 @@ class _SongsTabState extends State<SongsTab>
                                                             widget.songs[index]
                                                                 .id,
                                                           );
+                                                          Navigator.pop(
+                                                              context);
                                                         },
                                                             Iconsax
                                                                 .music_playlist),
