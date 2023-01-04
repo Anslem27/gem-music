@@ -5,6 +5,7 @@ import '../../../models/services/image_id.dart';
 import '../../../models/services/lastfm/artist.dart';
 import '../../../models/services/lastfm/lastfm.dart';
 import '../../../models/widgets/entity/entity_image.dart';
+import '../youtube_search.dart';
 
 Row _homeTitleComponent(String title, Function()? ontap, Icon? icon) {
   return Row(
@@ -79,11 +80,24 @@ class _TopSearchArtistsState extends State<TopSearchArtists> {
                                   child: SizedBox(
                                     height: boxSize - 30,
                                     width: boxSize - 40,
-                                    child: EntityImage(
-                                      entity: snapshot.data!.first,
-                                      quality: ImageQuality.high,
-                                      placeholderBehavior:
-                                          PlaceholderBehavior.none,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          FadeTransitionPageRoute(
+                                            child: YouTubeSearchPage(
+                                              query:
+                                                  "${artist.name}'s recent songs",
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                      child: EntityImage(
+                                        entity: snapshot.data!.first,
+                                        quality: ImageQuality.high,
+                                        placeholderBehavior:
+                                            PlaceholderBehavior.none,
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -181,17 +195,14 @@ class _TopSearchArtistsState extends State<TopSearchArtists> {
                     // padding: EdgeInsets.zero,
                     children: snapshot.data!
                         .map(
-                          (artist) =>
-                              FutureBuilder<List<LArtistTopAlbum>>(
+                          (artist) => FutureBuilder<List<LArtistTopAlbum>>(
                             future: ArtistGetTopAlbumsRequest(artist.name)
                                 .getData(1, 1),
-                            builder: (context, snapshot) => snapshot
-                                    .hasData
+                            builder: (context, snapshot) => snapshot.hasData
                                 ? Column(
                                     children: [
                                       Padding(
-                                        padding:
-                                            const EdgeInsets.all(8.0),
+                                        padding: const EdgeInsets.all(8.0),
                                         child: SizedBox(
                                           height: boxSize - 30,
                                           width: boxSize - 40,
@@ -260,7 +271,7 @@ class _TopSearchArtistsState extends State<TopSearchArtists> {
                           ),
                         )
                         .toList(),
-                                
+
                     gridDelegate:
                         const SliverGridDelegateWithMaxCrossAxisExtent(
                       childAspectRatio: 0.5,

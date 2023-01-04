@@ -4,6 +4,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/YouTube/youtube_search.dart';
+import 'package:gem/animations/custompageroute.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:http/http.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -128,8 +129,8 @@ class _TrendingListState extends State<TrendingList>
                   onTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                        builder: (context) => YouTubeSearchPage(
+                      FadeTransitionPageRoute(
+                        child: YouTubeSearchPage(
                           query:
                               "${showList[index]['name'].toString()} ${(showList[index]['artists'] as List).map((e) => e['name']).toList().join(',\n ')}",
                         ),

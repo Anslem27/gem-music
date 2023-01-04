@@ -288,7 +288,7 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
@@ -350,7 +350,7 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                       ),
                       const Spacer(),
                       Padding(
-                        padding: const EdgeInsets.fromLTRB(10, 10, 0, 0),
+                        padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(
                             side: BorderSide(
