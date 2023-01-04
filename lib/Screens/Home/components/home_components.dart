@@ -26,6 +26,7 @@ import '../../LocalMusic/pages/local_genres.dart';
 import '../../Player/music_player.dart';
 import '../../../models/services/lastfm/artist.dart';
 import '../../../models/services/lastfm/lastfm.dart';
+import '../../YouTube/youtube_search.dart';
 
 //title header component with actions
 
@@ -1067,13 +1068,7 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _homeTitleComponent(
-          "ARTISTS",
-          () {
-            
-          },
-          const Icon(EvaIcons.person),
-        ),
+        _homeTitleComponent("ARTISTS", () {}, null),
         //testing fetching some images from last fm api
         SizedBox(
           height: boxSize + 40,
@@ -1196,80 +1191,47 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
                                       ),
                                     );
                                   }
-                                  return snapshot.hasData &&
-                                          a_glance[index]
-                                                  .artist
-                                                  .trim()
-                                                  .toLowerCase() ==
-                                              artist.name.toLowerCase().trim()
-                                      ? Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                  height: boxSize - 30,
-                                                  width: boxSize - 40,
-                                                  child: CircleAvatar(
-                                                    radius: 50,
-                                                    child: EntityImage(
-                                                      entity:
-                                                          snapshot.data!.first,
-                                                      quality:
-                                                          ImageQuality.high,
-                                                      placeholderBehavior:
-                                                          PlaceholderBehavior
-                                                              .none,
-                                                    ),
-                                                  )),
-                                            ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              artist.name.toUpperCase(),
-                                              textAlign: TextAlign.center,
-                                              softWrap: false,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        )
-                                      : Column(
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.all(8.0),
-                                              child: SizedBox(
-                                                height: boxSize - 30,
-                                                width: boxSize - 40,
-                                                child: CircleAvatar(
-                                                  radius: 50,
-                                                  child: EntityImage(
-                                                    entity:
-                                                        snapshot.data!.first,
-                                                    quality: ImageQuality.high,
-                                                    placeholderBehavior:
-                                                        PlaceholderBehavior
-                                                            .none,
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: SizedBox(
+                                          height: boxSize - 30,
+                                          width: boxSize - 40,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                FadeTransitionPageRoute(
+                                                  child: YouTubeSearchPage(
+                                                    query:
+                                                        "${artist.name}'s top songs",
                                                   ),
                                                 ),
-                                              ),
+                                              );
+                                            },
+                                            child: EntityImage(
+                                              entity: snapshot.data!.first,
+                                              quality: ImageQuality.high,
+                                              placeholderBehavior:
+                                                  PlaceholderBehavior.none,
                                             ),
-                                            const SizedBox(height: 8),
-                                            Text(
-                                              artist.name.toUpperCase(),
-                                              textAlign: TextAlign.center,
-                                              softWrap: false,
-                                              overflow: TextOverflow.ellipsis,
-                                              style: const TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                              ),
-                                            ),
-                                          ],
-                                        );
+                                          ),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 8),
+                                      Text(
+                                        artist.name.toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        softWrap: false,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w400,
+                                        ),
+                                      ),
+                                    ],
+                                  );
                                 }),
                           )
                           .take(10)

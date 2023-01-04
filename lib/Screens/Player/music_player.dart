@@ -2491,7 +2491,7 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                                 widget.mediaItem.artUri!.hasEmptyPath ||
                                 widget.mediaItem.artUri == null
                             //expression checks for an empty mediaItem file string
-
+//Do things
                             ? const Image(
                                 fit: BoxFit.cover,
                                 image: AssetImage('assets/cover.jpg'),
@@ -2509,10 +2509,11 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               )
                         : CachedNetworkImage(
                             fit: BoxFit.contain,
-                            errorWidget: (BuildContext context, _, __) =>
-                                const Image(
+                            errorWidget: (BuildContext context, _, __) => Image(
                               fit: BoxFit.cover,
-                              image: AssetImage('assets/cover.jpg'),
+                              image: const AssetImage('assets/cover.jpg'),
+                              width: widget.width * 0.6,
+                              height: widget.width * 0.6,
                             ),
                             placeholder: (BuildContext context, _) =>
                                 const Image(
@@ -2520,7 +2521,8 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                               image: AssetImage('assets/cover.jpg'),
                             ),
                             imageUrl: widget.mediaItem.artUri.toString(),
-                            width: widget.width * 0.85,
+                            width: widget.width * 0.6,
+                            height: widget.width * 0.6,
                           ),
                   ),
                   ValueListenableBuilder(
