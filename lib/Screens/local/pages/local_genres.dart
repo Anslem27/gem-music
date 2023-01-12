@@ -3,11 +3,11 @@ import 'dart:math' as math;
 // import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/Screens/LocalMusic/pages/detail_page.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-import '../../../CustomWidgets/gradient_containers.dart';
+import '../../../widgets/gradient_containers.dart';
 import '../../../Helpers/local_music_functions.dart';
+import 'detail_page.dart';
 
 class LocalGenresPage extends StatefulWidget {
   const LocalGenresPage({super.key});

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/supabase.dart';

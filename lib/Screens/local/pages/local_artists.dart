@@ -4,13 +4,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/Screens/LocalMusic/pages/detail_page.dart';
-import 'package:gem/Screens/LocalMusic/widgets/artist_query.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:on_audio_query/on_audio_query.dart';
-
 import '../../../Helpers/local_music_functions.dart';
+import '../widgets/artist_query.dart';
+import 'detail_page.dart';
 
 class LocalArtistsPage extends StatefulWidget {
   const LocalArtistsPage({super.key});

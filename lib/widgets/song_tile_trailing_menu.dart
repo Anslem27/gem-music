@@ -3,13 +3,13 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/add_playlist.dart';
+import 'package:gem/widgets/add_playlist.dart';
 import 'package:gem/Helpers/add_mediaitem_to_queue.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/Screens/Search/search.dart';
-import 'package:gem/Services/youtube_services.dart';
+import 'package:gem/services/youtube_services.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';

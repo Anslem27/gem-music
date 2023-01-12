@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class PrefScreen extends StatefulWidget {

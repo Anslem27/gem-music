@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';

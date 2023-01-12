@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:palette_generator/palette_generator.dart';
-import '../../../CustomWidgets/gradient_containers.dart';
+import '../../../widgets/gradient_containers.dart';
 import '../../../animations/equalizer.dart';
-import '../../LocalMusic/local_music.dart';
 import '../../Player/music_player.dart';
-import '../../Settings/setting.dart';
+import '../../settings/setting.dart';
+import '../../local/local_music.dart';
 
 Drawer gemDrawer(BuildContext context) {
   //super.build(context);

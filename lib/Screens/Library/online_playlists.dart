@@ -1,9 +1,9 @@
 // ignore_for_file: require_trailing_commas
 
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/collage.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/collage.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/import_export_playlist.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Library/import.dart';

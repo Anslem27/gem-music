@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:hive/hive.dart';
 
 class ArtistLikeButton extends StatefulWidget {

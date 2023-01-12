@@ -1,9 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/collage.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/collage.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:hive/hive.dart';

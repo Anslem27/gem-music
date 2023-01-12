@@ -3,7 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:on_audio_query/on_audio_query.dart';

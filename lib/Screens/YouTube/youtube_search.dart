@@ -2,12 +2,12 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/CustomWidgets/search_bar.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
+import 'package:gem/widgets/empty_screen.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
+import 'package:gem/widgets/search_bar.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:hive/hive.dart';

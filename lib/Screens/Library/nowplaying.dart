@@ -1,9 +1,9 @@
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
+import 'package:gem/widgets/bouncy_sliver_scroll_view.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:get_it/get_it.dart';
 import 'package:google_fonts/google_fonts.dart';

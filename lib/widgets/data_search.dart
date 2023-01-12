@@ -5,14 +5,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/local_music_functions.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../Helpers/add_mediaitem_to_queue.dart';
-import '../Screens/LocalMusic/pages/detail_page.dart';
+import '../Screens/local/pages/detail_page.dart';
 import 'add_playlist.dart';
 import 'like_button.dart';
 

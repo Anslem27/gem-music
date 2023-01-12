@@ -3,12 +3,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
-import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
+import 'package:gem/widgets/bouncy_sliver_scroll_view.dart';
+import 'package:gem/widgets/copy_clipboard.dart';
+import 'package:gem/widgets/download_button.dart';
+import 'package:gem/widgets/empty_screen.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/artists.dart';
 

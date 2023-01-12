@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';

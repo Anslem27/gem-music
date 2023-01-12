@@ -1,10 +1,10 @@
 // ignore_for_file: use_super_parameters
 
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/import_export_playlist.dart';
 import 'package:gem/Helpers/search_add_playlist.dart';
 import 'package:google_fonts/google_fonts.dart';

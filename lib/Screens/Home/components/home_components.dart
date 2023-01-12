@@ -6,8 +6,7 @@ import 'package:audio_service/audio_service.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import "package:flutter/material.dart";
-import 'package:gem/CustomWidgets/like_button.dart';
-import 'package:gem/Screens/LocalMusic/pages/albums_page.dart';
+import 'package:gem/widgets/like_button.dart';
 import 'package:gem/animations/custompageroute.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:hive/hive.dart';
@@ -15,18 +14,19 @@ import 'package:iconsax/iconsax.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:path_provider/path_provider.dart';
-import '../../../CustomWidgets/add_playlist.dart';
-import '../../../CustomWidgets/gradient_containers.dart';
+import '../../../widgets/add_playlist.dart';
+import '../../../widgets/gradient_containers.dart';
 import '../../../Helpers/add_mediaitem_to_queue.dart';
 import '../../../Helpers/local_music_functions.dart';
 import '../../../models/services/image_id.dart';
 import '../../../models/widgets/entity/entity_image.dart';
-import '../../LocalMusic/pages/detail_page.dart';
-import '../../LocalMusic/pages/local_genres.dart';
 import '../../Player/music_player.dart';
 import '../../../models/services/lastfm/artist.dart';
 import '../../../models/services/lastfm/lastfm.dart';
-import '../../YouTube/youtube_search.dart';
+import '../../youtube/youtube_search.dart';
+import '../../local/pages/albums_page.dart';
+import '../../local/pages/detail_page.dart';
+import '../../local/pages/local_genres.dart';
 
 //title header component with actions
 

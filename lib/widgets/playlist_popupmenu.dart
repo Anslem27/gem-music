@@ -2,7 +2,7 @@
 
 import 'package:audio_service/audio_service.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 import 'package:gem/Helpers/playlist.dart';
 import 'package:gem/Screens/Player/music_player.dart';

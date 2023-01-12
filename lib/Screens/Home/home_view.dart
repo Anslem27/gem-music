@@ -1,9 +1,9 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/collage.dart';
-import 'package:gem/CustomWidgets/horizontal_albumlist.dart';
-import 'package:gem/CustomWidgets/on_hover.dart';
+import 'package:gem/widgets/collage.dart';
+import 'package:gem/widgets/horizontal_albumlist.dart';
+import 'package:gem/widgets/on_hover.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:hive/hive.dart';
@@ -11,9 +11,9 @@ import 'package:on_audio_query/on_audio_query.dart';
 import '../../Helpers/local_music_functions.dart';
 import '../../animations/custompageroute.dart';
 import '../Library/online_playlists.dart';
-import '../LocalMusic/local_music.dart';
-import '../LocalMusic/localplaylists.dart';
-import '../LocalMusic/widgets/preview_page.dart';
+import '../local/local_music.dart';
+import '../local/localplaylists.dart';
+import '../local/widgets/preview_page.dart';
 import 'components/home_components.dart';
 //import 'components/recently_played.dart';
 

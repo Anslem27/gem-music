@@ -1,8 +1,8 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/Services/download.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/services/download.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 

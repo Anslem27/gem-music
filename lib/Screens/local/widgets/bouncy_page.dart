@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/Screens/LocalMusic/widgets/preview_page.dart';
-import '../../../CustomWidgets/miniplayer.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import '../../../widgets/miniplayer.dart';
+import 'preview_page.dart';
 
 class BouncyPage extends StatefulWidget {
   final Widget body;

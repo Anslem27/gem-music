@@ -3,9 +3,9 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/like_button.dart';
-import 'package:gem/CustomWidgets/on_hover.dart';
-import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
+import 'package:gem/widgets/like_button.dart';
+import 'package:gem/widgets/on_hover.dart';
+import 'package:gem/widgets/song_tile_trailing_menu.dart';
 import 'package:gem/Helpers/mediaitem_converter.dart';
 
 class HorizontalAlbumsList extends StatelessWidget {

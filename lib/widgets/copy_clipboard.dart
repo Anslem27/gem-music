@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/snackbar.dart';
 
 void copyToClipboard({
   required BuildContext context,

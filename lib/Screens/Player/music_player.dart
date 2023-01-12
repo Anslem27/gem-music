@@ -11,16 +11,16 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:gem/CustomWidgets/add_playlist.dart';
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
-import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/equalizer.dart';
-import 'package:gem/CustomWidgets/like_button.dart';
-import 'package:gem/CustomWidgets/popup.dart';
-import 'package:gem/CustomWidgets/seek_bar.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/add_playlist.dart';
+import 'package:gem/widgets/copy_clipboard.dart';
+import 'package:gem/widgets/download_button.dart';
+import 'package:gem/widgets/empty_screen.dart';
+import 'package:gem/widgets/equalizer.dart';
+import 'package:gem/widgets/like_button.dart';
+import 'package:gem/widgets/popup.dart';
+import 'package:gem/widgets/seek_bar.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/dominant_color.dart';
 import 'package:gem/Helpers/lyrics.dart';
@@ -43,7 +43,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../Home/components/home_logic.dart';
+import '../home/components/home_logic.dart';
 
 class PlayScreen extends StatefulWidget {
   final List songsList;
