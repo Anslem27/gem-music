@@ -1,11 +1,6 @@
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/widgets/collage.dart';
-import 'package:gem/widgets/horizontal_albumlist.dart';
-import 'package:gem/widgets/on_hover.dart';
-import 'package:gem/Screens/Library/favorites_section.dart';
-import 'package:gem/Screens/Player/music_player.dart';
+import 'package:gem/Screens/Home/components/online.dart';
 import 'package:hive/hive.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import '../../Helpers/local_music_functions.dart';
@@ -154,37 +149,6 @@ class _HomeViewPageState extends State<HomeViewPage>
       padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
       itemCount: data.isEmpty ? 2 : lists.length,
       itemBuilder: (context, idx) {
-        if (idx == recentIndex) {
-          return (recentList.isEmpty ||
-                  !(Hive.box('settings').get('showRecent', defaultValue: true)
-                      as bool))
-              ? const SizedBox()
-              /* Last Session */
-              : Column(
-                  children: [
-                    _homeTitleComponent("LAST SESSION"),
-                    HorizontalAlbumsList(
-                      songsList: recentList,
-                      onTap: (int idx) {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            opaque: false,
-                            pageBuilder: (_, __, ___) => PlayScreen(
-                              songsList: recentList,
-                              index: idx,
-                              offline: true,
-                              fromDownloads: false,
-                              fromMiniplayer: false,
-                              recommend: true,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
-                );
-        }
         if (idx == playlistIndex) {
           return (playlistNames.isEmpty ||
                   !(Hive.box('settings').get('showPlaylist', defaultValue: true)
@@ -278,6 +242,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                             ),
                           ),
                           const RecentlyAddedSongs(),
+                          const OnlineMusic(),
                           //const SizedBox(height: 10),
                           //const Previously(),
                           const SizedBox(height: 10),
@@ -490,7 +455,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                 )
                               : const SizedBox(height: 0, width: 0),
                           const SizedBox(height: 5),
-                          _homeTitleComponent("ONLINE PLAYLISTS"),
+                          /* _homeTitleComponent("ONLINE PLAYLISTS"),
                           SizedBox(
                             height: boxSize + 15,
                             child: ListView.builder(
@@ -673,30 +638,7 @@ class _HomeViewPageState extends State<HomeViewPage>
                                 );
                               },
                             ),
-                          ),
-                          // _homeTitleComponent("IMPORT PLAYLIST"),
-                          // Column(
-                          //   mainAxisAlignment: MainAxisAlignment.start,
-                          //   crossAxisAlignment: CrossAxisAlignment.start,
-                          //   mainAxisSize: MainAxisSize.min,
-                          //   children: [
-                          //     importElement(context, boxSize, () {
-                          //       importYt(
-                          //         context,
-                          //         getPlaylists,
-                          //         fetchBox,
-                          //       );
-                          //     }, "Import from\nYoutube", "assets/album.png"),
-                          //     importElement(context, boxSize, () {
-                          //       Navigator.push(
-                          //         context,
-                          //         CupertinoPageRoute(
-                          //           builder: (_) => const SpotifyPlaylistGetter(),
-                          //         ),
-                          //       );
-                          //     }, "Import from\nSpotify", "assets/album.png"),
-                          //   ],
-                          // ),
+                          ), */
                         ],
                       ),
                     ],
@@ -725,64 +667,4 @@ class _HomeViewPageState extends State<HomeViewPage>
       ],
     );
   }
-
-  // importElement(BuildContext context, double boxSize, Function()? onTap,
-  //     String title, imageUrl) {
-  //   return Padding(
-  //     padding: const EdgeInsets.all(8.0),
-  //     child: GlassmorphicContainer(
-  //       width: double.maxFinite,
-  //       height: boxSize / 2.5,
-  //       borderRadius: 8,
-  //       blur: 20,
-  //       alignment: Alignment.bottomCenter,
-  //       border: 2,
-  //       linearGradient: LinearGradient(
-  //           begin: Alignment.topLeft,
-  //           end: Alignment.bottomRight,
-  //           colors: [
-  //             const Color(0xFFffffff).withOpacity(0.1),
-  //             const Color(0xFFFFFFFF).withOpacity(0.05),
-  //           ],
-  //           stops: const [
-  //             0.1,
-  //             1,
-  //           ]),
-  //       borderGradient: const LinearGradient(
-  //         begin: Alignment.topLeft,
-  //         end: Alignment.bottomRight,
-  //         colors: [Colors.transparent, Colors.transparent],
-  //       ),
-  //       child: GestureDetector(
-  //         onTap: onTap,
-  //         child: Padding(
-  //           padding: const EdgeInsets.all(5.0),
-  //           child: Row(
-  //             mainAxisAlignment: MainAxisAlignment.start,
-  //             crossAxisAlignment: CrossAxisAlignment.center,
-  //             children: [
-  //               Padding(
-  //                 padding: const EdgeInsets.all(8.0),
-  //                 child: CircleAvatar(
-  //                   radius: 30,
-  //                   backgroundImage: AssetImage(imageUrl),
-  //                 ),
-  //               ),
-  //               Padding(
-  //                 padding: const EdgeInsets.only(right: 10.0),
-  //                 child: Text(
-  //                   title,
-  //                   textAlign: TextAlign.start,
-  //                   style: const TextStyle(
-  //                     fontSize: 17,
-  //                   ),
-  //                 ),
-  //               )
-  //             ],
-  //           ),
-  //         ),
-  //       ),
-  //     ),
-  //   );
-  // }
 }

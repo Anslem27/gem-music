@@ -1,6 +1,7 @@
 // ignore_for_file: use_super_parameters
 
 import 'package:audio_service/audio_service.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/widgets/add_playlist.dart';
@@ -10,6 +11,7 @@ import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Search/albums.dart';
 import 'package:gem/Screens/Search/search.dart';
 import 'package:gem/services/youtube_services.dart';
+import 'package:gem/widgets/playlist_popupmenu.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:share_plus/share_plus.dart';
@@ -34,159 +36,113 @@ class SongTileTrailingMenu extends StatefulWidget {
 class _SongTileTrailingMenuState extends State<SongTileTrailingMenu> {
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton(
-      splashRadius: 24,
-      icon: Icon(
-        Icons.more_vert_rounded,
-        color: Theme.of(context).iconTheme.color,
-      ),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(
-          Radius.circular(15.0),
-        ),
-      ),
-      itemBuilder: (context) => [
-        if (widget.isPlaylist)
-          PopupMenuItem(
-            value: 6,
-            child: Row(
-              children: const [
-                Icon(
-                  Iconsax.trash,
+    return IconButton(
+      onPressed: () {
+        showModalBottomSheet(
+          backgroundColor: Colors.transparent,
+          context: context,
+          builder: (_) {
+            final MediaItem mediaItem =
+                MediaItemConverter.mapToMediaItem(widget.data);
+            return Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Theme.of(context).scaffoldBackgroundColor,
                 ),
-                SizedBox(
-                  width: 10.0,
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (widget.isPlaylist)
+                        sheetTile(
+                          "Remove",
+                          () {
+                            widget.deleteLiked!(widget.data);
+                          },
+                          Iconsax.trash,
+                        ),
+                      sheetTile(
+                        "Play next",
+                        () {
+                          playNext(mediaItem, context);
+                          Navigator.pop(context);
+                        },
+                        Iconsax.music_play,
+                      ),
+                      sheetTile(
+                        "Add to queue",
+                        () {
+                          addToNowPlaying(
+                              context: context, mediaItem: mediaItem);
+                          Navigator.pop(context);
+                        },
+                        Iconsax.music_play,
+                      ),
+                      sheetTile(
+                        "Add to playlist",
+                        () {
+                          AddToPlaylist().addToPlaylist(context, mediaItem);
+                        },
+                        EvaIcons.music,
+                      ),
+                      sheetTile(
+                        "View Album",
+                        () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) => SongsListPage(
+                                listItem: {
+                                  'type': 'album',
+                                  'id': mediaItem.extras?['album_id'],
+                                  'title': mediaItem.album,
+                                  'image': mediaItem.artUri,
+                                },
+                              ),
+                            ),
+                          );
+                        },
+                        EvaIcons.fileAdd,
+                      ),
+                      sheetTile(
+                        "View Artist",
+                        () {
+                          Navigator.push(
+                            context,
+                            PageRouteBuilder(
+                              opaque: false,
+                              pageBuilder: (_, __, ___) => AlbumSearchPage(
+                                query: mediaItem.artist
+                                    .toString()
+                                    .split(', ')
+                                    .first,
+                                type: 'Artists',
+                              ),
+                            ),
+                          );
+                        },
+                        EvaIcons.person,
+                      ),
+                      sheetTile(
+                        "Share",
+                        () {
+                          Share.share(widget.data['perma_url'].toString());
+                        },
+                        Icons.share_rounded,
+                      ),
+                    ],
+                  ),
                 ),
-                Text("Remove"),
-              ],
-            ),
-          ),
-        PopupMenuItem(
-          value: 2,
-          child: Row(
-            children: [
-              Icon(
-                Iconsax.music_play,
-                color: Theme.of(context).iconTheme.color,
               ),
-              const SizedBox(width: 10.0),
-              const Text('Play next'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 1,
-          child: Row(
-            children: [
-              Icon(
-                Iconsax.music_play,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              const SizedBox(width: 10.0),
-              const Text('Add to queue'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 0,
-          child: Row(
-            children: [
-              Icon(
-                Icons.playlist_add_rounded,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              const SizedBox(width: 10.0),
-              const Text('Add to playlist'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 4,
-          child: Row(
-            children: [
-              Icon(
-                Iconsax.music_library_2,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              const SizedBox(width: 10.0),
-              const Text('View Album'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 5,
-          child: Row(
-            children: [
-              Icon(
-                Iconsax.personalcard,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              const SizedBox(width: 10.0),
-              const Text('View Artist'),
-            ],
-          ),
-        ),
-        PopupMenuItem(
-          value: 3,
-          child: Row(
-            children: [
-              Icon(
-                Icons.share_rounded,
-                color: Theme.of(context).iconTheme.color,
-              ),
-              const SizedBox(width: 10.0),
-              const Text('Share'),
-            ],
-          ),
-        ),
-      ],
-      onSelected: (int? value) {
-        final MediaItem mediaItem =
-            MediaItemConverter.mapToMediaItem(widget.data);
-        if (value == 3) {
-          Share.share(widget.data['perma_url'].toString());
-        }
-        if (value == 4) {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (_, __, ___) => SongsListPage(
-                listItem: {
-                  'type': 'album',
-                  'id': mediaItem.extras?['album_id'],
-                  'title': mediaItem.album,
-                  'image': mediaItem.artUri,
-                },
-              ),
-            ),
-          );
-        }
-        if (value == 5) {
-          Navigator.push(
-            context,
-            PageRouteBuilder(
-              opaque: false,
-              pageBuilder: (_, __, ___) => AlbumSearchPage(
-                query: mediaItem.artist.toString().split(', ').first,
-                type: 'Artists',
-              ),
-            ),
-          );
-        }
-        if (value == 6) {
-          widget.deleteLiked!(widget.data);
-        }
-        if (value == 0) {
-          AddToPlaylist().addToPlaylist(context, mediaItem);
-        }
-        if (value == 1) {
-          addToNowPlaying(context: context, mediaItem: mediaItem);
-        }
-        if (value == 2) {
-          playNext(mediaItem, context);
-        }
+            );
+          },
+        );
       },
+      icon: const Icon(EvaIcons.moreVertical),
     );
   }
 }

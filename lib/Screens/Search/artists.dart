@@ -1,6 +1,7 @@
 // ignore_for_file: use_super_parameters, avoid_redundant_argument_values
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/widgets/artist_like_button.dart';
@@ -10,10 +11,8 @@ import 'package:gem/widgets/download_button.dart';
 import 'package:gem/widgets/empty_screen.dart';
 import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/widgets/horizontal_albumlist.dart';
-import 'package:gem/widgets/like_button.dart';
 import 'package:gem/widgets/miniplayer.dart';
 import 'package:gem/widgets/playlist_popupmenu.dart';
-import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/widgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Player/music_player.dart';
@@ -87,10 +86,6 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                 );
                               },
                             ),
-                            ArtistLikeButton(
-                              data: widget.data,
-                              size: 27.0,
-                            ),
                             if (data['Top Songs'] != null)
                               PlaylistPopupMenu(
                                 data: data['Top Songs']!,
@@ -116,118 +111,6 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Expanded(
-                                        flex: 5,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            ShowSnackBar().showSnackBar(
-                                              context,
-                                              'Connecting to radio',
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            );
-                                            SaavnAPI().createRadio(
-                                              names: [
-                                                widget.data['title']
-                                                        ?.toString() ??
-                                                    '',
-                                              ],
-                                              language: widget.data['language']
-                                                      ?.toString() ??
-                                                  'hindi',
-                                              stationType: 'artist',
-                                            ).then((value) {
-                                              if (value != null) {
-                                                SaavnAPI()
-                                                    .getRadioSongs(
-                                                      stationId: value,
-                                                    )
-                                                    .then(
-                                                      (value) => Navigator.push(
-                                                        context,
-                                                        PageRouteBuilder(
-                                                          opaque: false,
-                                                          pageBuilder: (
-                                                            _,
-                                                            __,
-                                                            ___,
-                                                          ) =>
-                                                              PlayScreen(
-                                                            songsList: value,
-                                                            index: 0,
-                                                            offline: false,
-                                                            fromDownloads:
-                                                                false,
-                                                            fromMiniplayer:
-                                                                false,
-                                                            recommend: true,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                              }
-                                            });
-                                          },
-                                          child: Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(100.0),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Colors.black26,
-                                                  blurRadius: 5.0,
-                                                  offset: Offset(0.0, 3.0),
-                                                )
-                                              ],
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 10.0,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.podcasts_rounded,
-                                                    color: Theme.of(context)
-                                                                .colorScheme
-                                                                .secondary ==
-                                                            Colors.white
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                    size: 26.0,
-                                                  ),
-                                                  const SizedBox(width: 5.0),
-                                                  Text(
-                                                    'Play radio',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0,
-                                                      color: Theme.of(context)
-                                                                  .colorScheme
-                                                                  .secondary ==
-                                                              Colors.white
-                                                          ? Colors.black
-                                                          : Colors.white,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 20),
                                       Expanded(
                                         flex: 3,
                                         child: GestureDetector(
@@ -258,10 +141,9 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                   BorderRadius.circular(100.0),
                                               border: Border.all(
                                                 color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                                    .colorScheme
+                                                    .secondary
+                                                    .withOpacity(0.8),
                                               ),
                                             ),
                                             child: Padding(
@@ -274,7 +156,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Icon(
-                                                    Icons.play_arrow_rounded,
+                                                    EvaIcons.musicOutline,
                                                     color: Theme.of(context)
                                                                 .brightness ==
                                                             Brightness.dark
@@ -284,7 +166,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                   ),
                                                   const SizedBox(width: 5.0),
                                                   Text(
-                                                    'Top',
+                                                    'Shuffle Top Songs',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -313,46 +195,17 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                           borderRadius:
                                               BorderRadius.circular(100.0),
                                           border: Border.all(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                                .withOpacity(0.8),
                                           ),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(3.0),
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.shuffle_rounded,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              size: 24.0,
-                                            ),
-                                            onPressed: () {
-                                              final List tempList =
-                                                  List.from(data['Top Songs']!);
-                                              tempList.shuffle();
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  opaque: false,
-                                                  pageBuilder: (_, __, ___) =>
-                                                      PlayScreen(
-                                                    songsList: tempList,
-                                                    index: 0,
-                                                    offline: false,
-                                                    fromMiniplayer: false,
-                                                    fromDownloads: false,
-                                                    recommend: true,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            tooltip: 'Shuffle',
+                                          child: ArtistLikeButton(
+                                            data: widget.data,
+                                            size: 27.0,
                                           ),
                                         ),
                                       ),
@@ -374,14 +227,16 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                entry.key,
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 10, 0, 10),
+                                                child: Text(
+                                                  entry.key.toUpperCase(),
+                                                  style: const TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
                                               ),
                                               if (entry.key ==
@@ -402,16 +257,8 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                           Theme.of(context)
                                                               .colorScheme
                                                               .secondary
-                                                              .withOpacity(0.2),
+                                                              .withOpacity(0.5),
                                                       labelStyle: TextStyle(
-                                                        color: category == ''
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .secondary
-                                                            : Theme.of(context)
-                                                                .textTheme
-                                                                .bodyText1!
-                                                                .color,
                                                         fontWeight: category ==
                                                                 ''
                                                             ? FontWeight.w600
@@ -654,11 +501,11 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                                 index] as Map,
                                                             icon: 'download',
                                                           ),
-                                                          LikeButton(
+                                                          /*   LikeButton(
                                                             data: entry.value[
                                                                 index] as Map,
                                                             mediaItem: null,
-                                                          ),
+                                                          ), */
                                                           SongTileTrailingMenu(
                                                             data: entry.value[
                                                                 index] as Map,

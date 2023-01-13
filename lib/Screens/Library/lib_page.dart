@@ -75,7 +75,7 @@ class _LibraryPageState extends State<LibraryPage> {
               },
             ),
             LibraryTile(
-              title: 'Last session',
+              title: 'Online last session',
               icon: Icons.history_rounded,
               onTap: () {
                 Navigator.pushNamed(context, '/recent');

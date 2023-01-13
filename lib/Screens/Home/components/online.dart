@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Helpers/extensions.dart';
@@ -10,7 +9,6 @@ import '../../../widgets/horizontal_albumlist.dart';
 import '../../../widgets/last_session_widget.dart';
 import '../../../widgets/like_button.dart';
 import '../../../widgets/on_hover.dart';
-import '../../../widgets/snackbar.dart';
 import '../../../widgets/song_tile_trailing_menu.dart';
 import '../../../Helpers/format.dart';
 import '../../../Helpers/image_cleaner.dart';
@@ -20,7 +18,7 @@ import '../../Search/artists.dart';
 
 bool fetched = false;
 List preferredLanguage = Hive.box('settings')
-    .get('preferredLanguage', defaultValue: ['Hindi']) as List;
+    .get('preferredLanguage', defaultValue: ['English']) as List;
 List likedRadio =
     Hive.box('settings').get('likedRadio', defaultValue: []) as List;
 Map data = Hive.box('cache').get('homepage', defaultValue: {}) as Map;
@@ -148,14 +146,12 @@ class _OnlineMusicState extends State<OnlineMusic>
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                 child: Text(
-                                  "Online last Played",
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                  "last Played online".toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -187,14 +183,11 @@ class _OnlineMusicState extends State<OnlineMusic>
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                    const EdgeInsets.fromLTRB(10, 10, 0, 10),
                                 child: Text(
-                                  "Online playlists",
-                                  style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                  "Online playlists".toUpperCase(),
+                                  style: const TextStyle(
+                                    fontSize: 17,
                                   ),
                                 ),
                               ),
@@ -403,6 +396,17 @@ class _OnlineMusicState extends State<OnlineMusic>
                         ],
                       );
               }
+
+              if (data['modules'][lists[idx]]?['title'].toString() ==
+                  "Radio Stations") {
+                return const SizedBox();
+              }
+
+              if (data['modules'][lists[idx]]?['title'].toString() ==
+                  "Top Charts") {
+                return const SizedBox();
+              }
+
               return (data[lists[idx]] == null ||
                       blacklistedHomeSections.contains(
                         data['modules'][lists[idx]]?['title']
@@ -414,16 +418,16 @@ class _OnlineMusicState extends State<OnlineMusic>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                          padding: const EdgeInsets.fromLTRB(10, 10, 0, 10),
                           child: Text(
                             data['modules'][lists[idx]]?['title']
                                     ?.toString()
+                                    .toUpperCase()
                                     .unescape() ??
                                 '',
-                            style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -533,7 +537,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                 },
                                 onTap: () {
                                   if (item['type'] == 'radio_station') {
-                                    ShowSnackBar().showSnackBar(
+                                    /* ShowSnackBar().showSnackBar(
                                       context,
                                       "Connecting to the station",
                                       duration: const Duration(seconds: 2),
@@ -573,7 +577,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                           );
                                         });
                                       }
-                                    });
+                                    }); */
                                   } else {
                                     if (item['type'] == 'song') {
                                       PlayerInvoke.init(
@@ -712,7 +716,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                                       ),
                                                     ),
                                                   ),
-                                                if (item['type'] ==
+                                                /* if (item['type'] ==
                                                         'radio_station' &&
                                                     (Platform.isAndroid ||
                                                         Platform.isIOS ||
@@ -751,7 +755,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                                         setState(() {});
                                                       },
                                                     ),
-                                                  ),
+                                                  ), */
                                                 if (item['type'] == 'song' ||
                                                     item['duration'] != null)
                                                   Align(

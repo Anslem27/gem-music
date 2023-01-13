@@ -1,28 +1,30 @@
 // ignore_for_file: use_super_parameters
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/widgets/bouncy_sliver_scroll_view.dart';
 import 'package:gem/widgets/copy_clipboard.dart';
 import 'package:gem/widgets/download_button.dart';
 import 'package:gem/widgets/gradient_containers.dart';
-import 'package:gem/widgets/like_button.dart';
 import 'package:gem/widgets/miniplayer.dart';
 import 'package:gem/widgets/playlist_popupmenu.dart';
 import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/widgets/song_tile_trailing_menu.dart';
-import 'package:gem/Screens/Player/music_player.dart';
 import 'package:html_unescape/html_unescape_small.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../Helpers/image_cleaner.dart';
+import '../../Services/player_service.dart';
+import '../../widgets/bouncy_playlist)view.dart';
 
 class SongsListPage extends StatefulWidget {
   final Map listItem;
 
   const SongsListPage({
-    Key? key,
+    super.key,
     required this.listItem,
-  }) : super(key: key);
+  });
 
   @override
   _SongsListPageState createState() => _SongsListPageState();
@@ -59,66 +61,126 @@ class _SongsListPageState extends State<SongsListPage> {
 
   void _fetchSongs() {
     loading = true;
-    switch (widget.listItem['type'].toString()) {
-      case 'songs':
-        SaavnAPI()
-            .fetchSongSearchResults(
-          searchQuery: widget.listItem['id'].toString(),
-          page: page,
-        )
-            .then((value) {
+    try {
+      switch (widget.listItem['type'].toString()) {
+        case 'songs':
+          SaavnAPI()
+              .fetchSongSearchResults(
+            searchQuery: widget.listItem['id'].toString(),
+            page: page,
+          )
+              .then((value) {
+            setState(() {
+              songList.addAll(value['songs'] as List);
+              fetched = true;
+              loading = false;
+            });
+            if (value['error'].toString() != '') {
+              ShowSnackBar().showSnackBar(
+                context,
+                'Error: ${value["error"]}',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          });
+          break;
+        case 'album':
+          SaavnAPI()
+              .fetchAlbumSongs(widget.listItem['id'].toString())
+              .then((value) {
+            setState(() {
+              songList = value['songs'] as List;
+              fetched = true;
+              loading = false;
+            });
+            if (value['error'].toString() != '') {
+              ShowSnackBar().showSnackBar(
+                context,
+                'Error: ${value["error"]}',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          });
+          break;
+        case 'playlist':
+          SaavnAPI()
+              .fetchPlaylistSongs(widget.listItem['id'].toString())
+              .then((value) {
+            setState(() {
+              songList = value['songs'] as List;
+              fetched = true;
+              loading = false;
+            });
+            if (value['error'] != null && value['error'].toString() != '') {
+              ShowSnackBar().showSnackBar(
+                context,
+                'Error: ${value["error"]}',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          });
+          break;
+        case 'mix':
+          SaavnAPI()
+              .getSongFromToken(
+            widget.listItem['perma_url'].toString().split('/').last,
+            'mix',
+          )
+              .then((value) {
+            setState(() {
+              songList = value['songs'] as List;
+              fetched = true;
+              loading = false;
+            });
+
+            if (value['error'] != null && value['error'].toString() != '') {
+              ShowSnackBar().showSnackBar(
+                context,
+                'Error: ${value["error"]}',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          });
+          break;
+        case 'show':
+          SaavnAPI()
+              .getSongFromToken(
+            widget.listItem['perma_url'].toString().split('/').last,
+            'show',
+          )
+              .then((value) {
+            setState(() {
+              songList = value['songs'] as List;
+              fetched = true;
+              loading = false;
+            });
+
+            if (value['error'] != null && value['error'].toString() != '') {
+              ShowSnackBar().showSnackBar(
+                context,
+                'Error: ${value["error"]}',
+                duration: const Duration(seconds: 3),
+              );
+            }
+          });
+          break;
+        default:
           setState(() {
-            songList.addAll(value['songs'] as List);
             fetched = true;
             loading = false;
           });
-          if (value['error'].toString() != '') {
-            ShowSnackBar().showSnackBar(
-              context,
-              'Error: ${value["error"]}',
-              duration: const Duration(seconds: 3),
-            );
-          }
-        });
-        break;
-      case 'album':
-        SaavnAPI()
-            .fetchAlbumSongs(widget.listItem['id'].toString())
-            .then((value) {
-          setState(() {
-            songList = value['songs'] as List;
-            fetched = true;
-            loading = false;
-          });
-          if (value['error'].toString() != '') {
-            ShowSnackBar().showSnackBar(
-              context,
-              'Error: ${value["error"]}',
-              duration: const Duration(seconds: 3),
-            );
-          }
-        });
-        break;
-      case 'playlist':
-        SaavnAPI()
-            .fetchPlaylistSongs(widget.listItem['id'].toString())
-            .then((value) {
-          setState(() {
-            songList = value['songs'] as List;
-            fetched = true;
-            loading = false;
-          });
-          if (value['error'].toString() != '') {
-            ShowSnackBar().showSnackBar(
-              context,
-              'Error: ${value["error"]}',
-              duration: const Duration(seconds: 3),
-            );
-          }
-        });
-        break;
-      default:
-        break;
+          ShowSnackBar().showSnackBar(
+            context,
+            'Error: Unsupported Type ${widget.listItem['type']}',
+            duration: const Duration(seconds: 3),
+          );
+          break;
+      }
+    } catch (e) {
+      setState(() {
+        fetched = true;
+        loading = false;
+      });
     }
   }
 
@@ -134,18 +196,18 @@ class _SongsListPageState extends State<SongsListPage> {
                   ? const Center(
                       child: CircularProgressIndicator(),
                     )
-                  : BouncyImageSliverScrollView(
+                  : BouncyPlaylistHeaderScrollView(
                       scrollController: _scrollController,
                       actions: [
-                        MultiDownloadButton(
-                          data: songList,
-                          playlistName:
-                              widget.listItem['title']?.toString() ?? 'Songs',
-                        ),
+                        if (songList.isNotEmpty)
+                          MultiDownloadButton(
+                            data: songList,
+                            playlistName:
+                                widget.listItem['title']?.toString() ?? 'Songs',
+                          ),
                         IconButton(
-                          splashRadius: 24,
-                          icon: const Icon(Icons.share_rounded),
-                          tooltip: 'Share',
+                          icon: const Icon(EvaIcons.shareOutline),
+                          tooltip: "Share",
                           onPressed: () {
                             Share.share(
                               widget.listItem['perma_url'].toString(),
@@ -161,190 +223,45 @@ class _SongsListPageState extends State<SongsListPage> {
                       title: unescape.convert(
                         widget.listItem['title']?.toString() ?? 'Songs',
                       ),
+                      subtitle: '${songList.length} Songs',
+                      secondarySubtitle:
+                          widget.listItem['subTitle']?.toString() ??
+                              widget.listItem['subtitle']?.toString(),
+                      onPlayTap: () => PlayerInvoke.init(
+                        songsList: songList,
+                        index: 0,
+                        isOffline: false,
+                      ),
+                      onShuffleTap: () => PlayerInvoke.init(
+                        songsList: songList,
+                        index: 0,
+                        isOffline: false,
+                        shuffle: true,
+                      ),
                       placeholderImage: 'assets/album.png',
-                      imageUrl: widget.listItem['image']
-                          ?.toString()
-                          .replaceAll('http:', 'https:')
-                          .replaceAll(
-                            '50x50',
-                            '500x500',
-                          )
-                          .replaceAll(
-                            '150x150',
-                            '500x500',
-                          ),
+                      imageUrl:
+                          getImageUrl(widget.listItem['image']?.toString()),
                       sliverList: SliverList(
                         delegate: SliverChildListDelegate([
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20.0,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          opaque: false,
-                                          pageBuilder: (_, __, ___) =>
-                                              PlayScreen(
-                                            songsList: songList,
-                                            index: 0,
-                                            offline: false,
-                                            fromDownloads: false,
-                                            fromMiniplayer: false,
-                                            recommend: true,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100.0),
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .secondary,
-                                        // color: Colors.white,
-                                        boxShadow: const [
-                                          BoxShadow(
-                                            color: Colors.black26,
-                                            blurRadius: 5.0,
-                                            offset: Offset(0.0, 3.0),
-                                          )
-                                        ],
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.play_arrow_rounded,
-                                              color: Theme.of(context)
-                                                          .colorScheme
-                                                          .secondary ==
-                                                      Colors.white
-                                                  ? Colors.black
-                                                  : Colors.white,
-                                              size: 26.0,
-                                            ),
-                                            const SizedBox(width: 5.0),
-                                            Text(
-                                              'Play',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18.0,
-                                                color: Theme.of(context)
-                                                            .colorScheme
-                                                            .secondary ==
-                                                        Colors.white
-                                                    ? Colors.black
-                                                    : Colors.white,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                            const SizedBox(width: 10.0),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                          if (songList.isNotEmpty)
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                left: 20.0,
+                                top: 5.0,
+                                bottom: 5.0,
+                              ),
+                              child: Padding(
+                                padding:
+                                    EdgeInsets.fromLTRB(10, 10, 0, 10),
+                                child: Text(
+                                  "SONGS",
+                                  style: TextStyle(
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(width: 20),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      final List tempList = List.from(songList);
-                                      tempList.shuffle();
-                                      Navigator.push(
-                                        context,
-                                        PageRouteBuilder(
-                                          opaque: false,
-                                          pageBuilder: (_, __, ___) =>
-                                              PlayScreen(
-                                            songsList: tempList,
-                                            index: 0,
-                                            offline: false,
-                                            fromDownloads: false,
-                                            fromMiniplayer: false,
-                                            recommend: true,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(
-                                        top: 10,
-                                        bottom: 10,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(100.0),
-                                        border: Border.all(
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                        // boxShadow: const [
-                                        //   BoxShadow(
-                                        //     color: Colors.black26,
-                                        //     blurRadius: 5.0,
-                                        //     offset: Offset(0.0, 3.0),
-                                        //   )
-                                        // ],
-                                      ),
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                          vertical: 10.0,
-                                        ),
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.shuffle_rounded,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              size: 24.0,
-                                            ),
-                                            const SizedBox(width: 5.0),
-                                            Text(
-                                              'Shuffle',
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 18.0,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black,
-                                              ),
-                                              textAlign: TextAlign.center,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                              ),
                             ),
-                          ),
                           ...songList.map((entry) {
                             return ListTile(
                               contentPadding: const EdgeInsets.only(left: 15.0),
@@ -366,6 +283,7 @@ class _SongsListPageState extends State<SongsListPage> {
                                 overflow: TextOverflow.ellipsis,
                               ),
                               leading: Card(
+                                margin: EdgeInsets.zero,
                                 elevation: 8,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(7.0),
@@ -396,29 +314,20 @@ class _SongsListPageState extends State<SongsListPage> {
                                     data: entry as Map,
                                     icon: 'download',
                                   ),
-                                  LikeButton(
+                                  /* LikeButton(
                                     mediaItem: null,
                                     data: entry,
-                                  ),
+                                  ), */
                                   SongTileTrailingMenu(data: entry),
                                 ],
                               ),
                               onTap: () {
-                                Navigator.push(
-                                  context,
-                                  PageRouteBuilder(
-                                    opaque: false,
-                                    pageBuilder: (_, __, ___) => PlayScreen(
-                                      songsList: songList,
-                                      index: songList.indexWhere(
-                                        (element) => element == entry,
-                                      ),
-                                      offline: false,
-                                      fromDownloads: false,
-                                      fromMiniplayer: false,
-                                      recommend: true,
-                                    ),
+                                PlayerInvoke.init(
+                                  songsList: songList,
+                                  index: songList.indexWhere(
+                                    (element) => element == entry,
                                   ),
+                                  isOffline: false,
                                 );
                               },
                             );

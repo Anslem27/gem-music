@@ -410,116 +410,8 @@ class _RecentlyAddedSongsState extends State<RecentlyAddedSongs> {
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
-                    onLongPress: () {
-                      showModalBottomSheet(
-                        isDismissible: true,
-                        backgroundColor: Colors.transparent,
-                        context: context,
-                        builder: (BuildContext context) {
-                          return BottomGradientContainer(
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: ListTile(
-                                    leading: QueryArtworkWidget(
-                                      id: recntly_added[index].id,
-                                      type: ArtworkType.AUDIO,
-                                      artworkHeight: 50,
-                                      artworkWidth: 50,
-                                      artworkBorder: BorderRadius.circular(7.0),
-                                      nullArtworkWidget: ClipRRect(
-                                        borderRadius:
-                                            BorderRadius.circular(7.0),
-                                        child: const Image(
-                                          fit: BoxFit.cover,
-                                          height: 50,
-                                          width: 50,
-                                          image: AssetImage('assets/song.png'),
-                                        ),
-                                      ),
-                                    ),
-                                    title: Text(
-                                      recntly_added[index].title.toUpperCase(),
-                                      textAlign: TextAlign.start,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w400,
-                                      ),
-                                    ),
-                                    subtitle: Text(
-                                      recntly_added[index].artist as String,
-                                      textAlign: TextAlign.start,
-                                      softWrap: false,
-                                      overflow: TextOverflow.ellipsis,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                    trailing: LikeButton(mediaItem: mediaItem),
-                                  ),
-                                ),
-                                _sheetTile("Play Next", () {
-                                  playOfflineNext(mediaItem, context);
-                                  Navigator.pop(context);
-                                }, EvaIcons.playCircleOutline),
-                                _sheetTile("Add to queue", () {
-                                  addOfflineToNowPlaying(
-                                      context: context, mediaItem: mediaItem);
-                                  Navigator.pop(context);
-                                }, EvaIcons.fileAdd),
-                                _sheetTile("Add to playlist", () {
-                                  AddToOffPlaylist().addToOffPlaylist(
-                                    context,
-                                    recntly_added[index].id,
-                                  );
-                                }, Iconsax.music_playlist),
-                                _sheetTile("View Album", () async {
-                                  var album_songs =
-                                      await offlineAudioQuery.getAlbumSongs(
-                                          recntly_added[index].albumId as int);
-
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (_) => LocalMusicsDetail(
-                                        title: recntly_added[index].album
-                                            as String,
-                                        id: recntly_added[index].id,
-                                        certainCase: 'album',
-                                        songs: album_songs,
-                                      ),
-                                    ),
-                                  ).then((value) => Navigator.pop(context));
-                                }, Icons.album_outlined),
-                                _sheetTile("View Artist", () async {
-                                  var album_songs =
-                                      await offlineAudioQuery.getArtistsByName(
-                                          recntly_added[index].artist
-                                              as String);
-
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (_) => LocalMusicsDetail(
-                                        title: recntly_added[index].artist
-                                            as String,
-                                        id: recntly_added[index].id,
-                                        certainCase: 'artist',
-                                        songs: album_songs,
-                                      ),
-                                    ),
-                                  ).then((value) => Navigator.pop(context));
-                                }, EvaIcons.person),
-                              ],
-                            ),
-                          );
-                        },
-                      );
+                    onLongPress: () async {
+                      await recentlyAddedBottomSheet(context, index, mediaItem);
                     },
                     child: FutureBuilder(
                         future: OfflineAudioQuery.queryNSave(
@@ -665,6 +557,112 @@ class _RecentlyAddedSongsState extends State<RecentlyAddedSongs> {
           ),
         ),
       ],
+    );
+  }
+
+  recentlyAddedBottomSheet(
+      BuildContext context, int index, MediaItem mediaItem) async {
+    showModalBottomSheet(
+      isDismissible: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        return BottomGradientContainer(
+          borderRadius: BorderRadius.circular(20.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: ListTile(
+                  leading: QueryArtworkWidget(
+                    id: recntly_added[index].id,
+                    type: ArtworkType.AUDIO,
+                    artworkHeight: 50,
+                    artworkWidth: 50,
+                    artworkBorder: BorderRadius.circular(7.0),
+                    nullArtworkWidget: ClipRRect(
+                      borderRadius: BorderRadius.circular(7.0),
+                      child: const Image(
+                        fit: BoxFit.cover,
+                        height: 50,
+                        width: 50,
+                        image: AssetImage('assets/song.png'),
+                      ),
+                    ),
+                  ),
+                  title: Text(
+                    recntly_added[index].title.toUpperCase(),
+                    textAlign: TextAlign.start,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  subtitle: Text(
+                    recntly_added[index].artist as String,
+                    textAlign: TextAlign.start,
+                    softWrap: false,
+                    overflow: TextOverflow.ellipsis,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  trailing: LikeButton(mediaItem: mediaItem),
+                ),
+              ),
+              _sheetTile("Play Next", () {
+                playOfflineNext(mediaItem, context);
+                Navigator.pop(context);
+              }, EvaIcons.playCircleOutline),
+              _sheetTile("Add to queue", () {
+                addOfflineToNowPlaying(context: context, mediaItem: mediaItem);
+                Navigator.pop(context);
+              }, EvaIcons.fileAdd),
+              _sheetTile("Add to playlist", () {
+                AddToOffPlaylist().addToOffPlaylist(
+                  context,
+                  recntly_added[index].id,
+                );
+              }, Iconsax.music_playlist),
+              _sheetTile("View Album", () async {
+                var album_songs = await offlineAudioQuery
+                    .getAlbumSongs(recntly_added[index].albumId as int);
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (_) => LocalMusicsDetail(
+                      title: recntly_added[index].album as String,
+                      id: recntly_added[index].id,
+                      certainCase: 'album',
+                      songs: album_songs,
+                    ),
+                  ),
+                ).then((value) => Navigator.pop(context));
+              }, Icons.album_outlined),
+              _sheetTile("View Artist", () async {
+                var album_songs = await offlineAudioQuery
+                    .getArtistsByName(recntly_added[index].artist as String);
+
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (_) => LocalMusicsDetail(
+                      title: recntly_added[index].artist as String,
+                      id: recntly_added[index].id,
+                      certainCase: 'artist',
+                      songs: album_songs,
+                    ),
+                  ),
+                ).then((value) => Navigator.pop(context));
+              }, EvaIcons.person),
+            ],
+          ),
+        );
+      },
     );
   }
 

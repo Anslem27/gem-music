@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 int width = 300;
 int height = 300;
 
-//TODO: Find a way to automate the process of getting an artist id.
+
 
 //eg
 // url=https://itunes.apple.com/ca/artist/taylor-swift/id159260351
