@@ -3,6 +3,8 @@ import 'package:audio_service/audio_service.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:gem/Screens/Settings/about.dart';
+import 'package:gem/animations/custompageroute.dart';
 import 'package:get_it/get_it.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:palette_generator/palette_generator.dart';
@@ -171,8 +173,8 @@ Drawer gemDrawer(BuildContext context) {
                                 children: [
                                   const CircleAvatar(
                                     radius: 35,
-                                    backgroundImage:
-                                        AssetImage("assets/ic_launcher_no_bg.png"),
+                                    backgroundImage: AssetImage(
+                                        "assets/ic_launcher_no_bg.png"),
                                   ),
                                   Expanded(
                                       child: ListTile(
@@ -293,8 +295,12 @@ Drawer gemDrawer(BuildContext context) {
                                   color: Theme.of(context).iconTheme.color,
                                 ),
                                 onTap: () {
-                                  Navigator.pop(context);
-                                  //TODO: Add a info dialog
+                                  Navigator.push(
+                                    context,
+                                    FadeTransitionPageRoute(
+                                      child: const AboutScreen(),
+                                    ),
+                                  );
                                 },
                               ),
                             ),

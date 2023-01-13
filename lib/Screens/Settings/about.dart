@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
-import '../../widgets/copy_clipboard.dart';
 import '../../widgets/gradient_containers.dart';
 
 class AboutScreen extends StatefulWidget {
@@ -41,7 +39,7 @@ class _AboutScreenState extends State<AboutScreen> {
               child: const Image(
                 fit: BoxFit.fill,
                 image: AssetImage(
-                  'assets/icon-white-trans.png',
+                  'assets/ic_launcher_no_bgs.png',
                 ),
               ),
             ),
@@ -52,9 +50,7 @@ class _AboutScreenState extends State<AboutScreen> {
           ),
           Scaffold(
             appBar: AppBar(
-              backgroundColor: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.transparent
-                  : Theme.of(context).colorScheme.secondary,
+              backgroundColor: Colors.transparent,
               elevation: 0,
               title: const Text(
                 "About",
@@ -73,13 +69,11 @@ class _AboutScreenState extends State<AboutScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    Card(
+                    const Card(
                       elevation: 15,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100.0),
-                      ),
+                
                       clipBehavior: Clip.antiAlias,
-                      child: const SizedBox(
+                      child: SizedBox(
                         width: 150,
                         child:
                             Image(image: AssetImage('assets/ic_launcher.png')),
@@ -101,7 +95,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   child: Column(
                     children: [
                       const Text(
-                        "",
+                        "Github",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 16),
                       ),
@@ -109,21 +103,17 @@ class _AboutScreenState extends State<AboutScreen> {
                         onPressed: () {
                           launchUrl(
                             Uri.parse(
-                              'https://github.com/Sangwan5688/BlackHole',
+                              'https://github.com/Anslem27',
                             ),
                             mode: LaunchMode.externalApplication,
                           );
                         },
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width / 4,
-                          child: Image(
-                            image: Theme.of(context).brightness ==
-                                    Brightness.dark
-                                ? const AssetImage(
-                                    'assets/GitHub_Logo_White.png',
-                                  )
-                                : const AssetImage('assets/GitHub_Logo.png'),
-                          ),
+                          child: const Image(
+                              image: AssetImage(
+                            'assets/GitHub_Logo_White.png',
+                          )),
                         ),
                       ),
                       const Text(
@@ -135,66 +125,9 @@ class _AboutScreenState extends State<AboutScreen> {
                   ),
                 ),
                 Column(
-                  children: [
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.transparent,
-                      ),
-                      onPressed: () {
-                        launchUrl(
-                          Uri.parse(
-                            'https://www.buymeacoffee.com/ankitsangwan',
-                          ),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: const Image(
-                          image: AssetImage('assets/black-button.png'),
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      "Or",
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 12),
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                        backgroundColor: Colors.transparent,
-                        foregroundColor: Colors.transparent,
-                      ),
-                      onPressed: () {
-                        const String upiUrl =
-                            'upi://pay?pa=ankit.sangwan.5688@oksbi&pn=BlackHole&mc=5732&aid=uGICAgIDn98OpSw&tr=BCR2DN6T37O6DB3Q';
-                        launchUrl(
-                          Uri.parse(upiUrl),
-                          mode: LaunchMode.externalApplication,
-                        );
-                      },
-                      onLongPress: () {
-                        copyToClipboard(
-                          context: context,
-                          text: 'ankit.sangwan.5688@oksbi',
-                          displayText: "Copied",
-                        );
-                      },
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width / 2,
-                        child: Image(
-                          image: AssetImage(
-                            Theme.of(context).brightness == Brightness.dark
-                                ? 'assets/gpay-white.png'
-                                : 'assets/gpay-white.png',
-                          ),
-                        ),
-                      ),
-                    ),
-                    const Text(
-                      "Sponsor",
+                  children: const [
+                    Text(
+                      "",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 12),
                     ),
@@ -204,7 +137,7 @@ class _AboutScreenState extends State<AboutScreen> {
                   padding: EdgeInsets.fromLTRB(5, 30, 5, 20),
                   child: Center(
                     child: Text(
-                      "Made by",
+                      "Made by ❤ the Gem team",
                       style: TextStyle(fontSize: 12),
                       textAlign: TextAlign.center,
                     ),
