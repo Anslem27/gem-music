@@ -363,17 +363,14 @@ class _OnlineMusicState extends State<OnlineMusic>
                     : Column(
                         children: [
                           Row(
-                            children: [
+                            children: const [
                               Padding(
-                                padding:
-                                    const EdgeInsets.fromLTRB(15, 10, 0, 5),
+                                padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                                 child: Text(
-                                  'Liked Artists',
+                                  "LIKED ARTISTS",
                                   style: TextStyle(
-                                    color:
-                                        Theme.of(context).colorScheme.secondary,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
+                                    fontSize: 17,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
                               ),
@@ -404,6 +401,10 @@ class _OnlineMusicState extends State<OnlineMusic>
 
               if (data['modules'][lists[idx]]?['title'].toString() ==
                   "Top Charts") {
+                return const SizedBox();
+              }
+              if (data['modules'][lists[idx]]?['title'].toString() ==
+                  "Editorial Picks") {
                 return const SizedBox();
               }
 

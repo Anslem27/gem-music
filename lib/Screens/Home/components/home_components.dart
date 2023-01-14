@@ -1066,7 +1066,7 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _homeTitleComponent("ARTISTS", () {}, null),
+        _homeTitleComponent("LOCAL ARTISTS", () {}, null),
         //testing fetching some images from last fm api
         SizedBox(
           height: boxSize + 40,

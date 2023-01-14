@@ -16,7 +16,14 @@ import 'package:gem/widgets/playlist_popupmenu.dart';
 import 'package:gem/widgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Player/music_player.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../Helpers/local_music_functions.dart';
 
 class ArtistSearchPage extends StatefulWidget {
   final Map data;
@@ -36,9 +43,33 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
   String sortOrder = '';
   Map<String, List> data = {};
   bool fetched = false;
+  String? tempPath = Hive.box('settings').get('tempDirPath')?.toString();
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<SongModel> artistSongs = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    tempPath ??= (await getTemporaryDirectory()).path;
+    artistSongs = await offlineAudioQuery.getSongs();
+
+    setState(() {
+      loading = true;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchSongs();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
     if (!status) {
       status = true;
       SaavnAPI()
@@ -68,11 +99,11 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                       ? emptyScreen(
                           context,
                           0,
-                          ':( ',
+                          'ಠ_ಠ',
                           100,
-                          'Oops!',
+                          'Yikes!',
                           60,
-                          'No results',
+                          'Something unexpected\nhappened',
                           20,
                         )
                       : BouncyImageSliverScrollView(
@@ -212,6 +243,189 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                     ],
                                   ),
                                 ),
+                                //! view local songs for the artist
+                                Column(
+                                    children: List.generate(artistSongs.length,
+                                        (index) {
+                                  return SizedBox(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        /* index == 0 && */
+                                        artistSongs[index].artist ==
+                                                widget.data['title']?.toString()
+                                            ? Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .fromLTRB(
+                                                        20, 10, 0, 20),
+                                                    child: Text(
+                                                      "LOCAL SONGS by ${widget.data['title']?.toString()}",
+                                                      style: const TextStyle(
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                ],
+                                              )
+                                            : const SizedBox(),
+                                        artistSongs[index].artist ==
+                                                widget.data['title']?.toString()
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  //Test putting local songa
+                                                  //addRecentlyPlayed(widget.songs);
+                                                  setState(() {});
+                                                  Navigator.of(context).push(
+                                                    PageRouteBuilder(
+                                                      opaque: false,
+                                                      pageBuilder:
+                                                          (_, __, ___) =>
+                                                              PlayScreen(
+                                                        songsList: artistSongs,
+                                                        index: index,
+                                                        offline: true,
+                                                        fromDownloads: false,
+                                                        fromMiniplayer: false,
+                                                        recommend: false,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: SizedBox(
+                                                  height: boxSize - 100,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      OfflineAudioQuery
+                                                          .offlineArtworkWidget(
+                                                        id: artistSongs[index]
+                                                            .id,
+                                                        type: ArtworkType.AUDIO,
+                                                        height: 70,
+                                                        width: 70,
+                                                        tempPath: tempPath!,
+                                                        fileName: artistSongs[
+                                                                index]
+                                                            .displayNameWOExt,
+                                                      ),
+                                                      Expanded(
+                                                        child: ListTile(
+                                                          title: Text(
+                                                            artistSongs[index]
+                                                                        .title
+                                                                        .trim() !=
+                                                                    ''
+                                                                ? artistSongs[
+                                                                        index]
+                                                                    .title
+                                                                : artistSongs[
+                                                                        index]
+                                                                    .displayNameWOExt,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    fontSize:
+                                                                        17),
+                                                          ),
+                                                          subtitle: Text(
+                                                            artistSongs[index]
+                                                                    .album
+                                                                    ?.replaceAll(
+                                                                        '<unknown>',
+                                                                        'Unknown') ??
+                                                                'Unknown',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                              fontSize: 15,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 3.0),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            /* IconButton(
+                                                              splashRadius: 24,
+                                                              onPressed:
+                                                                  () async {},
+                                                              icon: const Icon(
+                                                                  EvaIcons
+                                                                      .moreHorizontalOutline),
+                                                            ), */
+                                                            IconButton(
+                                                              splashRadius: 24,
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(
+                                                                  PageRouteBuilder(
+                                                                    opaque:
+                                                                        false,
+                                                                    pageBuilder: (_,
+                                                                            __,
+                                                                            ___) =>
+                                                                        PlayScreen(
+                                                                      songsList:
+                                                                          artistSongs,
+                                                                      index:
+                                                                          index,
+                                                                      offline:
+                                                                          true,
+                                                                      fromDownloads:
+                                                                          false,
+                                                                      fromMiniplayer:
+                                                                          false,
+                                                                      recommend:
+                                                                          false,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              icon: const Icon(
+                                                                  MdiIcons
+                                                                      .playCircleOutline),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox()
+                                      ],
+                                    ),
+                                  );
+                                })),
                                 ...data.entries.map(
                                   (entry) {
                                     return Column(

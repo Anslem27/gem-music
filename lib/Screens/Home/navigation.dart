@@ -282,7 +282,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
-        drawer: gemDrawer(context),
+        drawer: const GemDrawer(),
         body: WillPopScope(
           onWillPop: () => handleWillPop(context),
           child: SafeArea(

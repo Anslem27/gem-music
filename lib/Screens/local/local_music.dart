@@ -622,245 +622,9 @@ class _SongsTabState extends State<SongsTab>
                                       children: [
                                         IconButton(
                                           splashRadius: 24,
-                                          onPressed: () {
-                                            showModalBottomSheet(
-                                              isDismissible: true,
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                String playTitle =
-                                                    widget.songs[index].title;
-                                                playTitle == ''
-                                                    ? playTitle = widget
-                                                        .songs[index]
-                                                        .displayNameWOExt
-                                                    : playTitle = widget
-                                                        .songs[index].title;
-                                                String playArtist =
-                                                    widget.songs[index].artist!;
-                                                playArtist == '<unknown>'
-                                                    ? playArtist = 'Unknown'
-                                                    : playArtist = widget
-                                                        .songs[index].artist!;
-
-                                                final String playAlbum =
-                                                    widget.songs[index].album!;
-                                                final int playDuration = widget
-                                                        .songs[index]
-                                                        .duration ??
-                                                    180000;
-                                                final String imagePath =
-                                                    '${widget.tempPath}/${widget.songs[index].displayNameWOExt}.png';
-
-                                                final MediaItem mediaItem =
-                                                    MediaItem(
-                                                  id: widget.songs[index].id
-                                                      .toString(),
-                                                  album: playAlbum,
-                                                  duration: Duration(
-                                                      milliseconds:
-                                                          playDuration),
-                                                  title:
-                                                      playTitle.split('(')[0],
-                                                  artist: playArtist,
-                                                  genre:
-                                                      widget.songs[index].genre,
-                                                  artUri: Uri.file(imagePath),
-                                                  extras: {
-                                                    'url': widget
-                                                        .songs[index].data,
-                                                    'date_added': widget
-                                                        .songs[index].dateAdded,
-                                                    'date_modified': widget
-                                                        .songs[index]
-                                                        .dateModified,
-                                                    'size': widget
-                                                        .songs[index].size,
-                                                    'year': widget.songs[index]
-                                                        .getMap['year'],
-                                                  },
-                                                );
-                                                return SizedBox(
-                                                  child:
-                                                      BottomGradientContainer(
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            20.0),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Expanded(
-                                                          child: ListTile(
-                                                            leading:
-                                                                OfflineAudioQuery
-                                                                    .offlineArtworkWidget(
-                                                              id: widget
-                                                                  .songs[index]
-                                                                  .id,
-                                                              type: ArtworkType
-                                                                  .AUDIO,
-                                                              height: 50,
-                                                              width: 50,
-                                                              tempPath: widget
-                                                                  .tempPath,
-                                                              fileName: widget
-                                                                  .songs[index]
-                                                                  .displayNameWOExt,
-                                                            ),
-                                                            title: Text(
-                                                              widget
-                                                                  .songs[index]
-                                                                  .title
-                                                                  .toUpperCase(),
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              softWrap: false,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w400,
-                                                              ),
-                                                            ),
-                                                            subtitle: Text(
-                                                              widget
-                                                                      .songs[index]
-                                                                      .artist
-                                                                  as String,
-                                                              textAlign:
-                                                                  TextAlign
-                                                                      .start,
-                                                              softWrap: false,
-                                                              overflow:
-                                                                  TextOverflow
-                                                                      .ellipsis,
-                                                              style:
-                                                                  const TextStyle(
-                                                                fontSize: 13,
-                                                                color:
-                                                                    Colors.grey,
-                                                              ),
-                                                            ),
-                                                            trailing: LikeButton(
-                                                                mediaItem:
-                                                                    mediaItem),
-                                                          ),
-                                                        ),
-                                                        _sheetTile("Play Next",
-                                                            () {
-                                                          playOfflineNext(
-                                                              mediaItem,
-                                                              context);
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                            EvaIcons
-                                                                .playCircleOutline),
-                                                        _sheetTile(
-                                                            "Add to queue", () {
-                                                          addOfflineToNowPlaying(
-                                                              context: context,
-                                                              mediaItem:
-                                                                  mediaItem);
-                                                          Navigator.pop(
-                                                              context);
-                                                        }, EvaIcons.fileAdd),
-                                                        _sheetTile(
-                                                            "Add to playlist",
-                                                            () {
-                                                          AddToOffPlaylist()
-                                                              .addToOffPlaylist(
-                                                            context,
-                                                            widget.songs[index]
-                                                                .id,
-                                                          );
-                                                          Navigator.pop(
-                                                              context);
-                                                        },
-                                                            Iconsax
-                                                                .music_playlist),
-                                                        _sheetTile("View Album",
-                                                            () async {
-                                                          var albumSongs =
-                                                              await offlineAudioQuery
-                                                                  .getAlbumSongs(widget
-                                                                      .songs[
-                                                                          index]
-                                                                      .albumId as int);
-
-                                                          Navigator.push(
-                                                            context,
-                                                            CupertinoPageRoute(
-                                                              builder: (_) =>
-                                                                  LocalMusicsDetail(
-                                                                title: widget
-                                                                        .songs[
-                                                                            index]
-                                                                        .album
-                                                                    as String,
-                                                                id: widget
-                                                                    .songs[
-                                                                        index]
-                                                                    .id,
-                                                                certainCase:
-                                                                    'album',
-                                                                songs:
-                                                                    albumSongs,
-                                                              ),
-                                                            ),
-                                                          ).then((value) =>
-                                                              Navigator.pop(
-                                                                  context));
-                                                        }, Icons.album_outlined),
-                                                        _sheetTile(
-                                                            "View Artist",
-                                                            () async {
-                                                          var albumSongs =
-                                                              await offlineAudioQuery
-                                                                  .getArtistsByName(widget
-                                                                          .songs[
-                                                                              index]
-                                                                          .artist
-                                                                      as String);
-
-                                                          Navigator.push(
-                                                            context,
-                                                            CupertinoPageRoute(
-                                                              builder: (_) =>
-                                                                  LocalMusicsDetail(
-                                                                title: widget
-                                                                        .songs[
-                                                                            index]
-                                                                        .artist
-                                                                    as String,
-                                                                id: widget
-                                                                    .songs[
-                                                                        index]
-                                                                    .id,
-                                                                certainCase:
-                                                                    'artist',
-                                                                songs:
-                                                                    albumSongs,
-                                                              ),
-                                                            ),
-                                                          ).then((value) =>
-                                                              Navigator.pop(
-                                                                  context));
-                                                        }, EvaIcons.person),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                );
-                                              },
-                                            );
+                                          onPressed: () async {
+                                            await localMusicBottomSheet(context,
+                                                index, offlineAudioQuery);
                                           },
                                           icon: const Icon(
                                               EvaIcons.moreHorizontalOutline),
@@ -900,6 +664,138 @@ class _SongsTabState extends State<SongsTab>
                 ),
               ],
             ),
+    );
+  }
+
+  localMusicBottomSheet(BuildContext context, int index,
+      OfflineAudioQuery offlineAudioQuery) async {
+    showModalBottomSheet(
+      isDismissible: true,
+      backgroundColor: Colors.transparent,
+      context: context,
+      builder: (BuildContext context) {
+        String playTitle = widget.songs[index].title;
+        playTitle == ''
+            ? playTitle = widget.songs[index].displayNameWOExt
+            : playTitle = widget.songs[index].title;
+        String playArtist = widget.songs[index].artist!;
+        playArtist == '<unknown>'
+            ? playArtist = 'Unknown'
+            : playArtist = widget.songs[index].artist!;
+
+        final String playAlbum = widget.songs[index].album!;
+        final int playDuration = widget.songs[index].duration ?? 180000;
+        final String imagePath =
+            '${widget.tempPath}/${widget.songs[index].displayNameWOExt}.png';
+
+        final MediaItem mediaItem = MediaItem(
+          id: widget.songs[index].id.toString(),
+          album: playAlbum,
+          duration: Duration(milliseconds: playDuration),
+          title: playTitle.split('(')[0],
+          artist: playArtist,
+          genre: widget.songs[index].genre,
+          artUri: Uri.file(imagePath),
+          extras: {
+            'url': widget.songs[index].data,
+            'date_added': widget.songs[index].dateAdded,
+            'date_modified': widget.songs[index].dateModified,
+            'size': widget.songs[index].size,
+            'year': widget.songs[index].getMap['year'],
+          },
+        );
+        return SizedBox(
+          child: BottomGradientContainer(
+            borderRadius: BorderRadius.circular(20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: ListTile(
+                    leading: OfflineAudioQuery.offlineArtworkWidget(
+                      id: widget.songs[index].id,
+                      type: ArtworkType.AUDIO,
+                      height: 50,
+                      width: 50,
+                      tempPath: widget.tempPath,
+                      fileName: widget.songs[index].displayNameWOExt,
+                    ),
+                    title: Text(
+                      widget.songs[index].title.toUpperCase(),
+                      textAlign: TextAlign.start,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                    subtitle: Text(
+                      widget.songs[index].artist as String,
+                      textAlign: TextAlign.start,
+                      softWrap: false,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    trailing: LikeButton(mediaItem: mediaItem),
+                  ),
+                ),
+                _sheetTile("Play Next", () {
+                  playOfflineNext(mediaItem, context);
+                  Navigator.pop(context);
+                }, EvaIcons.playCircleOutline),
+                _sheetTile("Add to queue", () {
+                  addOfflineToNowPlaying(
+                      context: context, mediaItem: mediaItem);
+                  Navigator.pop(context);
+                }, EvaIcons.fileAdd),
+                _sheetTile("Add to playlist", () {
+                  AddToOffPlaylist().addToOffPlaylist(
+                    context,
+                    widget.songs[index].id,
+                  );
+                  Navigator.pop(context);
+                }, Iconsax.music_playlist),
+                _sheetTile("View Album", () async {
+                  var albumSongs = await offlineAudioQuery
+                      .getAlbumSongs(widget.songs[index].albumId as int);
+
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => LocalMusicsDetail(
+                        title: widget.songs[index].album as String,
+                        id: widget.songs[index].id,
+                        certainCase: 'album',
+                        songs: albumSongs,
+                      ),
+                    ),
+                  ).then((value) => Navigator.pop(context));
+                }, Icons.album_outlined),
+                _sheetTile("View Artist", () async {
+                  var albumSongs = await offlineAudioQuery
+                      .getArtistsByName(widget.songs[index].artist as String);
+
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => LocalMusicsDetail(
+                        title: widget.songs[index].artist as String,
+                        id: widget.songs[index].id,
+                        certainCase: 'artist',
+                        songs: albumSongs,
+                      ),
+                    ),
+                  ).then((value) => Navigator.pop(context));
+                }, EvaIcons.person),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

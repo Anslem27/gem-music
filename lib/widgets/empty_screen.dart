@@ -45,6 +45,7 @@ Widget emptyScreen(
               ),
               Text(
                 text3,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: size3,
                   fontWeight: FontWeight.w600,

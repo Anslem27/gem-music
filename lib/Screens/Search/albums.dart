@@ -124,11 +124,11 @@ class _AlbumSearchPageState extends State<AlbumSearchPage> {
                       ? emptyScreen(
                           context,
                           0,
-                          ':( ',
+                          'ಠ_ಠ',
                           100,
-                          'Oops!',
+                          'Yikes!',
                           60,
-                          'No results ',
+                          'Something unexpected\nhappened',
                           20,
                         )
                       : BouncyImageSliverScrollView(
