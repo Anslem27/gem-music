@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
+/* // ignore_for_file: prefer_typing_uninitialized_variables, non_constant_identifier_names
 
 import 'dart:io';
 import 'package:flutter/foundation.dart';
@@ -347,3 +347,4 @@ class _SpotifyPlaylistGetterState extends State<SpotifyPlaylistGetter> {
     );
   }
 }
+ */

@@ -210,7 +210,7 @@ class _HomePageState extends State<HomePage> {
           ) as String;
           if (autoBackPath == '') {
             ExtStorageProvider.getExtStorage(
-              dirName: 'Gem/Backups',
+              dirName: 'Gem/Backups', writeAccess: true,
             ).then((value) {
               Hive.box('settings').put('autoBackPath', value);
               createBackup(

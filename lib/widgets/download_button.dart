@@ -21,13 +21,14 @@ class DownloadButton extends StatefulWidget {
 }
 
 class _DownloadButtonState extends State<DownloadButton> {
-  Download down = Download();
+  late Download down;
   final Box downloadsBox = Hive.box('downloads');
   final ValueNotifier<bool> showStopButton = ValueNotifier<bool>(false);
 
   @override
   void initState() {
     super.initState();
+    down = Download(widget.data['id'].toString());
     down.addListener(() {
       setState(() {});
     });
@@ -40,7 +41,6 @@ class _DownloadButtonState extends State<DownloadButton> {
       child: Center(
         child: (downloadsBox.containsKey(widget.data['id']))
             ? IconButton(
-                splashRadius: 24,
                 icon: const Icon(Icons.download_done_rounded),
                 tooltip: 'Download Done',
                 color: Theme.of(context).colorScheme.secondary,
@@ -54,7 +54,7 @@ class _DownloadButtonState extends State<DownloadButton> {
                     icon: Icon(
                       widget.icon == 'download'
                           ? EvaIcons.cloudDownloadOutline
-                          : EvaIcons.doneAll,
+                          : Icons.save_alt,
                     ),
                     iconSize: widget.size ?? 24.0,
                     color: Theme.of(context).iconTheme.color,
@@ -82,14 +82,17 @@ class _DownloadButtonState extends State<DownloadButton> {
                                 ),
                                 iconSize: 25.0,
                                 color: Theme.of(context).iconTheme.color,
-                                tooltip: 'Stop downloading',
+                                tooltip: "Stop Downloading",
                                 onPressed: () {
                                   down.download = false;
                                 },
                               ),
                             ),
-                            builder: (BuildContext context, bool showValue,
-                                Widget? child) {
+                            builder: (
+                              BuildContext context,
+                              bool showValue,
+                              Widget? child,
+                            ) {
                               return AnimatedContainer(
                                 duration: const Duration(milliseconds: 200),
                                 child: Column(
@@ -143,12 +146,13 @@ class MultiDownloadButton extends StatefulWidget {
 }
 
 class _MultiDownloadButtonState extends State<MultiDownloadButton> {
-  Download down = Download();
+  late Download down;
   int done = 0;
 
   @override
   void initState() {
     super.initState();
+    down = Download(widget.data.first['id'].toString());
     down.addListener(() {
       setState(() {});
     });
@@ -177,20 +181,18 @@ class _MultiDownloadButtonState extends State<MultiDownloadButton> {
                   Icons.download_done_rounded,
                 ),
                 color: Theme.of(context).colorScheme.secondary,
-                iconSize: 20.0,
-                tooltip: 'Download done',
+                iconSize: 25.0,
+                tooltip: "Download Done",
                 onPressed: () {},
               )
             : down.progress == 0
                 ? Center(
                     child: IconButton(
-                      splashRadius: 24,
                       icon: const Icon(
                         EvaIcons.download,
-                        size: 24,
                       ),
                       iconSize: 20.0,
-                      tooltip: 'Download',
+                      tooltip: "Download",
                       onPressed: () async {
                         for (final items in widget.data) {
                           down.prepareDownload(
@@ -255,7 +257,7 @@ class AlbumDownloadButton extends StatefulWidget {
 }
 
 class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
-  Download down = Download();
+  late Download down;
   int done = 0;
   List data = [];
   bool finished = false;
@@ -263,6 +265,7 @@ class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
   @override
   void initState() {
     super.initState();
+    down = Download(widget.albumId);
     down.addListener(() {
       setState(() {});
     });
@@ -288,7 +291,7 @@ class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
                 ),
                 color: Theme.of(context).colorScheme.secondary,
                 iconSize: 25.0,
-                tooltip: 'Download done',
+                tooltip: "Download Done",
                 onPressed: () {},
               )
             : down.progress == 0
@@ -299,7 +302,7 @@ class _AlbumDownloadButtonState extends State<AlbumDownloadButton> {
                       ),
                       iconSize: 25.0,
                       color: Theme.of(context).iconTheme.color,
-                      tooltip: 'Download',
+                      tooltip: "DownloadF",
                       onPressed: () async {
                         ShowSnackBar().showSnackBar(
                           context,

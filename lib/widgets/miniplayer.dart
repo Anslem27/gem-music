@@ -160,7 +160,7 @@ class _MiniPlayerState extends State<MiniPlayer> {
                             )?.toList() as List;
 
                             return Container(
-                              margin: const EdgeInsets.symmetric(horizontal: 1),
+                              margin: const EdgeInsets.symmetric(horizontal: 1,vertical: 2),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(8),
                                 color: Colors.transparent,

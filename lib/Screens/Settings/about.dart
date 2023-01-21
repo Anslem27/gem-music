@@ -71,7 +71,7 @@ class _AboutScreenState extends State<AboutScreen> {
                     ),
                     const Card(
                       elevation: 15,
-                
+                      color: Colors.transparent,
                       clipBehavior: Clip.antiAlias,
                       child: SizedBox(
                         width: 150,

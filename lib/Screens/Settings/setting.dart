@@ -454,6 +454,7 @@ class _SettingPageState extends State<SettingPage> {
                               downloadPath =
                                   await ExtStorageProvider.getExtStorage(
                                         dirName: 'Music',
+                                        writeAccess: true,
                                       ) ??
                                       '/storage/emulated/0/Music';
                               Hive.box('settings')
@@ -1127,6 +1128,7 @@ class _SettingPageState extends State<SettingPage> {
                               autoBackPath =
                                   await ExtStorageProvider.getExtStorage(
                                         dirName: 'Gem/Backups',
+                                        writeAccess: true,
                                       ) ??
                                       '/storage/emulated/0/Gem/Backups';
                               Hive.box('settings')

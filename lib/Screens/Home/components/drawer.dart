@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:gem/Screens/Settings/about.dart';
 import 'package:gem/animations/custompageroute.dart';
 import 'package:get_it/get_it.dart';
-import 'package:palette_generator/palette_generator.dart';
 import '../../../widgets/gradient_containers.dart';
 import '../../../animations/equalizer.dart';
 import '../../Player/music_player.dart';
@@ -27,13 +26,6 @@ class _GemDrawerState extends State<GemDrawer> {
   @override
   Widget build(BuildContext context) {
     AudioPlayerHandler audioHandler = GetIt.I<AudioPlayerHandler>();
-
-    //get dorminant color from image rendered
-    Future<Color> getdominantColor(ImageProvider imageProvider) async {
-      final PaletteGenerator paletteGenerator =
-          await PaletteGenerator.fromImageProvider(imageProvider);
-      return paletteGenerator.dominantColor!.color;
-    }
 
     void callback() {
       Navigator.pop(context);

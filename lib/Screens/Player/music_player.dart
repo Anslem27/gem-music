@@ -1153,6 +1153,7 @@ class _PlayScreenState extends State<PlayScreen> {
                             builder: (BuildContext context, List<Color?>? value,
                                 Widget? child) {
                               return AnimatedContainer(
+                                curve: Curves.easeInOutCubic,
                                 duration: const Duration(milliseconds: 600),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -1744,6 +1745,7 @@ class _PlayScreenState extends State<PlayScreen> {
                           builder: (BuildContext context, List<Color?>? value,
                               Widget? child) {
                             return AnimatedContainer(
+                              curve: Curves.easeInOutCubic,
                               duration: const Duration(milliseconds: 600),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(

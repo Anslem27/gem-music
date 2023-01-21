@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:audiotagger/audiotagger.dart';
@@ -14,13 +13,30 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class Download with ChangeNotifier {
+  static final Map<String, Download> _instances = {};
+  final String id;
+
+  factory Download(String id) {
+    if (_instances.containsKey(id)) {
+      return _instances[id]!;
+    } else {
+      final instance = Download._internal(id);
+      _instances[id] = instance;
+      return instance;
+    }
+  }
+
+  Download._internal(this.id);
+
   int? rememberOption;
   final ValueNotifier<bool> remember = ValueNotifier<bool>(false);
   String preferredDownloadQuality = Hive.box('settings')
       .get('downloadQuality', defaultValue: '320 kbps') as String;
   String preferredYtDownloadQuality = Hive.box('settings')
       .get('ytDownloadQuality', defaultValue: 'High') as String;
-  String downloadFormat = 'm4a';
+  String downloadFormat = Hive.box('settings')
+      .get('downloadFormat', defaultValue: 'm4a')
+      .toString();
   bool createDownloadFolder = Hive.box('settings')
       .get('createDownloadFolder', defaultValue: false) as bool;
   bool createYoutubeFolder = Hive.box('settings')
@@ -77,8 +93,10 @@ class Download with ChangeNotifier {
 
     filename = '${filename.replaceAll(avoid, "").replaceAll("  ", " ")}.m4a';
     if (dlPath == '') {
-      final String? temp =
-          await ExtStorageProvider.getExtStorage(dirName: 'Music');
+      final String? temp = await ExtStorageProvider.getExtStorage(
+        dirName: 'Music',
+        writeAccess: true,
+      );
       dlPath = temp!;
     }
     if (data['url'].toString().contains('google') && createYoutubeFolder) {
@@ -124,7 +142,7 @@ class Download with ChangeNotifier {
                 borderRadius: BorderRadius.circular(10.0),
               ),
               title: Text(
-                'Already Exists',
+                "Already Exists",
                 style:
                     TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
@@ -132,7 +150,7 @@ class Download with ChangeNotifier {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '"${data['title']}" Download Again',
+                    '"${data['title']}" Download again',
                     softWrap: true,
                   ),
                   const SizedBox(
@@ -162,7 +180,9 @@ class Download with ChangeNotifier {
                                   remember.value = value ?? false;
                                 },
                               ),
-                              const Text('Remember Choice'),
+                              const Text(
+                                "Remember Choice",
+                              ),
                             ],
                           ),
                         );
@@ -186,7 +206,7 @@ class Download with ChangeNotifier {
                               rememberOption = 0;
                             },
                             child: const Text(
-                              'No',
+                              "No",
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -203,12 +223,13 @@ class Download with ChangeNotifier {
                               downloadSong(context, dlPath, filename, data);
                               rememberOption = 1;
                             },
-                            child: const Text('Yes Replace'),
+                            child: const Text("Yes Replace"),
                           ),
                           const SizedBox(width: 5.0),
                           TextButton(
                             style: TextButton.styleFrom(
-                              foregroundColor: Colors.white, backgroundColor:
+                              foregroundColor: Colors.white,
+                              backgroundColor:
                                   Theme.of(context).colorScheme.secondary,
                             ),
                             onPressed: () async {
@@ -221,7 +242,7 @@ class Download with ChangeNotifier {
                               downloadSong(context, dlPath, filename, data);
                             },
                             child: Text(
-                              'Yes',
+                              "Yes",
                               style: TextStyle(
                                 color:
                                     Theme.of(context).colorScheme.secondary ==
@@ -273,7 +294,6 @@ class Download with ChangeNotifier {
       await File('$dlPath/$fileName')
           .create(recursive: true)
           .then((value) => filepath = value.path);
-      // print('created audio file');
 
       await File('$appPath/$artname')
           .create(recursive: true)
@@ -282,16 +302,15 @@ class Download with ChangeNotifier {
       await [
         Permission.manageExternalStorage,
       ].request();
+
       await File('$dlPath/$fileName')
           .create(recursive: true)
           .then((value) => filepath = value.path);
-      // print('created audio file');
+
       await File('$appPath/$artname')
           .create(recursive: true)
           .then((value) => filepath2 = value.path);
     }
-    // debugPrint('Audio path $filepath');
-    // debugPrint('Image path $filepath2');
     String kUrl = data['url'].toString();
 
     if (data['url'].toString().contains('google')) {
@@ -303,8 +322,6 @@ class Download with ChangeNotifier {
       if (kUrl == 'null') {
         kUrl = data['url'].toString();
       }
-      log("low quality is ${data['lowUrl']}");
-      log("high quality is ${data['highUrl']}");
     } else {
       kUrl = kUrl.replaceAll(
         '_96.',
@@ -327,7 +344,7 @@ class Download with ChangeNotifier {
           client.close();
         }
       } catch (e) {
-        // print('Error: $e');
+        // Logger.root.severe('Error in download: $e');
       }
     }).onDone(() async {
       if (download) {
@@ -352,9 +369,46 @@ class Download with ChangeNotifier {
                 )
               : '';
         } catch (e) {
-          // print('Error fetching lyrics: $e');
+          // Logger.root.severe('Error fetching lyrics: $e');
           lyrics = '';
         }
+        // commented out not to use FFmpeg as it increases the size of the app
+        // can uncomment this if you want to use FFmpeg to convert the audio format
+        // to any desired codec instead of the default m4a one.
+
+        // final List<String> availableFormats = ['m4a'];
+        // if (downloadFormat != 'm4a' &&
+        //     availableFormats.contains(downloadFormat)) {
+        //   List<String>? argsList;
+        //   if (downloadFormat == 'mp3') {
+        //     argsList = [
+        //       '-y',
+        //       '-i',
+        //       '$filepath',
+        //       '-c:a',
+        //       'libmp3lame',
+        //       '-b:a',
+        //       '320k',
+        //       (filepath!.replaceAll('.m4a', '.mp3'))
+        //     ];
+        //   }
+        //   if (downloadFormat == 'm4a') {
+        //     argsList = [
+        //       '-y',
+        //       '-i',
+        //       filepath!,
+        //       '-c:a',
+        //       'aac',
+        //       '-b:a',
+        //       '320k',
+        //       filepath!.replaceAll('.m4a', '.m4a')
+        //     ];
+        //   }
+        //   // await FlutterFFmpeg().executeWithArguments(_argsList);
+        //   // await File(filepath!).delete();
+        //   // filepath = filepath!.replaceAll('.m4a', '.$downloadFormat');
+        // }
+        // Logger.root.info('Started tag editing');
         final Tag tag = Tag(
           title: data['title'].toString(),
           artist: data['artist'].toString(),
@@ -365,7 +419,7 @@ class Download with ChangeNotifier {
           genre: data['language'].toString(),
           year: data['year'].toString(),
           lyrics: lyrics,
-          comment: 'BlackHole',
+          comment: 'Gem Music',
         );
         if (Platform.isAndroid) {
           try {
@@ -380,11 +434,10 @@ class Download with ChangeNotifier {
             //   }
             // });
           } catch (e) {
-            log('Failed to edit tags');
+            // Logger.root.severe('Error editing tags: $e');
           }
         }
         client.close();
-        // debugPrint('Done');
         lastDownloadId = data['id'].toString();
         progress = 0.0;
         notifyListeners();
@@ -415,7 +468,7 @@ class Download with ChangeNotifier {
 
         ShowSnackBar().showSnackBar(
           context,
-          '"${data['title'].toString()}" Downloaded}',
+          '"${data['title'].toString()}" Downloaded',
         );
       } else {
         download = true;
