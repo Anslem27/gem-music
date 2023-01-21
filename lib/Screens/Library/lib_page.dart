@@ -17,6 +17,7 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
+  String category = '';
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -126,6 +127,113 @@ class _LibraryPageState extends State<LibraryPage> {
                 Navigator.pushNamed(context, '/playlists');
               },
             ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  margin: const EdgeInsets.only(left: 5, right: 5),
+                  child: IconButton(
+                      splashRadius: 24,
+                      onPressed: () {
+                        category = '';
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.clear)),
+                ),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  margin: const EdgeInsets.only(left: 5, right: 5),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Liked Artists',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.5),
+                    labelStyle: TextStyle(
+                      fontWeight:
+                          category == '' ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    selected: category == '',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = '';
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Genres',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                    labelStyle: TextStyle(
+                      color: category == 'genres'
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).textTheme.bodyText1!.color,
+                      fontWeight: category == 'genres'
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                    selected: category == 'genres',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = 'genres';
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Playlists',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                    labelStyle: TextStyle(
+                      color: category == 'playlists'
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).textTheme.bodyText1!.color,
+                      fontWeight: category == 'playlists'
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                    selected: category == 'playlists',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = 'playlists';
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+              ],
+            ),
+            category == ""
+                ? const SizedBox()
+                : category == "genres"
+                    ? const SizedBox()
+                    : const SizedBox()
           ],
         ),
       ],

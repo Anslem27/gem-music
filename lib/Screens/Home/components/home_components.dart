@@ -18,12 +18,7 @@ import '../../../widgets/add_playlist.dart';
 import '../../../widgets/gradient_containers.dart';
 import '../../../Helpers/add_mediaitem_to_queue.dart';
 import '../../../Helpers/local_music_functions.dart';
-import '../../../models/services/image_id.dart';
-import '../../../models/widgets/entity/entity_image.dart';
 import '../../Player/music_player.dart';
-import '../../../models/services/lastfm/artist.dart';
-import '../../../models/services/lastfm/lastfm.dart';
-import '../../youtube/youtube_search.dart';
 import '../../local/pages/albums_page.dart';
 import '../../local/pages/detail_page.dart';
 import '../../local/pages/local_genres.dart';
@@ -1075,168 +1070,64 @@ class _ArtistsAtAGlanceState extends State<ArtistsAtAGlance> {
             scrollDirection: Axis.horizontal,
             physics: const BouncingScrollPhysics(),
             itemBuilder: (_, index) {
-              return FutureBuilder<List<LTopArtistsResponseArtist>>(
-                future: Lastfm.getGlobalTopArtists(100),
-                builder: (_, snapshot) {
-                  if (!snapshot.hasData) {
-                    return GestureDetector(
-                      onTap: () async {
-                        var album_songs = await offlineAudioQuery
-                            .getArtistSongs(a_glance[index].id);
+              return GestureDetector(
+                onTap: () async {
+                  var album_songs = await offlineAudioQuery
+                      .getArtistSongs(a_glance[index].id);
 
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (_) => LocalMusicsDetail(
-                              title: a_glance[index].artist,
-                              id: a_glance[index].id,
-                              certainCase: 'artist',
-                              songs: album_songs,
-                            ),
-                          ),
-                        );
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                          height: boxSize - 30,
-                          width: boxSize - 40,
-                          child: Column(
-                            children: [
-                              QueryArtworkWidget(
-                                id: a_glance[index].id,
-                                type: ArtworkType.AUDIO,
-                                artworkHeight: boxSize - 35,
-                                artworkWidth: boxSize - 40,
-                                artworkBorder: BorderRadius.circular(7.0),
-                                nullArtworkWidget: ClipRRect(
-                                  borderRadius: BorderRadius.circular(100.0),
-                                  child: Image(
-                                    fit: BoxFit.cover,
-                                    height: boxSize - 35,
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.5,
-                                    image:
-                                        const AssetImage('assets/artist.png'),
-                                  ),
-                                ),
-                              ),
-                              Expanded(
-                                child: ListTile(
-                                  title: Text(
-                                    a_glance[index].artist.toUpperCase(),
-                                    textAlign: TextAlign.center,
-                                    softWrap: false,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      fontWeight: FontWeight.w400,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (_) => LocalMusicsDetail(
+                        title: a_glance[index].artist,
+                        id: a_glance[index].id,
+                        certainCase: 'artist',
+                        songs: album_songs,
                       ),
-                    );
-                  }
-                  return SizedBox(
-                    height: boxSize + 40,
-                    child: ListView(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      physics: const BouncingScrollPhysics(),
-                      // padding: EdgeInsets.zero,
-                      children: snapshot.data!
-                          .map(
-                            (artist) => FutureBuilder<List<LArtistTopAlbum>>(
-                                future: ArtistGetTopAlbumsRequest(artist.name)
-                                    .getData(1, 1),
-                                builder: (context, snapshot) {
-                                  if (!snapshot.hasData) {
-                                    return CircleAvatar(
-                                      radius: 100,
-                                      child: GlassmorphicContainer(
-                                        height: boxSize - 30,
-                                        width: boxSize - 20,
-                                        borderRadius: 100,
-                                        blur: 20,
-                                        alignment: Alignment.bottomCenter,
-                                        border: 2,
-                                        linearGradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              const Color(0xFFffffff)
-                                                  .withOpacity(0.1),
-                                              const Color(0xFFFFFFFF)
-                                                  .withOpacity(0.05),
-                                            ],
-                                            stops: const [
-                                              0.1,
-                                              1,
-                                            ]),
-                                        borderGradient: const LinearGradient(
-                                          begin: Alignment.topLeft,
-                                          end: Alignment.bottomRight,
-                                          colors: [
-                                            Colors.transparent,
-                                            Colors.transparent
-                                          ],
-                                        ),
-                                        child: null,
-                                      ),
-                                    );
-                                  }
-                                  return Column(
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: SizedBox(
-                                          height: boxSize - 30,
-                                          width: boxSize - 40,
-                                          child: GestureDetector(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                FadeTransitionPageRoute(
-                                                  child: YouTubeSearchPage(
-                                                    query:
-                                                        "${artist.name}'s top songs",
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            child: EntityImage(
-                                              entity: snapshot.data!.first,
-                                              quality: ImageQuality.high,
-                                              placeholderBehavior:
-                                                  PlaceholderBehavior.none,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 8),
-                                      Text(
-                                        artist.name.toUpperCase(),
-                                        textAlign: TextAlign.center,
-                                        softWrap: false,
-                                        overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
-                                          fontSize: 14,
-                                          fontWeight: FontWeight.w400,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }),
-                          )
-                          .take(10)
-                          .toList(),
                     ),
                   );
                 },
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    height: boxSize - 30,
+                    width: boxSize - 40,
+                    child: Column(
+                      children: [
+                        QueryArtworkWidget(
+                          id: a_glance[index].id,
+                          type: ArtworkType.AUDIO,
+                          artworkHeight: boxSize - 35,
+                          artworkWidth: boxSize - 40,
+                          artworkBorder: BorderRadius.circular(7.0),
+                          nullArtworkWidget: ClipRRect(
+                            borderRadius: BorderRadius.circular(100.0),
+                            child: Image(
+                              fit: BoxFit.cover,
+                              height: boxSize - 35,
+                              width: MediaQuery.of(context).size.width / 2.5,
+                              image: const AssetImage('assets/artist.png'),
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: ListTile(
+                            title: Text(
+                              a_glance[index].artist.toUpperCase(),
+                              textAlign: TextAlign.center,
+                              softWrap: false,
+                              overflow: TextOverflow.ellipsis,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               );
             },
           ),

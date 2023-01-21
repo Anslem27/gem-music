@@ -71,171 +71,160 @@ class _GemDrawerState extends State<GemDrawer> {
                 final mediaItem = snapshot.data;
                 if (mediaItem == null) return const SizedBox();
 
-                return FutureBuilder(
-                  future: getdominantColor(
-                    (mediaItem.artUri.toString().startsWith('file:'))
-                        ? FileImage(
-                            File(
-                              mediaItem.artUri!.toFilePath(),
-                            ),
-                          )
-                        : NetworkImage(mediaItem.artUri.toString())
-                            as ImageProvider,
-                  ),
-                  builder: (_, AsyncSnapshot<Color> colorSnapshot) {
-                    return SafeArea(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Stack(
-                          children: [
-                            _isCollapsed
-                                ? positionedGemLogo(context)
-                                : const SizedBox(),
-                            _isCollapsed
-                                ? CustomScrollView(
-                                    //shrinkWrap: true,
-                                    physics: const BouncingScrollPhysics(),
-                                    slivers: [
-                                      sliverAppBar(context, mediaItem),
-                                      SliverList(
-                                        delegate: SliverChildListDelegate(
-                                          [
-                                            const SizedBox(height: 10),
-                                            _isCollapsed &&
-                                                    snapshot.connectionState !=
-                                                        ConnectionState.active
-                                                ? const SizedBox()
-                                                : musicVisualizerComponent(),
-                                            const Padding(
-                                              padding: EdgeInsets.all(8.0),
-                                              child: Text("Now Playing"),
-                                            ),
-                                            AnimatedContainer(
-                                              curve: Curves.easeInOutCubic,
-                                              duration: const Duration(
-                                                  milliseconds: 500),
-                                              margin: const EdgeInsets.only(
-                                                  left: 5, right: 5),
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.all(8.0),
-                                                child: Row(
-                                                  children: [
-                                                    const CircleAvatar(
-                                                      radius: 35,
-                                                      backgroundImage: AssetImage(
-                                                          "assets/ic_launcher_no_bg.png"),
-                                                    ),
-                                                    Expanded(
-                                                        child: ListTile(
-                                                      title:
-                                                          Text(mediaItem.title),
-                                                      subtitle: Text(mediaItem
-                                                          .artist as String),
-                                                    ))
-                                                  ],
+                return SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 10),
+                    child: Stack(
+                      children: [
+                        _isCollapsed
+                            ? positionedGemLogo(context)
+                            : const SizedBox(),
+                        _isCollapsed
+                            ? CustomScrollView(
+                                //shrinkWrap: true,
+                                physics: const BouncingScrollPhysics(),
+                                slivers: [
+                                  sliverAppBar(context, mediaItem),
+                                  SliverList(
+                                    delegate: SliverChildListDelegate(
+                                      [
+                                        const SizedBox(height: 10),
+                                        _isCollapsed &&
+                                                snapshot.connectionState !=
+                                                    ConnectionState.active
+                                            ? const SizedBox()
+                                            : musicVisualizerComponent(),
+                                        const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Text("Now Playing"),
+                                        ),
+                                        AnimatedContainer(
+                                          curve: Curves.easeInOutCubic,
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          margin: const EdgeInsets.only(
+                                              left: 5, right: 5),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Row(
+                                              children: [
+                                                const CircleAvatar(
+                                                  radius: 35,
+                                                  backgroundImage: AssetImage(
+                                                      "assets/ic_launcher_no_bg.png"),
                                                 ),
-                                              ),
+                                                Expanded(
+                                                    child: ListTile(
+                                                  title: Text(mediaItem.title),
+                                                  subtitle: Text(mediaItem
+                                                      .artist as String),
+                                                ))
+                                              ],
                                             ),
-                                            const SizedBox(height: 20),
-                                            CustomListTile(
-                                              isCollapsed: _isCollapsed,
-                                              icon: EvaIcons.home,
-                                              title: 'Home',
-                                              ontap: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                            if (Platform.isAndroid)
-                                              CustomListTile(
-                                                isCollapsed: _isCollapsed,
-                                                icon: EvaIcons.music,
-                                                title: 'Local Music',
-                                                ontap: () {
-                                                  Navigator.pop(context);
-                                                  Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          const DownloadedSongs(
-                                                        showPlaylists: true,
-                                                        fromHomElement: false,
-                                                      ),
-                                                    ),
-                                                  );
-                                                },
-                                              ),
-                                            CustomListTile(
-                                              isCollapsed: _isCollapsed,
-                                              icon: EvaIcons.cloudDownload,
-                                              title: 'Downloads',
-                                              ontap: () {
-                                                Navigator.pop(context);
-                                                Navigator.pushNamed(
-                                                    context, '/downloads');
-                                              },
-                                            ),
-                                            CustomListTile(
-                                              isCollapsed: _isCollapsed,
-                                              icon: Icons.playlist_play,
-                                              title: 'Playlists',
-                                              ontap: () {
-                                                Navigator.pop(context);
-                                                Navigator.pushNamed(
-                                                    context, '/playlists');
-                                              },
-                                            ),
-                                            const Divider(color: Colors.grey),
-                                            const Spacer(),
-                                            CustomListTile(
-                                              isCollapsed: _isCollapsed,
-                                              icon: Icons.settings,
-                                              title: 'Settings',
-                                              ontap: () {
-                                                Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SettingPage(
-                                                      callback: () => callback,
-                                                    ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        AnimatedContainer(
+                                          curve: Curves.easeInOutCubic,
+                                          duration:
+                                              const Duration(milliseconds: 500),
+                                          child: CustomListTile(
+                                            isCollapsed: _isCollapsed,
+                                            icon: EvaIcons.home,
+                                            title: 'Home',
+                                            ontap: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ),
+                                        if (Platform.isAndroid)
+                                          CustomListTile(
+                                            isCollapsed: _isCollapsed,
+                                            icon: EvaIcons.music,
+                                            title: 'Local Music',
+                                            ontap: () {
+                                              Navigator.pop(context);
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const DownloadedSongs(
+                                                    showPlaylists: true,
+                                                    fromHomElement: false,
                                                   ),
-                                                );
-                                              },
-                                            ),
-                                            const SizedBox(height: 10),
-                                            Align(
-                                              alignment: _isCollapsed
-                                                  ? Alignment.bottomRight
-                                                  : Alignment.bottomCenter,
-                                              child: IconButton(
-                                                splashColor: Colors.transparent,
-                                                icon: Icon(
-                                                  _isCollapsed
-                                                      ? Icons.arrow_back_ios
-                                                      : Icons.arrow_forward_ios,
-                                                  color: Colors.white,
-                                                  size: 16,
                                                 ),
-                                                onPressed: () {
-                                                  setState(() {
-                                                    _isCollapsed =
-                                                        !_isCollapsed;
-                                                  });
-                                                },
+                                              );
+                                            },
+                                          ),
+                                        CustomListTile(
+                                          isCollapsed: _isCollapsed,
+                                          icon: EvaIcons.cloudDownload,
+                                          title: 'Downloads',
+                                          ontap: () {
+                                            Navigator.pop(context);
+                                            Navigator.pushNamed(
+                                                context, '/downloads');
+                                          },
+                                        ),
+                                        CustomListTile(
+                                          isCollapsed: _isCollapsed,
+                                          icon: Icons.playlist_play,
+                                          title: 'Playlists',
+                                          ontap: () {
+                                            Navigator.pop(context);
+                                            Navigator.pushNamed(
+                                                context, '/playlists');
+                                          },
+                                        ),
+                                        const Divider(color: Colors.grey),
+                                        //const Spacer(),
+                                        CustomListTile(
+                                          isCollapsed: _isCollapsed,
+                                          icon: Icons.settings,
+                                          title: 'Settings',
+                                          ontap: () {
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    SettingPage(
+                                                  callback: () => callback,
+                                                ),
                                               ),
+                                            );
+                                          },
+                                        ),
+                                        const SizedBox(height: 10),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.end,
+                                          children: [
+                                            IconButton(
+                                              splashColor: Colors.transparent,
+                                              icon: Icon(
+                                                _isCollapsed
+                                                    ? Icons.arrow_back_ios
+                                                    : Icons.arrow_forward_ios,
+                                                color: Colors.white,
+                                                size: 16,
+                                              ),
+                                              onPressed: () {
+                                                setState(() {
+                                                  _isCollapsed = !_isCollapsed;
+                                                });
+                                              },
                                             ),
                                           ],
-                                        ),
-                                      ),
-                                    ],
-                                  )
-                                : halfDrawerBody(mediaItem, snapshot),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              )
+                            : halfDrawerBody(mediaItem, snapshot),
+                      ],
+                    ),
+                  ),
                 );
               },
             );

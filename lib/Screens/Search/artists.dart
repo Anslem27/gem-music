@@ -254,9 +254,10 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        /* index == 0 && */
-                                        artistSongs[index].artist ==
-                                                widget.data['title']?.toString()
+                                        index == 0 &&
+                                                artistSongs[index].artist ==
+                                                    widget.data['title']
+                                                        ?.toString()
                                             ? Row(
                                                 children: [
                                                   Padding(

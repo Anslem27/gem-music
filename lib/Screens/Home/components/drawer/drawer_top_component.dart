@@ -11,6 +11,7 @@ class GemDrawerTopComponent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedContainer(
+      curve: Curves.bounceInOut,
       duration: const Duration(milliseconds: 500),
       height: 60,
       width: double.infinity,
