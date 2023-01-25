@@ -169,6 +169,22 @@ class YouTubeServices {
     }
   }
 
+  static Future<List> getHomeSuggestions(String query) async {
+    const baseUrl =
+        'https://invidious.snopyta.org/api/v1/search/suggestions?q=';
+    final Uri link = Uri.parse(baseUrl + query);
+    try {
+      final Response response = await get(link, headers: headers);
+      if (response.statusCode != 200) {
+        return [];
+      }
+      final Map res = jsonDecode(response.body) as Map;
+      return res['suggestions'] as List;
+    } catch (e) {
+      return [];
+    }
+  }
+
   List formatVideoItems(List itemsList) {
     try {
       final List result = itemsList.map((e) {

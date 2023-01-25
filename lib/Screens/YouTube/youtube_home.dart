@@ -7,7 +7,6 @@ import 'package:gem/Screens/YouTube/youtube_search.dart';
 import 'package:gem/Services/youtube_services.dart';
 import 'package:hive/hive.dart';
 import '../local/widgets/preview_page.dart';
-import 'components/top_artists.dart';
 import 'components/trending.dart';
 import 'logic/suggestions.dart';
 
@@ -134,7 +133,79 @@ class _YouTubeState extends State<YouTube>
                           ),
                         ],
                       ),
-                      Wrap(
+                      FutureBuilder<List>(
+                          future: YouTubeServices.getHomeSuggestions(
+                              "trending music"),
+                          builder: (_, snapshot) {
+                            if (!snapshot.hasData) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            }
+                            return Wrap(
+                                children: List.generate(
+                                    snapshot.data!.take(8).length, (index) {
+                              return GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    PageRouteBuilder(
+                                      opaque: false,
+                                      pageBuilder: (_, __, ___) =>
+                                          YouTubeSearchPage(
+                                        query:
+                                            "${snapshot.data![index].toString()} music",
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: GlassmorphicContainer(
+                                    width: boxSize - 20,
+                                    height: 40,
+                                    borderRadius: 8,
+                                    blur: 20,
+                                    alignment: Alignment.bottomCenter,
+                                    border: 2,
+                                    linearGradient: LinearGradient(
+                                        begin: Alignment.topLeft,
+                                        end: Alignment.bottomRight,
+                                        colors: [
+                                          const Color(0xFFffffff)
+                                              .withOpacity(0.1),
+                                          const Color(0xFFFFFFFF)
+                                              .withOpacity(0.05),
+                                        ],
+                                        stops: const [
+                                          0.1,
+                                          1,
+                                        ]),
+                                    borderGradient: const LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.transparent
+                                      ],
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        snapshot.data![index].toString(),
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            }));
+                          }),
+                      //TODO: See more suggestions page
+
+                      /*   Wrap(
                         children: List.generate(ytSuggestions.length, (index) {
                           return GestureDetector(
                             onTap: () {
@@ -191,6 +262,7 @@ class _YouTubeState extends State<YouTube>
                           );
                         }),
                       ),
+                      */
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: const [
@@ -282,7 +354,6 @@ class _YouTubeState extends State<YouTube>
                           },
                         ),
                       ),
-                      const TopSearchArtists(),
                     ],
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -210,7 +211,8 @@ class _HomePageState extends State<HomePage> {
           ) as String;
           if (autoBackPath == '') {
             ExtStorageProvider.getExtStorage(
-              dirName: 'Gem/Backups', writeAccess: true,
+              dirName: 'Gem/Backups',
+              writeAccess: true,
             ).then((value) {
               Hive.box('settings').put('autoBackPath', value);
               createBackup(
@@ -291,6 +293,19 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Column(
                     children: [
+                      ConnectionStatusBar(
+                        height: 22,
+                        width: double.maxFinite,
+                        color: Colors.grey.shade900,
+                        lookUpAddress: 'google.com',
+                        endOffset: const Offset(0.0, 0.0),
+                        beginOffset: const Offset(0.0, -1.0),
+                        animationDuration: const Duration(milliseconds: 200),
+                        title: const Text(
+                          'Internet is not available',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
                       Expanded(
                         child: PageView(
                           physics: const CustomPhysics(),

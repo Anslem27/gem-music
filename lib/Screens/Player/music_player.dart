@@ -1235,7 +1235,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                   ),
                                   leading: IconButton(
                                     splashRadius: 24,
-                                    icon: const Icon(Icons.expand_more_rounded),
+                                    icon: const Icon(Icons
+                                        .expand_more_rounded), //TODO: Add fancier icon
                                     tooltip: 'Back',
                                     onPressed: () {
                                       Navigator.pop(context);
@@ -1244,7 +1245,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                   actions: [
                                     IconButton(
                                       icon: const Icon(Iconsax.microphone),
-                                      tooltip: "Lyrics",
+                                      tooltip:
+                                          "Lyrics", //TODO: Make lyrics drawer less glitchy
                                       onPressed: () =>
                                           // Reveal lyrics drawer
                                           //cardKey.currentState!.toggleCard()
@@ -1304,62 +1306,192 @@ class _PlayScreenState extends State<PlayScreen> {
                                             ]);
                                           }
                                           //song info dialog
-                                          PopupDialog().showPopup(
-                                            context: context,
-                                            child: SingleChildScrollView(
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              padding:
-                                                  const EdgeInsets.all(25.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: details.keys.map((e) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: SelectableText.rich(
-                                                      TextSpan(
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                            text: format(
-                                                              e.toString(),
-                                                            ),
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 17,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .color,
-                                                            ),
-                                                          ),
-                                                          TextSpan(
-                                                            text: details[e]
-                                                                .toString(),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      showCursor: true,
-                                                      cursorColor: Colors.black,
-                                                      cursorRadius:
-                                                          const Radius.circular(
-                                                              5),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
+                                          showModalBottomSheet(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
+                                            context: context,
+                                            builder: (_) {
+                                              return Container(
+                                                margin: const EdgeInsets.all(8),
+                                                child: SingleChildScrollView(
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
+                                                  padding: const EdgeInsets.all(
+                                                      25.0),
+                                                  child: Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: Card(
+                                                          elevation: 1.0,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          child: mediaItem
+                                                                  .artUri
+                                                                  .toString()
+                                                                  .startsWith(
+                                                                      'file')
+                                                              ? mediaItem.artUri!
+                                                                          .toFilePath()
+                                                                          .isEmpty ||
+                                                                      mediaItem
+                                                                          .artUri!
+                                                                          .hasEmptyPath ||
+                                                                      mediaItem
+                                                                              .artUri ==
+                                                                          null
+                                                                  ? const Image(
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      image: AssetImage(
+                                                                          'assets/cover.jpg'),
+                                                                    )
+                                                                  : Image(
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      image:
+                                                                          FileImage(
+                                                                        File(mediaItem
+                                                                            .artUri!
+                                                                            .toFilePath()),
+                                                                      ),
+                                                                      errorBuilder: (_,
+                                                                          __,
+                                                                          ___) {
+                                                                        return Image
+                                                                            .asset(
+                                                                          'assets/cover.jpg',
+                                                                        );
+                                                                      },
+                                                                    )
+                                                              : CachedNetworkImage(
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                  errorWidget:
+                                                                      (BuildContext context,
+                                                                              _,
+                                                                              __) =>
+                                                                          Image(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    image: const AssetImage(
+                                                                        'assets/cover.jpg'),
+                                                                  ),
+                                                                  placeholder: (BuildContext
+                                                                              context,
+                                                                          _) =>
+                                                                      const Image(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    image: AssetImage(
+                                                                        'assets/cover.jpg'),
+                                                                  ),
+                                                                  imageUrl: mediaItem
+                                                                      .artUri
+                                                                      .toString(),
+                                                                ),
+                                                        ),
+                                                        title: Text(
+                                                          mediaItem.title
+                                                              .toUpperCase(),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        subtitle: Text(
+                                                          mediaItem.artist ??
+                                                              "Artist",
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                        trailing: LikeButton(
+                                                            mediaItem:
+                                                                mediaItem),
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: details.keys
+                                                            .map((e) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 10.0,
+                                                                    right: 8,
+                                                                    bottom:
+                                                                        5.0),
+                                                            child:
+                                                                SelectableText
+                                                                    .rich(
+                                                              TextSpan(
+                                                                children: <
+                                                                    TextSpan>[
+                                                                  TextSpan(
+                                                                    text:
+                                                                        format(
+                                                                      e.toString(),
+                                                                    ),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyText1!
+                                                                          .color,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: details[
+                                                                            e]
+                                                                        .toString(),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              showCursor: true,
+                                                              cursorColor:
+                                                                  Colors.black,
+                                                              cursorRadius:
+                                                                  const Radius
+                                                                      .circular(5),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           );
                                         }
                                         if (value == 5) {

@@ -61,6 +61,7 @@ dependencies:
   overlapping_panels: ^0.0.3
   pool: ^1.5.1
   modal_bottom_sheet: ^2.1.2
+  connection_status_bar: ^1.1.6
   flutter_bluetooth_serial: any
 
 dev_dependencies:

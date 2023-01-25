@@ -394,6 +394,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                       );
               }
 
+              //exclude premium categories
               if (data['modules'][lists[idx]]?['title'].toString() ==
                   "Radio Stations") {
                 return const SizedBox();
@@ -438,30 +439,22 @@ class _OnlineMusicState extends State<OnlineMusic>
                             physics: const BouncingScrollPhysics(),
                             scrollDirection: Axis.horizontal,
                             padding: const EdgeInsets.symmetric(horizontal: 10),
-                            itemCount: data['modules'][lists[idx]]?['title']
-                                        ?.toString() ==
-                                    'Radio Stations'
-                                ? (data[lists[idx]] as List).length +
-                                    likedRadio.length
-                                : (data[lists[idx]] as List).length,
+                            itemCount: (data[lists[idx]] as List).length,
                             itemBuilder: (context, index) {
                               Map item;
-                              if (data['modules'][lists[idx]]?['title']
-                                      ?.toString() ==
-                                  'Radio Stations') {
-                                index < likedRadio.length
-                                    ? item = likedRadio[index] as Map
-                                    : item = data[lists[idx]]
-                                        [index - likedRadio.length] as Map;
-                              } else {
-                                item = data[lists[idx]][index] as Map;
-                              }
+
+                              item = data[lists[idx]][index] as Map;
+
                               final currentSongList = data[lists[idx]]
                                   .where((e) => e['type'] == 'song')
                                   .toList();
                               final subTitle = getSubTitle(item);
                               item['subTitle'] = subTitle;
                               if (item.isEmpty) return const SizedBox();
+                              //TODO: Test whether item list at index is empty
+                              if ((data[lists[idx]] as List).isEmpty) {
+                                return const SizedBox();
+                              }
                               return GestureDetector(
                                 onLongPress: () {
                                   Feedback.forLongPress(context);
@@ -488,10 +481,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
                                                       BorderRadius.circular(
-                                                    item['type'] ==
-                                                            'radio_station'
-                                                        ? 1000.0
-                                                        : 15.0,
+                                                    15.0,
                                                   ),
                                                 ),
                                                 clipBehavior: Clip.antiAlias,
