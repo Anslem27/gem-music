@@ -411,7 +411,7 @@ class _RecentlyAddedSongsState extends State<RecentlyAddedSongs> {
                     child: FutureBuilder(
                         future: OfflineAudioQuery.queryNSave(
                             fileName: recntly_added[index].displayNameWOExt,
-                            tempPath: tempPath,
+                            tempPath: tempPath!,
                             id: recntly_added[index].id,
                             type: ArtworkType.AUDIO),
                         builder: (_, snapshot) {
