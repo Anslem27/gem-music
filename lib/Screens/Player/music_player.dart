@@ -753,7 +753,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                                                 color: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText1!
+                                                                    .bodyLarge!
                                                                     .color,
                                                               ),
                                                             ),
@@ -1372,10 +1372,10 @@ class _PlayScreenState extends State<PlayScreen> {
                                                                       (BuildContext context,
                                                                               _,
                                                                               __) =>
-                                                                          Image(
+                                                                          const Image(
                                                                     fit: BoxFit
                                                                         .cover,
-                                                                    image: const AssetImage(
+                                                                    image: AssetImage(
                                                                         'assets/cover.jpg'),
                                                                   ),
                                                                   placeholder: (BuildContext
@@ -1460,7 +1460,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                                                       color: Theme.of(
                                                                               context)
                                                                           .textTheme
-                                                                          .bodyText1!
+                                                                          .bodyLarge!
                                                                           .color,
                                                                     ),
                                                                   ),

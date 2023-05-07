@@ -1,5 +1,6 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:dart_des/dart_des.dart';
 import 'package:gem/APIs/api.dart';
@@ -423,7 +424,7 @@ class FormatResponse {
         'perma_url': response['perma_url'].toString(),
       };
     } catch (e) {
-    return {'Error': e};
+      return {'Error': e};
     }
   }
 
@@ -486,6 +487,7 @@ class FormatResponse {
       ];
       data['collections_temp'] = promoListTemp;
     } catch (e) {
+      //
     }
     return data;
   }
@@ -500,6 +502,7 @@ class FormatResponse {
       data['collections'].addAll(promoList);
       data['collections_temp'] = [];
     } catch (e) {
+      //
     }
     return data;
   }

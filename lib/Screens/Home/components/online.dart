@@ -319,7 +319,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                                           color:
                                                               Theme.of(context)
                                                                   .textTheme
-                                                                  .caption!
+                                                                  .bodySmall!
                                                                   .color,
                                                         ),
                                                       )
@@ -802,7 +802,7 @@ class _OnlineMusicState extends State<OnlineMusic>
                                                         fontSize: 11,
                                                         color: Theme.of(context)
                                                             .textTheme
-                                                            .caption!
+                                                            .bodySmall!
                                                             .color,
                                                       ),
                                                     )

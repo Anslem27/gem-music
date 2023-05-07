@@ -325,7 +325,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                                       style: TextStyle(
                                                                           color: Theme.of(
                                                                         context,
-                                                                      ).textTheme.caption!.color),
+                                                                      ).textTheme.bodySmall!.color),
                                                                     ),
                                                                     const SizedBox(
                                                                         height:
@@ -346,7 +346,7 @@ class _YouTubeSearchPageState extends State<YouTubeSearchPage> {
                                                                           context,
                                                                         )
                                                                             .textTheme
-                                                                            .caption!
+                                                                            .bodySmall!
                                                                             .color,
                                                                       ),
                                                                     ),

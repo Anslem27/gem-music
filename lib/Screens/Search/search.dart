@@ -356,7 +356,7 @@ class _SearchPageState extends State<SearchPage> {
                                                                       context,
                                                                     )
                                                                         .textTheme
-                                                                        .caption!
+                                                                        .bodySmall!
                                                                         .color,
                                                                     fontWeight:
                                                                         FontWeight
@@ -371,7 +371,7 @@ class _SearchPageState extends State<SearchPage> {
                                                                     context,
                                                                   )
                                                                       .textTheme
-                                                                      .caption!
+                                                                      .bodySmall!
                                                                       .color,
                                                                 ),
                                                               ],

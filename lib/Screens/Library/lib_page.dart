@@ -182,7 +182,7 @@ class _LibraryPageState extends State<LibraryPage> {
                     labelStyle: TextStyle(
                       color: category == 'genres'
                           ? Theme.of(context).colorScheme.secondary
-                          : Theme.of(context).textTheme.bodyText1!.color,
+                          : Theme.of(context).textTheme.bodyLarge!.color,
                       fontWeight: category == 'genres'
                           ? FontWeight.w600
                           : FontWeight.normal,
@@ -211,7 +211,7 @@ class _LibraryPageState extends State<LibraryPage> {
                     labelStyle: TextStyle(
                       color: category == 'playlists'
                           ? Theme.of(context).colorScheme.secondary
-                          : Theme.of(context).textTheme.bodyText1!.color,
+                          : Theme.of(context).textTheme.bodyLarge!.color,
                       fontWeight: category == 'playlists'
                           ? FontWeight.w600
                           : FontWeight.normal,
