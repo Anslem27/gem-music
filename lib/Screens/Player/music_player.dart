@@ -11,16 +11,16 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:gem/CustomWidgets/add_playlist.dart';
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
-import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/equalizer.dart';
-import 'package:gem/CustomWidgets/like_button.dart';
-import 'package:gem/CustomWidgets/popup.dart';
-import 'package:gem/CustomWidgets/seek_bar.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/add_playlist.dart';
+import 'package:gem/widgets/copy_clipboard.dart';
+import 'package:gem/widgets/download_button.dart';
+import 'package:gem/widgets/empty_screen.dart';
+import 'package:gem/widgets/equalizer.dart';
+import 'package:gem/widgets/like_button.dart';
+import 'package:gem/widgets/popup.dart';
+import 'package:gem/widgets/seek_bar.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/dominant_color.dart';
 import 'package:gem/Helpers/lyrics.dart';
@@ -43,7 +43,7 @@ import 'package:share_plus/share_plus.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../Home/components/home_logic.dart';
+import '../home/components/home_logic.dart';
 
 class PlayScreen extends StatefulWidget {
   final List songsList;
@@ -753,7 +753,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                                                 color: Theme.of(
                                                                         context)
                                                                     .textTheme
-                                                                    .bodyText1!
+                                                                    .bodyLarge!
                                                                     .color,
                                                               ),
                                                             ),
@@ -1153,6 +1153,7 @@ class _PlayScreenState extends State<PlayScreen> {
                             builder: (BuildContext context, List<Color?>? value,
                                 Widget? child) {
                               return AnimatedContainer(
+                                curve: Curves.easeInOutCubic,
                                 duration: const Duration(milliseconds: 600),
                                 decoration: BoxDecoration(
                                   gradient: LinearGradient(
@@ -1234,7 +1235,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                   ),
                                   leading: IconButton(
                                     splashRadius: 24,
-                                    icon: const Icon(Icons.expand_more_rounded),
+                                    icon: const Icon(Icons
+                                        .expand_more_rounded), //TODO: Add fancier icon
                                     tooltip: 'Back',
                                     onPressed: () {
                                       Navigator.pop(context);
@@ -1243,7 +1245,8 @@ class _PlayScreenState extends State<PlayScreen> {
                                   actions: [
                                     IconButton(
                                       icon: const Icon(Iconsax.microphone),
-                                      tooltip: "Lyrics",
+                                      tooltip:
+                                          "Lyrics", //TODO: Make lyrics drawer less glitchy
                                       onPressed: () =>
                                           // Reveal lyrics drawer
                                           //cardKey.currentState!.toggleCard()
@@ -1303,62 +1306,192 @@ class _PlayScreenState extends State<PlayScreen> {
                                             ]);
                                           }
                                           //song info dialog
-                                          PopupDialog().showPopup(
-                                            context: context,
-                                            child: SingleChildScrollView(
-                                              physics:
-                                                  const BouncingScrollPhysics(),
-                                              padding:
-                                                  const EdgeInsets.all(25.0),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: details.keys.map((e) {
-                                                  return Padding(
-                                                    padding:
-                                                        const EdgeInsets.all(
-                                                            5.0),
-                                                    child: SelectableText.rich(
-                                                      TextSpan(
-                                                        children: <TextSpan>[
-                                                          TextSpan(
-                                                            text: format(
-                                                              e.toString(),
-                                                            ),
-                                                            style: TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                              fontSize: 17,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .bodyText1!
-                                                                  .color,
-                                                            ),
-                                                          ),
-                                                          TextSpan(
-                                                            text: details[e]
-                                                                .toString(),
-                                                            style:
-                                                                const TextStyle(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .normal,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      showCursor: true,
-                                                      cursorColor: Colors.black,
-                                                      cursorRadius:
-                                                          const Radius.circular(
-                                                              5),
-                                                    ),
-                                                  );
-                                                }).toList(),
-                                              ),
+                                          showModalBottomSheet(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(8),
                                             ),
+                                            context: context,
+                                            builder: (_) {
+                                              return Container(
+                                                margin: const EdgeInsets.all(8),
+                                                child: SingleChildScrollView(
+                                                  physics:
+                                                      const BouncingScrollPhysics(),
+                                                  padding: const EdgeInsets.all(
+                                                      25.0),
+                                                  child: Column(
+                                                    children: [
+                                                      ListTile(
+                                                        leading: Card(
+                                                          elevation: 1.0,
+                                                          clipBehavior:
+                                                              Clip.antiAlias,
+                                                          child: mediaItem
+                                                                  .artUri
+                                                                  .toString()
+                                                                  .startsWith(
+                                                                      'file')
+                                                              ? mediaItem.artUri!
+                                                                          .toFilePath()
+                                                                          .isEmpty ||
+                                                                      mediaItem
+                                                                          .artUri!
+                                                                          .hasEmptyPath ||
+                                                                      mediaItem
+                                                                              .artUri ==
+                                                                          null
+                                                                  ? const Image(
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      image: AssetImage(
+                                                                          'assets/cover.jpg'),
+                                                                    )
+                                                                  : Image(
+                                                                      fit: BoxFit
+                                                                          .cover,
+                                                                      image:
+                                                                          FileImage(
+                                                                        File(mediaItem
+                                                                            .artUri!
+                                                                            .toFilePath()),
+                                                                      ),
+                                                                      errorBuilder: (_,
+                                                                          __,
+                                                                          ___) {
+                                                                        return Image
+                                                                            .asset(
+                                                                          'assets/cover.jpg',
+                                                                        );
+                                                                      },
+                                                                    )
+                                                              : CachedNetworkImage(
+                                                                  fit: BoxFit
+                                                                      .contain,
+                                                                  errorWidget:
+                                                                      (BuildContext context,
+                                                                              _,
+                                                                              __) =>
+                                                                          const Image(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    image: AssetImage(
+                                                                        'assets/cover.jpg'),
+                                                                  ),
+                                                                  placeholder: (BuildContext
+                                                                              context,
+                                                                          _) =>
+                                                                      const Image(
+                                                                    fit: BoxFit
+                                                                        .cover,
+                                                                    image: AssetImage(
+                                                                        'assets/cover.jpg'),
+                                                                  ),
+                                                                  imageUrl: mediaItem
+                                                                      .artUri
+                                                                      .toString(),
+                                                                ),
+                                                        ),
+                                                        title: Text(
+                                                          mediaItem.title
+                                                              .toUpperCase(),
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w400,
+                                                          ),
+                                                        ),
+                                                        subtitle: Text(
+                                                          mediaItem.artist ??
+                                                              "Artist",
+                                                          textAlign:
+                                                              TextAlign.start,
+                                                          softWrap: false,
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          style:
+                                                              const TextStyle(
+                                                            fontSize: 13,
+                                                            color: Colors.grey,
+                                                          ),
+                                                        ),
+                                                        trailing: LikeButton(
+                                                            mediaItem:
+                                                                mediaItem),
+                                                      ),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: details.keys
+                                                            .map((e) {
+                                                          return Padding(
+                                                            padding:
+                                                                const EdgeInsets
+                                                                        .only(
+                                                                    left: 10.0,
+                                                                    right: 8,
+                                                                    bottom:
+                                                                        5.0),
+                                                            child:
+                                                                SelectableText
+                                                                    .rich(
+                                                              TextSpan(
+                                                                children: <
+                                                                    TextSpan>[
+                                                                  TextSpan(
+                                                                    text:
+                                                                        format(
+                                                                      e.toString(),
+                                                                    ),
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      fontSize:
+                                                                          17,
+                                                                      color: Theme.of(
+                                                                              context)
+                                                                          .textTheme
+                                                                          .bodyLarge!
+                                                                          .color,
+                                                                    ),
+                                                                  ),
+                                                                  TextSpan(
+                                                                    text: details[
+                                                                            e]
+                                                                        .toString(),
+                                                                    style:
+                                                                        const TextStyle(
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .normal,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              showCursor: true,
+                                                              cursorColor:
+                                                                  Colors.black,
+                                                              cursorRadius:
+                                                                  const Radius
+                                                                      .circular(5),
+                                                            ),
+                                                          );
+                                                        }).toList(),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              );
+                                            },
                                           );
                                         }
                                         if (value == 5) {
@@ -1744,6 +1877,7 @@ class _PlayScreenState extends State<PlayScreen> {
                           builder: (BuildContext context, List<Color?>? value,
                               Widget? child) {
                             return AnimatedContainer(
+                              curve: Curves.easeInOutCubic,
                               duration: const Duration(milliseconds: 600),
                               decoration: BoxDecoration(
                                 gradient: LinearGradient(

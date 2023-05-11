@@ -1,23 +1,29 @@
 // ignore_for_file: use_super_parameters, avoid_redundant_argument_values
 
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/APIs/api.dart';
-import 'package:gem/CustomWidgets/artist_like_button.dart';
-import 'package:gem/CustomWidgets/bouncy_sliver_scroll_view.dart';
-import 'package:gem/CustomWidgets/copy_clipboard.dart';
-import 'package:gem/CustomWidgets/download_button.dart';
-import 'package:gem/CustomWidgets/empty_screen.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/horizontal_albumlist.dart';
-import 'package:gem/CustomWidgets/like_button.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/CustomWidgets/playlist_popupmenu.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/song_tile_trailing_menu.dart';
+import 'package:gem/widgets/artist_like_button.dart';
+import 'package:gem/widgets/bouncy_sliver_scroll_view.dart';
+import 'package:gem/widgets/copy_clipboard.dart';
+import 'package:gem/widgets/download_button.dart';
+import 'package:gem/widgets/empty_screen.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/horizontal_albumlist.dart';
+import 'package:gem/widgets/miniplayer.dart';
+import 'package:gem/widgets/playlist_popupmenu.dart';
+import 'package:gem/widgets/song_tile_trailing_menu.dart';
 import 'package:gem/Screens/Common/song_list.dart';
 import 'package:gem/Screens/Player/music_player.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:on_audio_query/on_audio_query.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
+
+import '../../Helpers/local_music_functions.dart';
 
 class ArtistSearchPage extends StatefulWidget {
   final Map data;
@@ -37,9 +43,33 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
   String sortOrder = '';
   Map<String, List> data = {};
   bool fetched = false;
+  String? tempPath = Hive.box('settings').get('tempDirPath')?.toString();
+  OfflineAudioQuery offlineAudioQuery = OfflineAudioQuery();
+  List<SongModel> artistSongs = [];
+  bool loading = false;
+
+  Future<void> fetchSongs() async {
+    await offlineAudioQuery.requestPermission();
+    tempPath ??= (await getTemporaryDirectory()).path;
+    artistSongs = await offlineAudioQuery.getSongs();
+
+    setState(() {
+      loading = true;
+    });
+  }
+
+  @override
+  void initState() {
+    fetchSongs();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    double boxSize =
+        MediaQuery.of(context).size.height > MediaQuery.of(context).size.width
+            ? MediaQuery.of(context).size.width / 2
+            : MediaQuery.of(context).size.height / 2.5;
     if (!status) {
       status = true;
       SaavnAPI()
@@ -69,11 +99,11 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                       ? emptyScreen(
                           context,
                           0,
-                          ':( ',
+                          'ಠ_ಠ',
                           100,
-                          'Oops!',
+                          'Yikes!',
                           60,
-                          'No results',
+                          'Something unexpected\nhappened',
                           20,
                         )
                       : BouncyImageSliverScrollView(
@@ -86,10 +116,6 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                   widget.data['perma_url'].toString(),
                                 );
                               },
-                            ),
-                            ArtistLikeButton(
-                              data: widget.data,
-                              size: 27.0,
                             ),
                             if (data['Top Songs'] != null)
                               PlaylistPopupMenu(
@@ -116,118 +142,6 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceEvenly,
                                     children: [
-                                      Expanded(
-                                        flex: 5,
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            ShowSnackBar().showSnackBar(
-                                              context,
-                                              'Connecting to radio',
-                                              duration:
-                                                  const Duration(seconds: 2),
-                                            );
-                                            SaavnAPI().createRadio(
-                                              names: [
-                                                widget.data['title']
-                                                        ?.toString() ??
-                                                    '',
-                                              ],
-                                              language: widget.data['language']
-                                                      ?.toString() ??
-                                                  'hindi',
-                                              stationType: 'artist',
-                                            ).then((value) {
-                                              if (value != null) {
-                                                SaavnAPI()
-                                                    .getRadioSongs(
-                                                      stationId: value,
-                                                    )
-                                                    .then(
-                                                      (value) => Navigator.push(
-                                                        context,
-                                                        PageRouteBuilder(
-                                                          opaque: false,
-                                                          pageBuilder: (
-                                                            _,
-                                                            __,
-                                                            ___,
-                                                          ) =>
-                                                              PlayScreen(
-                                                            songsList: value,
-                                                            index: 0,
-                                                            offline: false,
-                                                            fromDownloads:
-                                                                false,
-                                                            fromMiniplayer:
-                                                                false,
-                                                            recommend: true,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    );
-                                              }
-                                            });
-                                          },
-                                          child: Container(
-                                            margin: const EdgeInsets.symmetric(
-                                              vertical: 10,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              borderRadius:
-                                                  BorderRadius.circular(100.0),
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary,
-                                              boxShadow: const [
-                                                BoxShadow(
-                                                  color: Colors.black26,
-                                                  blurRadius: 5.0,
-                                                  offset: Offset(0.0, 3.0),
-                                                )
-                                              ],
-                                            ),
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                vertical: 10.0,
-                                              ),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Icon(
-                                                    Icons.podcasts_rounded,
-                                                    color: Theme.of(context)
-                                                                .colorScheme
-                                                                .secondary ==
-                                                            Colors.white
-                                                        ? Colors.black
-                                                        : Colors.white,
-                                                    size: 26.0,
-                                                  ),
-                                                  const SizedBox(width: 5.0),
-                                                  Text(
-                                                    'Play radio',
-                                                    style: TextStyle(
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      fontSize: 18.0,
-                                                      color: Theme.of(context)
-                                                                  .colorScheme
-                                                                  .secondary ==
-                                                              Colors.white
-                                                          ? Colors.black
-                                                          : Colors.white,
-                                                    ),
-                                                    textAlign: TextAlign.center,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      const SizedBox(width: 20),
                                       Expanded(
                                         flex: 3,
                                         child: GestureDetector(
@@ -258,10 +172,9 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                   BorderRadius.circular(100.0),
                                               border: Border.all(
                                                 color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                                    .colorScheme
+                                                    .secondary
+                                                    .withOpacity(0.8),
                                               ),
                                             ),
                                             child: Padding(
@@ -274,7 +187,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                     MainAxisAlignment.center,
                                                 children: [
                                                   Icon(
-                                                    Icons.play_arrow_rounded,
+                                                    EvaIcons.musicOutline,
                                                     color: Theme.of(context)
                                                                 .brightness ==
                                                             Brightness.dark
@@ -284,7 +197,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                   ),
                                                   const SizedBox(width: 5.0),
                                                   Text(
-                                                    'Top',
+                                                    'Shuffle Top Songs',
                                                     style: TextStyle(
                                                       fontWeight:
                                                           FontWeight.bold,
@@ -313,52 +226,207 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                           borderRadius:
                                               BorderRadius.circular(100.0),
                                           border: Border.all(
-                                            color:
-                                                Theme.of(context).brightness ==
-                                                        Brightness.dark
-                                                    ? Colors.white
-                                                    : Colors.black,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                                .withOpacity(0.8),
                                           ),
                                         ),
                                         child: Padding(
                                           padding: const EdgeInsets.all(3.0),
-                                          child: IconButton(
-                                            icon: Icon(
-                                              Icons.shuffle_rounded,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? Colors.white
-                                                  : Colors.black,
-                                              size: 24.0,
-                                            ),
-                                            onPressed: () {
-                                              final List tempList =
-                                                  List.from(data['Top Songs']!);
-                                              tempList.shuffle();
-                                              Navigator.push(
-                                                context,
-                                                PageRouteBuilder(
-                                                  opaque: false,
-                                                  pageBuilder: (_, __, ___) =>
-                                                      PlayScreen(
-                                                    songsList: tempList,
-                                                    index: 0,
-                                                    offline: false,
-                                                    fromMiniplayer: false,
-                                                    fromDownloads: false,
-                                                    recommend: true,
-                                                  ),
-                                                ),
-                                              );
-                                            },
-                                            tooltip: 'Shuffle',
+                                          child: ArtistLikeButton(
+                                            data: widget.data,
+                                            size: 27.0,
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
                                 ),
+                                //! view local songs for the artist
+                                Column(
+                                    children: List.generate(artistSongs.length,
+                                        (index) {
+                                  return SizedBox(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        index == 0 &&
+                                                artistSongs[index].artist ==
+                                                    widget.data['title']
+                                                        ?.toString()
+                                            ? Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets
+                                                            .fromLTRB(
+                                                        20, 10, 0, 20),
+                                                    child: Text(
+                                                      "LOCAL SONGS by ${widget.data['title']?.toString()}",
+                                                      style: const TextStyle(
+                                                        fontSize: 17,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const Spacer(),
+                                                ],
+                                              )
+                                            : const SizedBox(),
+                                        artistSongs[index].artist ==
+                                                widget.data['title']?.toString()
+                                            ? GestureDetector(
+                                                onTap: () {
+                                                  //Test putting local songa
+                                                  //addRecentlyPlayed(widget.songs);
+                                                  setState(() {});
+                                                  Navigator.of(context).push(
+                                                    PageRouteBuilder(
+                                                      opaque: false,
+                                                      pageBuilder:
+                                                          (_, __, ___) =>
+                                                              PlayScreen(
+                                                        songsList: artistSongs,
+                                                        index: index,
+                                                        offline: true,
+                                                        fromDownloads: false,
+                                                        fromMiniplayer: false,
+                                                        recommend: false,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                                child: SizedBox(
+                                                  height: boxSize - 100,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      OfflineAudioQuery
+                                                          .offlineArtworkWidget(
+                                                        id: artistSongs[index]
+                                                            .id,
+                                                        type: ArtworkType.AUDIO,
+                                                        height: 70,
+                                                        width: 70,
+                                                        tempPath: tempPath!,
+                                                        fileName: artistSongs[
+                                                                index]
+                                                            .displayNameWOExt,
+                                                      ),
+                                                      Expanded(
+                                                        child: ListTile(
+                                                          title: Text(
+                                                            artistSongs[index]
+                                                                        .title
+                                                                        .trim() !=
+                                                                    ''
+                                                                ? artistSongs[
+                                                                        index]
+                                                                    .title
+                                                                : artistSongs[
+                                                                        index]
+                                                                    .displayNameWOExt,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            style: GoogleFonts
+                                                                .roboto(
+                                                                    fontSize:
+                                                                        17),
+                                                          ),
+                                                          subtitle: Text(
+                                                            artistSongs[index]
+                                                                    .album
+                                                                    ?.replaceAll(
+                                                                        '<unknown>',
+                                                                        'Unknown') ??
+                                                                'Unknown',
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            style:
+                                                                const TextStyle(
+                                                              fontWeight:
+                                                                  FontWeight
+                                                                      .normal,
+                                                              fontSize: 15,
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                    .only(
+                                                                right: 3.0),
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                          children: [
+                                                            /* IconButton(
+                                                              splashRadius: 24,
+                                                              onPressed:
+                                                                  () async {},
+                                                              icon: const Icon(
+                                                                  EvaIcons
+                                                                      .moreHorizontalOutline),
+                                                            ), */
+                                                            IconButton(
+                                                              splashRadius: 24,
+                                                              onPressed: () {
+                                                                Navigator.of(
+                                                                        context)
+                                                                    .push(
+                                                                  PageRouteBuilder(
+                                                                    opaque:
+                                                                        false,
+                                                                    pageBuilder: (_,
+                                                                            __,
+                                                                            ___) =>
+                                                                        PlayScreen(
+                                                                      songsList:
+                                                                          artistSongs,
+                                                                      index:
+                                                                          index,
+                                                                      offline:
+                                                                          true,
+                                                                      fromDownloads:
+                                                                          false,
+                                                                      fromMiniplayer:
+                                                                          false,
+                                                                      recommend:
+                                                                          false,
+                                                                    ),
+                                                                  ),
+                                                                );
+                                                              },
+                                                              icon: const Icon(
+                                                                  MdiIcons
+                                                                      .playCircleOutline),
+                                                            )
+                                                          ],
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                ),
+                                              )
+                                            : const SizedBox()
+                                      ],
+                                    ),
+                                  );
+                                })),
                                 ...data.entries.map(
                                   (entry) {
                                     return Column(
@@ -374,14 +442,16 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             children: [
-                                              Text(
-                                                entry.key,
-                                                style: TextStyle(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary,
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w800,
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 10, 0, 10),
+                                                child: Text(
+                                                  entry.key.toUpperCase(),
+                                                  style: const TextStyle(
+                                                    fontSize: 17,
+                                                    fontWeight: FontWeight.w500,
+                                                  ),
                                                 ),
                                               ),
                                               if (entry.key ==
@@ -402,16 +472,8 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                           Theme.of(context)
                                                               .colorScheme
                                                               .secondary
-                                                              .withOpacity(0.2),
+                                                              .withOpacity(0.5),
                                                       labelStyle: TextStyle(
-                                                        color: category == ''
-                                                            ? Theme.of(context)
-                                                                .colorScheme
-                                                                .secondary
-                                                            : Theme.of(context)
-                                                                .textTheme
-                                                                .bodyText1!
-                                                                .color,
                                                         fontWeight: category ==
                                                                 ''
                                                             ? FontWeight.w600
@@ -448,7 +510,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                                 .secondary
                                                             : Theme.of(context)
                                                                 .textTheme
-                                                                .bodyText1!
+                                                                .bodyLarge!
                                                                 .color,
                                                         fontWeight: category ==
                                                                 'latest'
@@ -487,7 +549,7 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                                 .secondary
                                                             : Theme.of(context)
                                                                 .textTheme
-                                                                .bodyText1!
+                                                                .bodyLarge!
                                                                 .color,
                                                         fontWeight: category ==
                                                                 'alphabetical'
@@ -654,11 +716,11 @@ class _ArtistSearchPageState extends State<ArtistSearchPage> {
                                                                 index] as Map,
                                                             icon: 'download',
                                                           ),
-                                                          LikeButton(
+                                                          /*   LikeButton(
                                                             data: entry.value[
                                                                 index] as Map,
                                                             mediaItem: null,
-                                                          ),
+                                                          ), */
                                                           SongTileTrailingMenu(
                                                             data: entry.value[
                                                                 index] as Map,

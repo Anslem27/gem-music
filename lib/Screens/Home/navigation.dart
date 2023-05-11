@@ -1,3 +1,4 @@
+import 'package:connection_status_bar/connection_status_bar.dart';
 import 'package:custom_navigation_bar/custom_navigation_bar.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -5,13 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bluetooth_serial/flutter_bluetooth_serial.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/downloads_checker.dart';
 import 'package:gem/Helpers/supabase.dart';
-import 'package:gem/Screens/Home/home_view.dart';
+import 'package:gem/Screens/home/home_view.dart';
 import 'package:gem/Screens/Library/lib_page.dart';
 import 'package:gem/Screens/YouTube/youtube_home.dart';
 import 'package:gem/Services/ext_storage_provider.dart';
@@ -21,7 +22,7 @@ import 'package:on_audio_query/on_audio_query.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../../CustomWidgets/data_search.dart';
+import '../../widgets/data_search.dart';
 import '../../Helpers/local_music_functions.dart';
 import 'components/drawer.dart';
 import 'components/home_logic.dart';
@@ -211,6 +212,7 @@ class _HomePageState extends State<HomePage> {
           if (autoBackPath == '') {
             ExtStorageProvider.getExtStorage(
               dirName: 'Gem/Backups',
+              writeAccess: true,
             ).then((value) {
               Hive.box('settings').put('autoBackPath', value);
               createBackup(
@@ -282,7 +284,7 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.transparent,
-        drawer: gemDrawer(context),
+        drawer: const GemDrawer(),
         body: WillPopScope(
           onWillPop: () => handleWillPop(context),
           child: SafeArea(
@@ -291,6 +293,19 @@ class _HomePageState extends State<HomePage> {
                 Expanded(
                   child: Column(
                     children: [
+                      ConnectionStatusBar(
+                        height: 22,
+                        width: double.maxFinite,
+                        color: Colors.grey.shade900,
+                        lookUpAddress: 'google.com',
+                        endOffset: const Offset(0.0, 0.0),
+                        beginOffset: const Offset(0.0, -1.0),
+                        animationDuration: const Duration(milliseconds: 200),
+                        title: const Text(
+                          'Internet is not available',
+                          style: TextStyle(fontSize: 14),
+                        ),
+                      ),
                       Expanded(
                         child: PageView(
                           physics: const CustomPhysics(),
@@ -506,7 +521,7 @@ class _HomePageState extends State<HomePage> {
                                   fontSize: 16.0,
                                   color: Theme.of(context)
                                       .textTheme
-                                      .caption!
+                                      .bodySmall!
                                       .color,
                                   fontWeight: FontWeight.normal,
                                 ),

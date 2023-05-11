@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Helpers/songs_count.dart';
 import 'package:hive/hive.dart';

@@ -3,10 +3,11 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/favorites_section.dart';
-import 'package:gem/Screens/LocalMusic/local_music.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import '../local/local_music.dart';
 
 class LibraryPage extends StatefulWidget {
   const LibraryPage({super.key});
@@ -16,6 +17,7 @@ class LibraryPage extends StatefulWidget {
 }
 
 class _LibraryPageState extends State<LibraryPage> {
+  String category = '';
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -74,7 +76,7 @@ class _LibraryPageState extends State<LibraryPage> {
               },
             ),
             LibraryTile(
-              title: 'Last session',
+              title: 'Online last session',
               icon: Icons.history_rounded,
               onTap: () {
                 Navigator.pushNamed(context, '/recent');
@@ -125,6 +127,113 @@ class _LibraryPageState extends State<LibraryPage> {
                 Navigator.pushNamed(context, '/playlists');
               },
             ),
+            Row(
+              // mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  margin: const EdgeInsets.only(left: 5, right: 5),
+                  child: IconButton(
+                      splashRadius: 24,
+                      onPressed: () {
+                        category = '';
+                        setState(() {});
+                      },
+                      icon: const Icon(Icons.clear)),
+                ),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  margin: const EdgeInsets.only(left: 5, right: 5),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Liked Artists',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.5),
+                    labelStyle: TextStyle(
+                      fontWeight:
+                          category == '' ? FontWeight.w600 : FontWeight.normal,
+                    ),
+                    selected: category == '',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = '';
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Genres',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                    labelStyle: TextStyle(
+                      color: category == 'genres'
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).textTheme.bodyLarge!.color,
+                      fontWeight: category == 'genres'
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                    selected: category == 'genres',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = 'genres';
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                AnimatedContainer(
+                  curve: Curves.easeInOutCubic,
+                  duration: const Duration(milliseconds: 500),
+                  child: ChoiceChip(
+                    label: const Text(
+                      'Playlists',
+                    ),
+                    selectedColor: Theme.of(context)
+                        .colorScheme
+                        .secondary
+                        .withOpacity(0.2),
+                    labelStyle: TextStyle(
+                      color: category == 'playlists'
+                          ? Theme.of(context).colorScheme.secondary
+                          : Theme.of(context).textTheme.bodyLarge!.color,
+                      fontWeight: category == 'playlists'
+                          ? FontWeight.w600
+                          : FontWeight.normal,
+                    ),
+                    selected: category == 'playlists',
+                    onSelected: (bool selected) {
+                      if (selected) {
+                        category = 'playlists';
+
+                        setState(() {});
+                      }
+                    },
+                  ),
+                ),
+                const SizedBox(width: 5),
+              ],
+            ),
+            category == ""
+                ? const SizedBox()
+                : category == "genres"
+                    ? const SizedBox()
+                    : const SizedBox()
           ],
         ),
       ],

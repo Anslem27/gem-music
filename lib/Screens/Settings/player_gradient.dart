@@ -1,7 +1,7 @@
 // ignore_for_file: use_super_parameters, use_decorated_box
 
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
+import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:get_it/get_it.dart';
 import 'package:glassmorphism/glassmorphism.dart';

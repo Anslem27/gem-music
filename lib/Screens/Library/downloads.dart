@@ -10,10 +10,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gem/CustomWidgets/data_search.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/playlist_head.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
+import 'package:gem/widgets/data_search.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/playlist_head.dart';
+import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/picker.dart';
 import 'package:gem/Screens/Library/show_songs.dart';
 import 'package:gem/Screens/Player/music_player.dart';
@@ -22,7 +22,7 @@ import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:permission_handler/permission_handler.dart';
 
-import '../../CustomWidgets/collage.dart';
+import '../../widgets/collage.dart';
 
 class Downloads extends StatefulWidget {
   const Downloads({Key? key}) : super(key: key);

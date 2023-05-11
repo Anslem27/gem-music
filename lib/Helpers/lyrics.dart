@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:http/http.dart';
@@ -33,7 +32,12 @@ class Lyrics {
         await get(lyricsUrl, headers: {'Accept': 'application/json'});
 
     final List<String> rawLyrics = res.body.split('-->');
-    final fetchedLyrics = json.decode(rawLyrics[1]);
+    Map fetchedLyrics = {};
+    if (rawLyrics.length > 1) {
+      fetchedLyrics = json.decode(rawLyrics[1]) as Map;
+    } else {
+      fetchedLyrics = json.decode(rawLyrics[0]) as Map;
+    }
     final String lyrics =
         fetchedLyrics['lyrics'].toString().replaceAll('<br>', '\n');
     return lyrics;

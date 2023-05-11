@@ -1,7 +1,7 @@
-
 import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+
 
 // ignore: avoid_classes_with_only_static_members
 class ExtStorageProvider {
@@ -20,7 +20,10 @@ class ExtStorageProvider {
   }
 
   // getting external storage path
-  static Future<String?> getExtStorage({required String dirName}) async {
+  static Future<String?> getExtStorage({
+    required String dirName,
+    required bool writeAccess,
+  }) async {
     Directory? directory;
 
     try {
@@ -45,6 +48,9 @@ class ExtStorageProvider {
           }
           if (await directory.exists()) {
             try {
+              if (writeAccess) {
+                await requestPermission(Permission.manageExternalStorage);
+              }
               // if directory exists then returning the complete path
               return newPath;
             } catch (e) {

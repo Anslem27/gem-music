@@ -2,14 +2,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:gem/Screens/Library/online_playlists.dart';
-import 'package:gem/Screens/LocalMusic/localplaylists.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:palette_generator/palette_generator.dart';
 import 'package:tab_indicator_styler/tab_indicator_styler.dart';
-
-import '../../CustomWidgets/gradient_containers.dart';
+import '../../widgets/gradient_containers.dart';
 import '../../Helpers/local_music_functions.dart';
+import '../local/localplaylists.dart';
 
 class PlaylistView extends StatefulWidget {
   const PlaylistView({super.key});

@@ -8,15 +8,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_displaymode/flutter_displaymode.dart';
 import 'package:gem/Helpers/app_config.dart';
-import 'package:gem/Screens/Home/navigation.dart';
+import 'package:gem/Screens/home/navigation.dart';
 import 'package:gem/Screens/Library/downloads.dart';
 import 'package:gem/Screens/Library/nowplaying.dart';
 import 'package:gem/Screens/Library/recent.dart';
-import 'package:gem/Screens/Login/initial_wizard.dart';
-import 'package:gem/Screens/Login/pref.dart';
+import 'package:gem/Screens/wizard/initial_wizard.dart';
+import 'package:gem/Screens/wizard/pref.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:gem/Screens/Settings/setting.dart';
-import 'package:gem/Services/audio_service.dart';
+import 'package:gem/services/audio_service.dart';
 import 'package:gem/theme/app_theme.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -82,7 +82,7 @@ Future<void> openHiveBox(String boxName, {bool limit = false}) async {
     final String dirPath = dir.path;
     File dbFile = File('$dirPath/$boxName.hive');
     File lockFile = File('$dirPath/$boxName.lock');
-     if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
       dbFile = File('$dirPath/Gem/$boxName.hive');
       lockFile = File('$dirPath/Gem/$boxName.lock');
     }
@@ -167,12 +167,8 @@ class _MyAppState extends State<MyApp> {
       restorationScopeId: 'gem',
       debugShowCheckedModeBanner: false,
       themeMode: AppTheme.themeMode,
-      theme: AppTheme.darkTheme(
-        context: context,
-      ),
-      darkTheme: AppTheme.darkTheme(
-        context: context,
-      ),
+      theme: AppTheme.darkTheme(context: context),
+      darkTheme: AppTheme.darkTheme(context: context),
       locale: _locale,
       routes: {
         '/': (context) => initialFuntion(),

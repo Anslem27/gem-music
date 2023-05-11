@@ -5,15 +5,15 @@ import 'dart:io';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/popup.dart';
-import 'package:gem/CustomWidgets/snackbar.dart';
-import 'package:gem/CustomWidgets/textinput_dialog.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/popup.dart';
+import 'package:gem/widgets/snackbar.dart';
+import 'package:gem/widgets/textinput_dialog.dart';
 import 'package:gem/Helpers/app_config.dart';
 import 'package:gem/Helpers/backup_restore.dart';
 import 'package:gem/Helpers/picker.dart';
-import 'package:gem/Screens/Settings/player_gradient.dart';
-import 'package:gem/Services/ext_storage_provider.dart';
+// import 'package:gem/Screens/Settings/player_gradient.dart';
+import 'package:gem/services/ext_storage_provider.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -373,7 +373,7 @@ class _SettingPageState extends State<SettingPage> {
                             style: TextStyle(
                               fontSize: 12,
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
+                                  Theme.of(context).textTheme.bodyLarge!.color,
                             ),
                             underline: const SizedBox(),
                             onChanged: (String? newValue) {
@@ -412,7 +412,7 @@ class _SettingPageState extends State<SettingPage> {
                             style: TextStyle(
                               fontSize: 12,
                               color:
-                                  Theme.of(context).textTheme.bodyText1!.color,
+                                  Theme.of(context).textTheme.bodyLarge!.color,
                             ),
                             underline: const SizedBox(),
                             onChanged: (String? newValue) {
@@ -454,6 +454,7 @@ class _SettingPageState extends State<SettingPage> {
                               downloadPath =
                                   await ExtStorageProvider.getExtStorage(
                                         dirName: 'Music',
+                                        writeAccess: true,
                                       ) ??
                                       '/storage/emulated/0/Music';
                               Hive.box('settings')
@@ -621,9 +622,10 @@ class _SettingPageState extends State<SettingPage> {
                           ),
                         ),
                         ListTile(
-                          title: const Text('Include/Exclude folders'),
+                          title: const Text('Folders'),
                           subtitle: const Text(
-                              "Pick folders where you want us to pick your music"),
+                            "Pick folders where you want us to pick your music, or hide what you dont want to appear in Gem",
+                          ),
                           dense: true,
                           onTap: () {
                             final GlobalKey<AnimatedListState> listKey =
@@ -678,7 +680,7 @@ class _SettingPageState extends State<SettingPage> {
                                                                 .secondary
                                                             : Theme.of(context)
                                                                 .textTheme
-                                                                .bodyText1!
+                                                                .bodyLarge!
                                                                 .color,
                                                         fontWeight: !value
                                                             ? FontWeight.w600
@@ -714,7 +716,7 @@ class _SettingPageState extends State<SettingPage> {
                                                                 .secondary
                                                             : Theme.of(context)
                                                                 .textTheme
-                                                                .bodyText1!
+                                                                .bodyLarge!
                                                                 .color,
                                                         fontWeight: value
                                                             ? FontWeight.w600
@@ -1126,6 +1128,7 @@ class _SettingPageState extends State<SettingPage> {
                               autoBackPath =
                                   await ExtStorageProvider.getExtStorage(
                                         dirName: 'Gem/Backups',
+                                        writeAccess: true,
                                       ) ??
                                       '/storage/emulated/0/Gem/Backups';
                               Hive.box('settings')
@@ -1382,7 +1385,7 @@ class _SettingPageState extends State<SettingPage> {
                 value: streamingQuality,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
                 underline: const SizedBox(),
                 onChanged: (String? newValue) {
@@ -1417,7 +1420,7 @@ class _SettingPageState extends State<SettingPage> {
                 value: ytQuality,
                 style: TextStyle(
                   fontSize: 12,
-                  color: Theme.of(context).textTheme.bodyText1!.color,
+                  color: Theme.of(context).textTheme.bodyLarge!.color,
                 ),
                 underline: const SizedBox(),
                 onChanged: (String? newValue) {
@@ -1503,14 +1506,14 @@ class _SettingPageState extends State<SettingPage> {
                 0,
               ),
               child: Text(
-                'UI',
+                'User Interface',
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
-            ListTile(
+            /* ListTile(
               title: const Text(
                 'Player screen background',
               ),
@@ -1525,7 +1528,7 @@ class _SettingPageState extends State<SettingPage> {
                   ),
                 );
               },
-            ),
+            ), */
 
             const BoxSwitchTile(
               title: Text(
@@ -1548,7 +1551,7 @@ class _SettingPageState extends State<SettingPage> {
                 'Mini Player Buttons',
               ),
               subtitle: const Text(
-                'Change buttons you want to see on miniplayer',
+                'Change buttons you want to appear on the miniplayer',
               ),
               dense: true,
               onTap: () {
@@ -1757,7 +1760,7 @@ class _SettingPageState extends State<SettingPage> {
         value: theme,
         style: TextStyle(
           fontSize: 12,
-          color: Theme.of(context).textTheme.bodyText1!.color,
+          color: Theme.of(context).textTheme.bodyLarge!.color,
         ),
         underline: const SizedBox(),
         onChanged: (String? themeChoice) {
@@ -2297,7 +2300,7 @@ class _SettingPageState extends State<SettingPage> {
               value: canvasColor,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).textTheme.bodyText1!.color,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
               underline: const SizedBox(),
               onChanged: (String? newValue) {
@@ -2328,7 +2331,7 @@ class _SettingPageState extends State<SettingPage> {
               value: cardColor,
               style: TextStyle(
                 fontSize: 12,
-                color: Theme.of(context).textTheme.bodyText1!.color,
+                color: Theme.of(context).textTheme.bodyLarge!.color,
               ),
               underline: const SizedBox(),
               onChanged: (String? newValue) {

@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
@@ -36,13 +35,7 @@ class OfflineAudioQuery {
     return audioQuery.createPlaylist(name);
   }
 
-  Future<bool> renamePlaylist(
-      {required int playlistId, required String newName}) async {
-    newName.replaceAll(avoid, '').replaceAll('  ', ' ');
-    return audioQuery.renamePlaylist(playlistId, newName);
-  }
-
-  Future removePlaylist({required int playlistId}) async {
+  Future<bool> removePlaylist({required int playlistId}) async {
     return audioQuery.removePlaylist(playlistId);
   }
 
@@ -60,12 +53,12 @@ class OfflineAudioQuery {
     return audioQuery.removeFromPlaylist(playlistId, audioId);
   }
 
-  // Future<bool> renamePlaylist({
-  //   required int playlistId,
-  //   required String newName,
-  // }) async {
-  //   return audioQuery.renamePlaylist(playlistId, newName);
-  // }
+  Future<bool> renamePlaylist({
+    required int playlistId,
+    required String newName,
+  }) async {
+    return audioQuery.renamePlaylist(playlistId, newName);
+  }
 
   Future<List<SongModel>> getPlaylistSongs(
     int playlistId, {
@@ -173,10 +166,10 @@ class OfflineAudioQuery {
   static Future<String> queryNSave({
     required int id,
     required ArtworkType type,
-    required String? tempPath,
+    required String tempPath,
     required String fileName,
-    int size = 200,
-    int quality = 200,
+    int size = 500,
+    int quality = 100,
     ArtworkFormat format = ArtworkFormat.PNG,
   }) async {
     final File file = File('$tempPath/$fileName.png');
@@ -200,14 +193,14 @@ class OfflineAudioQuery {
     required ArtworkType type,
     required String tempPath,
     required String fileName,
-    // int size = 200,
-    // int quality = 100,
+    int size = 500,
+    int quality = 100,
     ArtworkFormat format = ArtworkFormat.PNG,
     ArtworkType artworkType = ArtworkType.AUDIO,
     BorderRadius? borderRadius,
     Clip clipBehavior = Clip.antiAlias,
     BoxFit fit = BoxFit.cover,
-    FilterQuality filterQuality = FilterQuality.medium,
+    FilterQuality filterQuality = FilterQuality.low,
     double height = 50.0,
     double width = 50.0,
     double elevation = 5,
@@ -217,45 +210,47 @@ class OfflineAudioQuery {
     Widget? placeholder,
   }) {
     return FutureBuilder<String>(
-      future: queryNSave(
-        id: id,
-        type: type,
-        format: format,
-        // quality: quality,
-        // size: size,
-        tempPath: tempPath,
-        fileName: fileName,
-      ),
-      builder: (context, item) {
-        if (item.data != null && item.data!.isNotEmpty) {
-          return Card(
-            elevation: elevation,
-            shape: RoundedRectangleBorder(
-              borderRadius: borderRadius ?? BorderRadius.circular(7.0),
-            ),
-            clipBehavior: clipBehavior,
-            child: Image(
-              image: FileImage(
-                File(item.data!),
+        future: queryNSave(
+          id: id,
+          type: type,
+          format: format,
+          quality: quality,
+          size: size,
+          tempPath: tempPath,
+          fileName: fileName,
+        ),
+        builder: (context, item) {
+          if (item.data != null && item.data!.isNotEmpty) {
+            return Card(
+              elevation: elevation,
+              shape: RoundedRectangleBorder(
+                borderRadius: borderRadius ?? BorderRadius.circular(7.0),
               ),
-              gaplessPlayback: gaplessPlayback,
-              repeat: imageRepeat,
-              width: width,
-              height: height,
-              fit: fit,
-              filterQuality: filterQuality,
-              errorBuilder: (context, exception, stackTrace) {
-                return errorWidget ??
-                    Image(
-                      fit: BoxFit.cover,
-                      height: height,
-                      width: width,
-                      image: const AssetImage('assets/cover.jpg'),
-                    );
-              },
-            ),
-          );
-        } else {
+              clipBehavior: clipBehavior,
+              child: Image(
+                image: FileImage(
+                  File(
+                    item.data!,
+                  ),
+                ),
+                gaplessPlayback: gaplessPlayback,
+                repeat: imageRepeat,
+                width: width,
+                height: height,
+                fit: fit,
+                filterQuality: filterQuality,
+                errorBuilder: (context, exception, stackTrace) {
+                  return errorWidget ??
+                      Image(
+                        fit: BoxFit.cover,
+                        height: height,
+                        width: width,
+                        image: const AssetImage('assets/cover.jpg'),
+                      );
+                },
+              ),
+            );
+          }
           return Card(
             elevation: elevation,
             shape: RoundedRectangleBorder(
@@ -284,8 +279,7 @@ class OfflineAudioQuery {
         //         width: width,
         //         image: const AssetImage('assets/cover.jpg'),
         //       ),
-        // );
-      },
-    );
+        // );      },
+        );
   }
 }

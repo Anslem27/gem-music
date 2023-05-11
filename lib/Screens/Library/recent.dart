@@ -3,8 +3,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:gem/CustomWidgets/gradient_containers.dart';
-import 'package:gem/CustomWidgets/miniplayer.dart';
+import 'package:gem/widgets/gradient_containers.dart';
+import 'package:gem/widgets/miniplayer.dart';
 import 'package:gem/Screens/Player/music_player.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
