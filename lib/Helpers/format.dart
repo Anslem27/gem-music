@@ -44,7 +44,7 @@ class FormatResponse {
       }
 
       if (response != null && response.containsKey('Error')) {
-        print("Error: " + response.toString());
+        print("Error: $response");
       } else {
         if (response != null) {
           searchedList.add(response);
@@ -210,7 +210,7 @@ class FormatResponse {
           break;
       }
       if (response!.containsKey('Error')) {
-        print("Error: " + response.toString());
+        print("Error: $response");
       } else {
         searchedAlbumList.add(response);
       }

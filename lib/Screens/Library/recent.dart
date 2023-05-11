@@ -1,4 +1,4 @@
-// ignore_for_file: use_colored_box, avoid_redundant_argument_values
+// ignore_for_file: use_colored_box, avoid_redundant_argument_values, library_private_types_in_public_api
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';

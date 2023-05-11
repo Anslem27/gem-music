@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values
+// ignore_for_file: avoid_escaping_inner_quotes, avoid_redundant_argument_values, library_private_types_in_public_api, use_build_context_synchronously
 
 import 'package:audio_service/audio_service.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';

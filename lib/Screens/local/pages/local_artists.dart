@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
@@ -75,204 +75,95 @@ class _LocalArtistsPageState extends State<LocalArtistsPage> {
                       crossAxisCount: 2,
                       itemCount: local_artists.length,
                       itemBuilder: (_, index) {
-                        return FutureBuilder(
-                            future: searchGoogleAndGetFirstImage(
-                                local_artists[index].artist),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return GestureDetector(
-                                  onTap: () async {
-                                    var album_songs =
-                                        await offlineAudioQuery.getArtistSongs(
-                                            local_artists[index].id);
+                        return GestureDetector(
+                          onTap: () async {
+                            var album_songs = await offlineAudioQuery
+                                .getArtistSongs(local_artists[index].id);
 
-                                    Navigator.push(
-                                      context,
-                                      CupertinoPageRoute(
-                                        builder: (_) => LocalMusicsDetail(
-                                          title: local_artists[index].artist,
-                                          id: local_artists[index].id,
-                                          certainCase: 'artist',
-                                          songs: album_songs,
+                            Navigator.push(
+                              context,
+                              CupertinoPageRoute(
+                                builder: (_) => LocalMusicsDetail(
+                                  title: local_artists[index].artist,
+                                  id: local_artists[index].id,
+                                  certainCase: 'artist',
+                                  songs: album_songs,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Stack(
+                            children: [
+                              Card(
+                                color: Colors.transparent,
+                                elevation: 0,
+                                margin: EdgeInsets.zero,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    QueryArtworkWidget(
+                                      id: local_artists[index].id,
+                                      type: ArtworkType.ARTIST,
+                                      artworkHeight: boxSize - 35,
+                                      artworkWidth:
+                                          MediaQuery.of(context).size.width /
+                                              2.5,
+                                      artworkBorder: BorderRadius.circular(90),
+                                      nullArtworkWidget: ClipRRect(
+                                        borderRadius: BorderRadius.circular(90),
+                                        child: Image(
+                                          fit: BoxFit.cover,
+                                          height: boxSize - 35,
+                                          width: MediaQuery.of(context)
+                                                  .size
+                                                  .width /
+                                              2.5,
+                                          image: const AssetImage(
+                                              'assets/artist.png'),
                                         ),
-                                      ),
-                                    );
-                                  },
-                                  child: Stack(
-                                    children: [
-                                      Card(
-                                        color: Colors.transparent,
-                                        elevation: 0,
-                                        margin: EdgeInsets.zero,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                        ),
-                                        clipBehavior: Clip.antiAlias,
-                                        child: Column(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.center,
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.center,
-                                          children: [
-                                            QueryArtworkWidget(
-                                              id: local_artists[index].id,
-                                              type: ArtworkType.ARTIST,
-                                              artworkHeight: boxSize - 35,
-                                              artworkWidth:
-                                                  MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2.5,
-                                              artworkBorder:
-                                                  BorderRadius.circular(90),
-                                              nullArtworkWidget: ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(90),
-                                                child: Image(
-                                                  fit: BoxFit.cover,
-                                                  height: boxSize - 35,
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width /
-                                                      2.5,
-                                                  image: const AssetImage(
-                                                      'assets/artist.png'),
-                                                ),
-                                              ),
-                                            ),
-                                            Expanded(
-                                              child: ListTile(
-                                                title: Text(
-                                                  local_artists[index].artist ==
-                                                          '<unknown>'
-                                                      ? "Unknown artist"
-                                                      : local_artists[index]
-                                                          .artist,
-                                                  textAlign: TextAlign.center,
-                                                  softWrap: false,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 18,
-                                                    fontWeight: FontWeight.w400,
-                                                  ),
-                                                ),
-                                                subtitle: Text(
-                                                  local_artists[index]
-                                                              .numberOfTracks ==
-                                                          1
-                                                      ? "${local_artists[index].numberOfTracks} song"
-                                                      : "${local_artists[index].numberOfTracks} songs",
-                                                  textAlign: TextAlign.center,
-                                                  softWrap: false,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  style: GoogleFonts.roboto(
-                                                    fontSize: 14,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                              return GestureDetector(
-                                onTap: () async {
-                                  var album_songs = await offlineAudioQuery
-                                      .getArtistSongs(local_artists[index].id);
-
-                                  Navigator.push(
-                                    context,
-                                    CupertinoPageRoute(
-                                      builder: (_) => LocalMusicsDetail(
-                                        title: local_artists[index].artist,
-                                        id: local_artists[index].id,
-                                        certainCase: 'artist',
-                                        songs: album_songs,
                                       ),
                                     ),
-                                  );
-                                },
-                                child: Stack(
-                                  children: [
-                                    Card(
-                                      color: Colors.transparent,
-                                      elevation: 0,
-                                      margin: EdgeInsets.zero,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          CachedNetworkImage(
-                                            imageUrl: snapshot.data as String,
-                                            fit: BoxFit.contain,
-                                            errorWidget:
-                                                (BuildContext context, _, __) =>
-                                                    const Image(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  'assets/cover.jpg'),
-                                            ),
-                                            placeholder:
-                                                (BuildContext context, _) =>
-                                                    const Image(
-                                              fit: BoxFit.cover,
-                                              image: AssetImage(
-                                                  'assets/cover.jpg'),
-                                            ),
+                                    Expanded(
+                                      child: ListTile(
+                                        title: Text(
+                                          local_artists[index].artist ==
+                                                  '<unknown>'
+                                              ? "Unknown artist"
+                                              : local_artists[index].artist,
+                                          textAlign: TextAlign.center,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 18,
+                                            fontWeight: FontWeight.w400,
                                           ),
-                                          Expanded(
-                                            child: ListTile(
-                                              title: Text(
-                                                local_artists[index].artist ==
-                                                        '<unknown>'
-                                                    ? "Unknown artist"
-                                                    : local_artists[index]
-                                                        .artist,
-                                                textAlign: TextAlign.center,
-                                                softWrap: false,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.roboto(
-                                                  fontSize: 18,
-                                                  fontWeight: FontWeight.w400,
-                                                ),
-                                              ),
-                                              subtitle: Text(
-                                                local_artists[index]
-                                                            .numberOfTracks ==
-                                                        1
-                                                    ? "${local_artists[index].numberOfTracks} song"
-                                                    : "${local_artists[index].numberOfTracks} songs",
-                                                textAlign: TextAlign.center,
-                                                softWrap: false,
-                                                overflow: TextOverflow.ellipsis,
-                                                style: GoogleFonts.roboto(
-                                                  fontSize: 14,
-                                                  color: Colors.grey,
-                                                ),
-                                              ),
-                                            ),
+                                        ),
+                                        subtitle: Text(
+                                          local_artists[index].numberOfTracks ==
+                                                  1
+                                              ? "${local_artists[index].numberOfTracks} song"
+                                              : "${local_artists[index].numberOfTracks} songs",
+                                          textAlign: TextAlign.center,
+                                          softWrap: false,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: GoogleFonts.roboto(
+                                            fontSize: 14,
+                                            color: Colors.grey,
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    )
+                                    ),
                                   ],
                                 ),
-                              );
-                            });
+                              )
+                            ],
+                          ),
+                        );
                       },
                       staggeredTileBuilder: (int index) {
                         return const StaggeredTile.count(1, 1.2);
