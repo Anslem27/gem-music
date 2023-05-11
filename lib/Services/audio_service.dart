@@ -1,4 +1,4 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers, depend_on_referenced_packages
 
 import 'dart:async';
 import 'dart:convert';

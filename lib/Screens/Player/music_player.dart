@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, use_colored_box
+// ignore_for_file: use_super_parameters, use_colored_box, depend_on_referenced_packages, library_private_types_in_public_api
 
 import 'dart:async';
 import 'dart:io';

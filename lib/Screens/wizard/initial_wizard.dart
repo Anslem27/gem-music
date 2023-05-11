@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/Helpers/app_config.dart';
