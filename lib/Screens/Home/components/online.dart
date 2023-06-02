@@ -364,8 +364,8 @@ class _OnlineMusicState extends State<OnlineMusic>
                     ? const SizedBox()
                     : Column(
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                                 child: Text(

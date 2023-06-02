@@ -312,10 +312,10 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                                                     padding:
                                                         const EdgeInsets.all(3),
                                                     itemBuilder: (_) => [
-                                                      PopupMenuItem(
+                                                      const PopupMenuItem(
                                                         value: 0,
                                                         child: Row(
-                                                          children: const [
+                                                          children: [
                                                             Icon(Iconsax.trash),
                                                             SizedBox(width: 10.0),
                                                             Text('Delete'),

@@ -103,8 +103,8 @@ class _LocalMusicsDetailState extends State<LocalMusicsDetail> {
                               mainAxisAlignment: MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Row(
-                                  children: const [
+                                const Row(
+                                  children: [
                                     Padding(
                                       padding:
                                           EdgeInsets.fromLTRB(10, 10, 0, 0),

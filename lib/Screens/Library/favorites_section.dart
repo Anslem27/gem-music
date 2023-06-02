@@ -694,10 +694,10 @@ class _SongsTabState extends State<SongsTab>
                                                 ),
                                               ),
                                               itemBuilder: (context) => [
-                                                PopupMenuItem(
+                                                const PopupMenuItem(
                                                   value: 6,
                                                   child: Row(
-                                                    children: const [
+                                                    children: [
                                                       Icon(
                                                         Iconsax.trash,
                                                       ),

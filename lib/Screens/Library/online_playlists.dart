@@ -570,10 +570,10 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                             },
                             itemBuilder: (context) => [
                               if (name != 'Favorite Songs')
-                                PopupMenuItem(
+                                const PopupMenuItem(
                                   value: 3,
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Icons.edit_rounded),
                                       SizedBox(width: 10.0),
                                       Text(
@@ -583,10 +583,10 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                   ),
                                 ),
                               if (name != 'Favorite Songs')
-                                PopupMenuItem(
+                                const PopupMenuItem(
                                   value: 0,
                                   child: Row(
-                                    children: const [
+                                    children: [
                                       Icon(Iconsax.trash),
                                       SizedBox(width: 10.0),
                                       Text(
@@ -595,20 +595,20 @@ class _OnlinePlaylistScreenState extends State<OnlinePlaylistScreen> {
                                     ],
                                   ),
                                 ),
-                              PopupMenuItem(
+                              const PopupMenuItem(
                                 value: 1,
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(MdiIcons.export),
                                     SizedBox(width: 10.0),
                                     Text('Export'),
                                   ],
                                 ),
                               ),
-                              PopupMenuItem(
+                              const PopupMenuItem(
                                 value: 2,
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(MdiIcons.share),
                                     SizedBox(width: 10.0),
                                     Text(

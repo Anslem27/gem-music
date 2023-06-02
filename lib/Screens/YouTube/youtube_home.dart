@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:gem/animations/custompageroute.dart';
 import 'package:glassmorphism/glassmorphism.dart';
 import 'package:gem/widgets/search_bar.dart';
@@ -80,16 +80,16 @@ class _YouTubeState extends State<YouTube>
             CupertinoIcons.search,
             color: Theme.of(context).colorScheme.secondary,
           ),
-          onQueryChanged: (_query) {
-            return YouTubeServices().getSearchSuggestions(query: _query);
+          onQueryChanged: (query) {
+            return YouTubeServices().getSearchSuggestions(query: query);
           },
-          onSubmitted: (_query) {
+          onSubmitted: (query) {
             Navigator.push(
               context,
               PageRouteBuilder(
                 opaque: false,
                 pageBuilder: (_, __, ___) => YouTubeSearchPage(
-                  query: _query,
+                  query: query,
                 ),
               ),
             );
@@ -118,9 +118,9 @@ class _YouTubeState extends State<YouTube>
                   physics: const BouncingScrollPhysics(),
                   child: Column(
                     children: [
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children: [
                           Padding(
                             padding: EdgeInsets.fromLTRB(8, 15, 0, 15),
                             child: Text(
@@ -263,9 +263,9 @@ class _YouTubeState extends State<YouTube>
                         }),
                       ),
                       */
-                      Row(
+                      const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
-                        children: const [
+                        children: [
                           Padding(
                             padding: EdgeInsets.fromLTRB(8, 15, 0, 15),
                             child: Text(

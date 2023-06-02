@@ -105,13 +105,13 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                                 direction: DismissDirection.endToStart,
                                 background: Container(
                                   color: Colors.redAccent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
                                       horizontal: 15.0,
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
-                                      children: const [
+                                      children: [
                                         Icon(Iconsax.trash),
                                       ],
                                     ),
