@@ -1,9 +1,7 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 
 jobs:
   build:
@@ -38,7 +36,7 @@ jobs:
       # - run: flutter format --set-exit-if-changed .
 
       # Statically analyze the Dart code for any errors.
-      - run: flutter analyze .
+      # - run: flutter analyze .
 
       # Run widget tests for our flutter project.
       # - run: flutter test

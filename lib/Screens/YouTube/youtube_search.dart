@@ -1,7 +1,7 @@
 // ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:gem/widgets/empty_screen.dart';
 import 'package:gem/widgets/gradient_containers.dart';
 import 'package:gem/widgets/miniplayer.dart';

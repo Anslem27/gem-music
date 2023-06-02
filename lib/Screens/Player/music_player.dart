@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, use_colored_box
+// ignore_for_file: use_super_parameters, use_colored_box, depend_on_referenced_packages, library_private_types_in_public_api
 
 import 'dart:async';
 import 'dart:io';
@@ -965,10 +965,10 @@ class _PlayScreenState extends State<PlayScreen> {
                                                 if (mediaItem
                                                         .extras?['album_id'] !=
                                                     null)
-                                                  PopupMenuItem(
+                                                  const PopupMenuItem(
                                                     value: 5,
                                                     child: Row(
-                                                      children: const [
+                                                      children: [
                                                         Icon(
                                                           Icons.album_rounded,
                                                         ),
@@ -1671,10 +1671,10 @@ class _PlayScreenState extends State<PlayScreen> {
                                               if (mediaItem
                                                       .extras?['album_id'] !=
                                                   null)
-                                                PopupMenuItem(
+                                                const PopupMenuItem(
                                                   value: 5,
                                                   child: Row(
-                                                    children: const [
+                                                    children: [
                                                       Icon(
                                                         Icons.album_rounded,
                                                       ),
@@ -2869,10 +2869,10 @@ class NameNControls extends StatelessWidget {
                   },
                   itemBuilder: (BuildContext context) => <PopupMenuEntry<int>>[
                     if (mediaItem.extras?['album_id'] != null)
-                      PopupMenuItem<int>(
+                      const PopupMenuItem<int>(
                         value: 0,
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(
                               Icons.album_rounded,
                             ),
@@ -2882,10 +2882,10 @@ class NameNControls extends StatelessWidget {
                         ),
                       ),
                     if (mediaItem.artist != null)
-                      PopupMenuItem<int>(
+                      const PopupMenuItem<int>(
                         value: 5,
                         child: Row(
-                          children: const [
+                          children: [
                             Icon(
                               EvaIcons.person,
                             ),

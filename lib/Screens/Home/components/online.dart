@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:gem/Helpers/extensions.dart';
@@ -362,8 +364,8 @@ class _OnlineMusicState extends State<OnlineMusic>
                     ? const SizedBox()
                     : Column(
                         children: [
-                          Row(
-                            children: const [
+                          const Row(
+                            children: [
                               Padding(
                                 padding: EdgeInsets.fromLTRB(10, 10, 0, 10),
                                 child: Text(

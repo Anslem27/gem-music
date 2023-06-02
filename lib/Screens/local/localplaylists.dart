@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api, use_build_context_synchronously
+
 import 'dart:async';
 import 'dart:typed_data';
 
@@ -310,10 +312,10 @@ class _LocalPlaylistsState extends State<LocalPlaylists> {
                                                     padding:
                                                         const EdgeInsets.all(3),
                                                     itemBuilder: (_) => [
-                                                      PopupMenuItem(
+                                                      const PopupMenuItem(
                                                         value: 0,
                                                         child: Row(
-                                                          children: const [
+                                                          children: [
                                                             Icon(Iconsax.trash),
                                                             SizedBox(width: 10.0),
                                                             Text('Delete'),

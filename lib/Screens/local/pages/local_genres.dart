@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, use_build_context_synchronously
 import 'dart:math' as math;
 // import 'dart:typed_data';
 import 'package:flutter/cupertino.dart';

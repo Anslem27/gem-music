@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters, use_decorated_box, avoid_redundant_argument_values
+// ignore_for_file: use_super_parameters, use_decorated_box, avoid_redundant_argument_values, use_build_context_synchronously, library_private_types_in_public_api
 
 import 'dart:io';
 
@@ -939,20 +939,20 @@ class _DownSongsTabState extends State<DownSongsTab>
                               ),
                             ),
                             itemBuilder: (context) => [
-                              PopupMenuItem(
+                              const PopupMenuItem(
                                 value: 0,
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(Icons.edit_rounded),
                                     SizedBox(width: 10.0),
                                     Text('Edit'),
                                   ],
                                 ),
                               ),
-                              PopupMenuItem(
+                              const PopupMenuItem(
                                 value: 1,
                                 child: Row(
-                                  children: const [
+                                  children: [
                                     Icon(Iconsax.trash),
                                     SizedBox(width: 10.0),
                                     Text('Delete'),

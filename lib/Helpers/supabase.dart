@@ -12,7 +12,7 @@ class SupaBase {
 
   Future<Map> getUpdate() async {
     final response =
-        await client.from('Update').select().order('LatestVersion').execute();
+        await client.from('Update').select().order('LatestVersion');
     final List result = response.data as List;
     return result.isEmpty
         ? {}
@@ -36,10 +36,7 @@ class SupaBase {
   }
 
   Future<int> createUser(Map data) async {
-    final response = await client
-        .from('Users')
-        .insert(data, returning: ReturningOption.minimal)
-        .execute();
+    final response = await client.from('Users').insert(data);
     return response.status ?? 404;
   }
 }

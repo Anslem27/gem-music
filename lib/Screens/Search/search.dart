@@ -1,7 +1,7 @@
 // ignore_for_file: use_super_parameters, no_leading_underscores_for_local_identifiers, require_trailing_commas, avoid_redundant_argument_values
 
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' hide SearchBar;
 import 'package:flutter_svg/svg.dart';
 import 'package:gem/APIs/api.dart';
 import 'package:gem/widgets/copy_clipboard.dart';

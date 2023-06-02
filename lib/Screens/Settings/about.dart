@@ -124,8 +124,8 @@ class _AboutScreenState extends State<AboutScreen> {
                     ],
                   ),
                 ),
-                Column(
-                  children: const [
+                const Column(
+                  children: [
                     Text(
                       "",
                       textAlign: TextAlign.center,

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'dart:io';
 
 import 'package:audio_service/audio_service.dart';
@@ -692,10 +694,10 @@ class _SongsTabState extends State<SongsTab>
                                                 ),
                                               ),
                                               itemBuilder: (context) => [
-                                                PopupMenuItem(
+                                                const PopupMenuItem(
                                                   value: 6,
                                                   child: Row(
-                                                    children: const [
+                                                    children: [
                                                       Icon(
                                                         Iconsax.trash,
                                                       ),

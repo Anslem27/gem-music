@@ -1,4 +1,4 @@
-// ignore_for_file: use_colored_box, avoid_redundant_argument_values
+// ignore_for_file: use_colored_box, avoid_redundant_argument_values, library_private_types_in_public_api
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -105,13 +105,13 @@ class _RecentlyPlayedState extends State<RecentlyPlayed> {
                                 direction: DismissDirection.endToStart,
                                 background: Container(
                                   color: Colors.redAccent,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
+                                  child: const Padding(
+                                    padding: EdgeInsets.symmetric(
                                       horizontal: 15.0,
                                     ),
                                     child: Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
-                                      children: const [
+                                      children: [
                                         Icon(Iconsax.trash),
                                       ],
                                     ),

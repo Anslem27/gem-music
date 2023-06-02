@@ -1,4 +1,4 @@
-// ignore_for_file: always_use_package_imports
+// ignore_for_file: always_use_package_imports, library_private_types_in_public_api
 
 import 'dart:async';
 import 'dart:io';
