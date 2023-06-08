@@ -1235,8 +1235,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                   ),
                                   leading: IconButton(
                                     splashRadius: 24,
-                                    icon: const Icon(Icons
-                                        .expand_more_rounded), //TODO: Add fancier icon
+                                    icon: const Icon(Icons.expand_more_rounded),
                                     tooltip: 'Back',
                                     onPressed: () {
                                       Navigator.pop(context);
@@ -1245,8 +1244,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                   actions: [
                                     IconButton(
                                       icon: const Icon(Iconsax.microphone),
-                                      tooltip:
-                                          "Lyrics", //TODO: Make lyrics drawer less glitchy
+                                      tooltip: "Lyrics",
                                       onPressed: () =>
                                           // Reveal lyrics drawer
                                           //cardKey.currentState!.toggleCard()
@@ -1368,11 +1366,11 @@ class _PlayScreenState extends State<PlayScreen> {
                                                               : CachedNetworkImage(
                                                                   fit: BoxFit
                                                                       .contain,
-                                                                  errorWidget:
-                                                                      (BuildContext context,
-                                                                              _,
-                                                                              __) =>
-                                                                          const Image(
+                                                                  errorWidget: (BuildContext
+                                                                              context,
+                                                                          _,
+                                                                          __) =>
+                                                                      const Image(
                                                                     fit: BoxFit
                                                                         .cover,
                                                                     image: AssetImage(
@@ -1443,8 +1441,7 @@ class _PlayScreenState extends State<PlayScreen> {
                                                                 SelectableText
                                                                     .rich(
                                                               TextSpan(
-                                                                children: <
-                                                                    TextSpan>[
+                                                                children: <TextSpan>[
                                                                   TextSpan(
                                                                     text:
                                                                         format(
@@ -1831,7 +1828,6 @@ class _PlayScreenState extends State<PlayScreen> {
                                                     colorsSnapshot
                                                             .connectionState ==
                                                         ConnectionState.none
-                                                //TODO: Add null artwork image
                                                 ? SizedBox(
                                                     height:
                                                         constraints.maxWidth *
@@ -2584,31 +2580,6 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                             .addToPlaylist(context, widget.mediaItem);
                       }
                     },
-              // onVerticalDragStart: !enabled
-              //     ? null
-              //     : (_) {
-              //         dragging.value = true;
-              //       },
-              // onVerticalDragEnd: !enabled
-              //     ? null
-              //     : (_) {
-              //         dragging.value = false;
-              //       },
-              // onVerticalDragUpdate: !enabled
-              //     ? null
-              //     : (DragUpdateDetails details) {
-              //         if (details.delta.dy != 0.0) {
-              //           double volume = widget.audioHandler.volume.value;
-              //           volume -= details.delta.dy / 150;
-              //           if (volume < 0) {
-              //             volume = 0;
-              //           }
-              //           if (volume > 1.0) {
-              //             volume = 1.0;
-              //           }
-              //           widget.audioHandler.setVolume(volume);
-              //         }
-              //       },
               child: Stack(
                 alignment: Alignment.center,
                 children: [
@@ -2619,13 +2590,10 @@ class _ArtWorkWidgetState extends State<ArtWorkWidget> {
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: widget.mediaItem.artUri.toString().startsWith('file')
-                        //TODO: fix issue with local music image image thats low quality
-
                         ? widget.mediaItem.artUri!.toFilePath().isEmpty ||
                                 widget.mediaItem.artUri!.hasEmptyPath ||
                                 widget.mediaItem.artUri == null
                             //expression checks for an empty mediaItem file string
-//Do things
                             ? const Image(
                                 fit: BoxFit.cover,
                                 image: AssetImage('assets/cover.jpg'),

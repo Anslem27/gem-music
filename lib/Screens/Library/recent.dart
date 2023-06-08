@@ -10,7 +10,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:hive/hive.dart';
 import 'package:iconsax/iconsax.dart';
 
-//TODO: Add recent local songs
 class RecentlyPlayed extends StatefulWidget {
   const RecentlyPlayed({Key? key}) : super(key: key);
 

@@ -626,7 +626,6 @@ class _SongsTabState extends State<SongsTab>
                                   mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    //TODO: Fix song Art
                                     Card(
                                       shape: RoundedRectangleBorder(
                                           borderRadius:

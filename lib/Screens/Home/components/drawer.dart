@@ -504,28 +504,6 @@ class BottomDrawerComponent extends StatelessWidget {
           ? const SizedBox()
           : Column(
               children: [
-                /* Expanded(
-                  child: Container(
-                    margin: const EdgeInsets.only(top: 10),
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: CircleAvatar(
-                      //borderRadius: BorderRadius.circular(20),
-                      child: Container(
-                        margin: const EdgeInsets.only(),
-                        color: Colors.transparent,
-                        child: SizedBox(
-                          height: 20,
-                          child: MusicVisualizer(),
-                        ),
-                      ),
-                    ),
-                  ),
-                ), */
                 Expanded(
                   child: IconButton(
                     onPressed: () {

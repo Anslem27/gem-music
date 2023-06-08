@@ -453,7 +453,6 @@ class _OnlineMusicState extends State<OnlineMusic>
                               final subTitle = getSubTitle(item);
                               item['subTitle'] = subTitle;
                               if (item.isEmpty) return const SizedBox();
-                              //TODO: Test whether item list at index is empty
                               if ((data[lists[idx]] as List).isEmpty) {
                                 return const SizedBox();
                               }

@@ -1,4 +1,4 @@
-// ignore_for_file: use_decorated_box
+// ignore_for_file: use_decorated_box, library_private_types_in_public_api
 
 import 'package:flutter/material.dart';
 import 'package:gem/Helpers/app_config.dart';

@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart' hide SearchBar;
 import 'package:gem/animations/custompageroute.dart';
@@ -124,7 +126,7 @@ class _YouTubeState extends State<YouTube>
                           Padding(
                             padding: EdgeInsets.fromLTRB(8, 15, 0, 15),
                             child: Text(
-                              'IDEAS FOR YOU', //popular on Gem
+                              'IDEAS FOR YOU',
                               style: TextStyle(
                                 fontSize: 17,
                                 fontWeight: FontWeight.w500,
@@ -135,7 +137,7 @@ class _YouTubeState extends State<YouTube>
                       ),
                       FutureBuilder<List>(
                           future: YouTubeServices.getHomeSuggestions(
-                              "trending music"),
+                              "music"),
                           builder: (_, snapshot) {
                             if (!snapshot.hasData) {
                               return const Center(
@@ -203,66 +205,6 @@ class _YouTubeState extends State<YouTube>
                               );
                             }));
                           }),
-                      //TODO: See more suggestions page
-
-                      /*   Wrap(
-                        children: List.generate(ytSuggestions.length, (index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  opaque: false,
-                                  pageBuilder: (_, __, ___) =>
-                                      YouTubeSearchPage(
-                                    query: "${ytSuggestions[index]} music",
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: GlassmorphicContainer(
-                                width: boxSize - 20,
-                                height: 40,
-                                borderRadius: 8,
-                                blur: 20,
-                                alignment: Alignment.bottomCenter,
-                                border: 2,
-                                linearGradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      const Color(0xFFffffff).withOpacity(0.1),
-                                      const Color(0xFFFFFFFF).withOpacity(0.05),
-                                    ],
-                                    stops: const [
-                                      0.1,
-                                      1,
-                                    ]),
-                                borderGradient: const LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.transparent
-                                  ],
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    ytSuggestions[index],
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          );
-                        }),
-                      ),
-                      */
                       const Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
