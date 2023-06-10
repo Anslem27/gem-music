@@ -1,4 +1,4 @@
-// ignore_for_file: use_super_parameters
+// ignore_for_file: use_super_parameters, library_private_types_in_public_api
 
 /*
  *  This file is part of BlackHole (https://github.com/Sangwan5688/BlackHole).

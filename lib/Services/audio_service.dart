@@ -307,7 +307,6 @@ class AudioPlayerHandlerImpl extends BaseAudioHandler
     }
   }
 
-//TODO: Add to recently played
   Future<void> addRecentlyPlayed(MediaItem mediaitem) async {
     List recentList = await Hive.box('cache')
         .get('recentSongs', defaultValue: [])?.toList() as List;

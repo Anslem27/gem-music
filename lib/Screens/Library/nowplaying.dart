@@ -77,7 +77,6 @@ class _NowPlayingState extends State<NowPlaying> {
                                     imageUrl: mediaItem.artUri!
                                             .toString()
                                             .startsWith('file:')
-                                        //TODO: Add try catch functionality to catch null image
                                         ? mediaItem.artUri!.toFilePath().isEmpty
                                             ? "assets/cover.jpg"
                                             : mediaItem.artUri!.toFilePath()

@@ -10,6 +10,7 @@ import 'package:gem/widgets/snackbar.dart';
 import 'package:gem/Helpers/lyrics.dart';
 import 'package:gem/services/ext_storage_provider.dart';
 import 'package:hive/hive.dart';
+// ignore: depend_on_referenced_packages
 import 'package:http/http.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
